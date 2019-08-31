@@ -1,0 +1,85 @@
+# RegularUserID represents the ID of a regular user i.e. a user that is not ANONYMOUS or ROOT.
+scalar RegularUserID
+
+enum SpecialUserID {
+    # The root user is the ultimate source of all authorization grants.
+    ROOT
+
+    # The Anonymous user is the user unauthenticated users are said to be 'logged into'.
+    ANONYMOUS
+}
+
+interface User {
+    Name: String!
+}
+
+type Self implements User {
+    Name: String!
+}
+
+type RegularUser implements User {
+    # ID is the unique identifier of this user. It may be a SpecialUserID
+    # if this is a special user, like root.
+    ID: RegularUserID!
+
+    # Name is the name of this user.
+    Name: String!
+}
+
+type SpecialUser implements User {
+    ID: SpecialUserID!
+    Name: String!
+}
+
+
+input UserInput {
+    Name: String!
+}
+
+# The root user is the ultimate source of all authorization grants.
+input RootUser {
+    ID: SpecialUserID! = ADMIN
+    Name: String! = "Root"
+}
+
+# The anonymous user is the user unauthenticated users are said to be logged into.
+input AnonymousUser {
+    ID: SpecialUserID! = ANONYMOUS
+    Name: String! = "Anonymous"
+}
+
+extend type Query {
+    User: UserQuery
+}
+
+type UserQuery {
+    # Self returns the currently logged in user
+    Self: Self!
+
+    Special(id: SpecialUserID): User @authorized(to: [VIEW_USERS])
+    Regular(id: RegularUserID): User @authorized(to: [VIEW_USERS])
+}
+
+extend enum Authorization {
+    # modify other users profiles
+    MODIFY_OTHER_USERS
+
+    # edit the details of my own user (anonymous user cannot do this)
+    MODIFY_SELF
+}
+
+extend type Mutation {
+    # User returns a UserMutator which can be used to modify
+    # a given user id
+    User: UserMutation
+}
+
+type UserMutation {
+    Self: UserMutator! @authorized(to: [MODIFY_SELF])
+    Special(id: SpecialUserID): UserMutator @authorized(to: [MODIFY_OTHER_USERS])
+    Regular(id: RegularUserID): UserMutator @authorized(to: MODIFY_OTHER_USERS)
+}
+
+interface UserMutator {
+    Modify(with: UserInput!): User!
+}

@@ -1,0 +1,3 @@
+enum Error {
+    NOT_FOUND
+}

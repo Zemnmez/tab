@@ -1,0 +1,32 @@
+extend enum Authorization {
+    # if a user can view others history.
+    VIEW_OTHER_USERS_HISTORY
+
+
+    # if a user can view their own history.
+    # the anonymous user cannot view their own history.
+    VIEW_OWN_HISTORY
+}
+
+extend interface User {
+    History: [HistoryItem!]!
+}
+
+extend type Self {
+    History: [HistoryItem!]! @authorized(to: [VIEW_OWN_HISTORY])
+}
+
+extend type RegularUser {
+    History: [HistoryItem!]! @authorized(to: [VIEW_OTHER_USERS_HISTORY])
+}
+
+extend type SpecialUser {
+    History: [HistoryItem!]! @authorized(to: [VIEW_OTHER_USERS_HISTORY])
+}
+
+type HistoryItem {
+    Action: String!
+    By: User!
+    RequestData: String!
+    IPAddress: String!
+}

@@ -1,0 +1,69 @@
+extend enum Authorization {
+    MODIFY_VALID_AUTH
+}
+
+scalar Time
+scalar OIDCProviderID
+
+type IDToken {
+    Issuer: String!
+    Subject: String!
+    Audience: String!
+    Expiration: Time!
+    Issued: Time!
+    Nonce: String!
+    AuthenticationContextClassReference: Int
+    AuthenticationMethodsReference: [String!]!
+    AuthorizedParty: String
+}
+
+input IDTokenInput {
+    Issuer: String!
+    Subject: String!
+    Audience: String!
+    Expiration: Time!
+    Issued: Time!
+    Nonce: String!
+    AuthenticationContextClassReference: Int
+    AuthenticationMethodsReference: [String!]!
+    AuthorizedParty: String
+}
+
+type OIDCProvider {
+    ID: OIDCProviderID
+    Name: String!
+    Callback: String!
+    AuthorizationEndpoint: String!
+    ClientID: String!
+}
+
+extend type UserAuthentication {
+    OIDC: [IDToken!]!
+}
+
+extend type AuthenticationQuery { OIDC: OIDCQuery } 
+type OIDCQuery {
+    Provider: OIDCProviderQuery
+    IsValid(token: IDTokenInput): Boolean
+}
+
+type OIDCProviderQuery {
+    All: [OIDCProvider!]!
+    ByID(id: OIDCProviderID): OIDCProvider
+}
+
+
+input OIDCProviderInput {
+    Name: String!
+}
+
+extend type AuthenticationMutation { OIDC: OIDCMutation }
+type OIDCMutation {
+    # Authenticates by OIDC ID Token and returns the corresponding User, if any.
+    Authenticate(token: IDTokenInput): User
+
+    # modifies, creates or deletes an OIDC provider. If id is blank, the provider will be created.
+    # If provider is blank, the provider will be deleted.
+    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH])
+}
+

@@ -1,0 +1,29 @@
+scalar etc
+
+type UserAuthentication {
+    etc: etc
+}
+
+extend interface User {
+    Authentication: UserAuthentication
+}
+
+extend type Self { Authentication: UserAuthentication }
+extend type RegularUser { Authentication: UserAuthentication }
+extend type SpecialUser { Authentication: UserAuthentication }
+
+extend type Query {
+    Authentication: AuthenticationQuery
+}
+
+type AuthenticationQuery {
+    etc: etc
+}
+
+extend type Mutation {
+    Authentication: AuthenticationMutation
+}
+
+type AuthenticationMutation {
+    etc: etc
+}

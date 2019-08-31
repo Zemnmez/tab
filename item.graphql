@@ -1,0 +1,49 @@
+
+# ItemID represents the unique identifier of an Item
+scalar ItemID
+
+extend enum Authorization {
+    ADD_ITEMS
+    MODIFY_ITEMS
+}
+
+type Item {
+  # A unique identifier for this Item
+  Id: ItemID!
+
+  # The name of this Item
+  Name: String!
+
+  # The location of this Item
+  Location: String!
+
+  # This Item's parent, or none
+  Parent: Item
+
+  # This item's children
+  Children: [Item!]!
+}
+
+# An input item can either be an existing item by ItemID or
+# a new defined item structure.
+input ItemInput {
+    ById: ItemID
+    WithStructure: DefinedItemInput
+}
+
+input DefinedItemInput {
+    Name: String!
+    Location: String!
+    Parent: ItemInput
+    Children: [ItemInput!]!
+}
+
+extend type Query {
+    Item(id: ItemID!): Item @authorized(to: [VIEW_ITEMS])
+}
+
+extend type Mutation {
+    # Item creates or modifies a given item by ItemID. The ItemInput can be either an object or an id.
+    # If ItemInput is defined, but neither ById or WithStructure is defined the item is deleted.
+    Item(id: ItemID!, new: ItemInput): Item! @authorized(to: [MODIFY_ITEMS])
+}

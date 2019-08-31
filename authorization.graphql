@@ -1,0 +1,87 @@
+
+directive @authorized(to: [Authorization!]!) on FIELD_DEFINITION
+
+# Authorization is a list of all the possible permissions
+# a User can have.
+enum Authorization {
+    VIEW_USERS
+}
+
+
+type AuthorizationGrant {
+  # From is the user which has granted permissions
+  # to the grantee
+  From: User!
+
+  # Of is a list of Authorizations representing
+  # permissions granted to the user.
+  Of: [Authorization!]!
+
+  # Valid returns if this grant is still valid.
+  # if the granter of this authorization does not
+  # have the appropriate permissions anymore,
+  # the grant is no longer valid.
+  Valid: Boolean
+}
+
+extend input RootUser {
+    # The root user begins with all possible permissions.
+    Authorizations: [Authorization!]!
+}
+
+extend input AnonymousUser {
+    # The anonymous user begins with no permissions.
+    Authorizations: [Authorization!]! = []
+}
+
+# extend input DefaultUser {
+#    Authorizations: [Authorization!]! = [READ_ITEMS, WRITE_ITEMS, VIEW_USERS, MODIFY_SELF, VIEW_OWN_HISTORY]
+# }
+
+extend interface User {
+    Grants: [AuthorizationGrant!]!
+}
+
+extend type Self {
+    Grants: [AuthorizationGrant!]!
+    Authorizatons: [Authorization!]!
+}
+
+
+extend type SpecialUser {
+    # Authorizations represents the things a user can do,
+    # and who granted them the ability to do these things.
+    #
+    # If the user was granted an ability by a user, and the granting user
+    # user lost the ability to grant it, it is no longer valid.
+    Grants: [AuthorizationGrant!]!
+
+    # Authorizations represents the set of authorization grants
+    # given to this user which are still valid.
+    Authorizations: [Authorization!]!
+}
+
+extend type RegularUser {
+    # Authorizations represents the things a user can do,
+    # and who granted them the ability to do these things.
+    #
+    # If the user was granted an ability by a user, and the granting user
+    # user lost the ability to grant it, it is no longer valid.
+    Grants: [AuthorizationGrant!]!
+
+    # Authorizations represents the set of authorization grants
+    # given to this user which are still valid.
+    Authorizations: [Authorization!]!
+}
+
+extend type UserQuery {
+    WhoCan(do: [Authorization!]!): [User!]! @authorized(to: [VIEW_USERS])
+}
+
+
+extend type UserMutation {
+    # Grant allows a user with some authorization to grant that authorization
+    # to another user
+    GrantRegular(to: RegularUserID!, abilities: [Authorization!]!): RegularUser
+    GrantSpecial(to: SpecialUserID!, abilities: [Authorization!]!): SpecialUser
+}
