@@ -1,6 +1,11 @@
+# USERS
+# This module deals with users existing!
+
 # RegularUserID represents the ID of a regular user i.e. a user that is not ANONYMOUS or ROOT.
 scalar RegularUserID
+    @goModel(model: "github.com/zemnmez/tab/users.RegularID")
 
+# Special users are singleton users with special functionality
 enum SpecialUserID {
     # The root user is the ultimate source of all authorization grants.
     ROOT
@@ -9,7 +14,7 @@ enum SpecialUserID {
     ANONYMOUS
 }
 
-interface User {
+interface User @goModel(model: "github.com/zemnmez/tab/users.User") {
     Name: String!
 }
 
@@ -17,7 +22,8 @@ type Self implements User {
     Name: String!
 }
 
-type RegularUser implements User {
+# RegularUsers are the normal rank and file users!
+type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/users.Regular") {
     # ID is the unique identifier of this user. It may be a SpecialUserID
     # if this is a special user, like root.
     ID: RegularUserID!
@@ -26,12 +32,13 @@ type RegularUser implements User {
     Name: String!
 }
 
-type SpecialUser implements User {
+# SpecialUsers are special singleton accounts like ANONYMOUS and ROOT
+type SpecialUser implements User @goModel(model: "github.com/zemnmez/tab/users.Special") {
     ID: SpecialUserID!
     Name: String!
 }
 
-
+# UserInput is the values a User can be created with
 input UserInput {
     Name: String!
 }
@@ -56,13 +63,16 @@ type UserQuery {
     # Self returns the currently logged in user
     Self: Self!
 
-    Special(id: SpecialUserID): User @authorized(to: [VIEW_USERS])
-    Regular(id: RegularUserID): User @authorized(to: [VIEW_USERS])
+    Special(id: SpecialUserID): SpecialUser @authorized(to: [VIEW_USERS])
+    Regular(id: RegularUserID): RegularUser @authorized(to: [VIEW_USERS])
 }
 
 extend enum Authorization {
     # modify other users profiles
     MODIFY_OTHER_USERS
+
+    # modify root / anonymous
+    MODIFY_SPECIAL_USERS
 
     # edit the details of my own user (anonymous user cannot do this)
     MODIFY_SELF
@@ -76,8 +86,8 @@ extend type Mutation {
 
 type UserMutation {
     Self: UserMutator! @authorized(to: [MODIFY_SELF])
-    Special(id: SpecialUserID): UserMutator @authorized(to: [MODIFY_OTHER_USERS])
-    Regular(id: RegularUserID): UserMutator @authorized(to: MODIFY_OTHER_USERS)
+    Special(id: SpecialUserID): UserMutator @authorized(to: [MODIFY_SPECIAL_USERS])
+    Regular(id: RegularUserID): UserMutator @authorized(to: [MODIFY_OTHER_USERS])
 }
 
 interface UserMutator {

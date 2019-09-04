@@ -7,8 +7,7 @@ enum Authorization {
     VIEW_USERS
 }
 
-
-type AuthorizationGrant {
+type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab.AuthorizationGrant") {
   # From is the user which has granted permissions
   # to the grantee
   From: User!
@@ -75,7 +74,9 @@ extend type RegularUser {
 }
 
 extend type UserQuery {
-    WhoCan(do: [Authorization!]!): [User!]! @authorized(to: [VIEW_USERS])
+    WhoCan(do: [Authorization!]!): [User!]!
+        @authorized(to: [VIEW_USERS])
+        @goField(model: "github.com/zemnmez/tab/users.ByAuthorization")
 }
 
 

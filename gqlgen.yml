@@ -4,15 +4,18 @@
 # for detailed .gqlgen.yml documentation.
 
 schema:
-- merged.graphql
+- "./**/*.graphql"
 exec:
   filename: generated.go
 model:
-  filename: models_gen.go
+  filename: generated/models_gen.go
 resolver:
   filename: resolver.go
   type: Resolver
 autobind: []
 models:
-  Item:
-    model: github.com/zemnmez/tab.Item
+  # module: user
+  
+  # module: authorization
+
+  # module: Item

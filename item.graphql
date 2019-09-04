@@ -1,13 +1,13 @@
 
 # ItemID represents the unique identifier of an Item
-scalar ItemID
+scalar ItemID @goModel(model: "github.com/zemnmez/tab.ItemID")
 
 extend enum Authorization {
     ADD_ITEMS
     MODIFY_ITEMS
 }
 
-type Item {
+type Item @goModel(model: "github.com/zemnmez/tab.Item") {
   # A unique identifier for this Item
   Id: ItemID!
 

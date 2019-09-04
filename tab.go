@@ -7,11 +7,3 @@ import (
 )
 
 type ID uuid.UUID
-
-type Item struct {
-	ID
-	Name     string
-	Location string
-	Parent   ID
-	Children []ID
-}
