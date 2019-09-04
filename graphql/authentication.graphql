@@ -1,6 +1,6 @@
 scalar etc
 
-type UserAuthentication {
+type UserAuthentication @goModel(model: "github.com/zemnmez/tab/user/authn.Authentication") {
     etc: etc
 }
 

@@ -3,7 +3,7 @@
 
 # RegularUserID represents the ID of a regular user i.e. a user that is not ANONYMOUS or ROOT.
 scalar RegularUserID
-    @goModel(model: "github.com/zemnmez/tab/users.RegularID")
+    @goModel(model: "github.com/zemnmez/tab/user.RegularID")
 
 # Special users are singleton users with special functionality
 enum SpecialUserID {
@@ -14,7 +14,7 @@ enum SpecialUserID {
     ANONYMOUS
 }
 
-interface User @goModel(model: "github.com/zemnmez/tab/users.User") {
+interface User @goModel(model: "github.com/zemnmez/tab/user.User") {
     Name: String!
 }
 
@@ -23,7 +23,7 @@ type Self implements User {
 }
 
 # RegularUsers are the normal rank and file users!
-type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/users.Regular") {
+type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/user.Regular") {
     # ID is the unique identifier of this user. It may be a SpecialUserID
     # if this is a special user, like root.
     ID: RegularUserID!
@@ -33,7 +33,7 @@ type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/users.R
 }
 
 # SpecialUsers are special singleton accounts like ANONYMOUS and ROOT
-type SpecialUser implements User @goModel(model: "github.com/zemnmez/tab/users.Special") {
+type SpecialUser implements User @goModel(model: "github.com/zemnmez/tab/user.Special") {
     ID: SpecialUserID!
     Name: String!
 }
@@ -59,7 +59,7 @@ extend type Query {
     User: UserQuery
 }
 
-type UserQuery {
+type UserQuery @goModel(model: "github.com/zemnmez/tab/graphql.UserQuery") {
     # Self returns the currently logged in user
     Self: Self!
 
@@ -84,7 +84,7 @@ extend type Mutation {
     User: UserMutation
 }
 
-type UserMutation {
+type UserMutation @goModel(model: "github.com/zemnmez/tab/graphql.UserMutation") {
     Self: UserMutator! @authorized(to: [MODIFY_SELF])
     Special(id: SpecialUserID): UserMutator @authorized(to: [MODIFY_SPECIAL_USERS])
     Regular(id: RegularUserID): UserMutator @authorized(to: [MODIFY_OTHER_USERS])

@@ -1,14 +1,19 @@
-package users
+package user
+
+import (
+	"github.com/zemnmez/tab/generated"
+)
 
 // RegularID is the ID of a regular user
-type RegularID struct{ ID }
+type RegularID struct{ uuid.Uuid }
 
 // UserID implements users.ID
 func (r RegularID) UserID() string { return r.String() }
 
-type ID interface {
-	UserID() string
-}
+type SpecialID = generated.SpecialUserID
+
+
+type ID interface { UserID() string }
 
 // A generic user
 type User interface {

@@ -5,7 +5,7 @@ extend enum Authorization {
 scalar Time
 scalar OIDCProviderID
 
-type IDToken {
+type IDToken @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.IDToken") {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -17,7 +17,7 @@ type IDToken {
     AuthorizedParty: String
 }
 
-input IDTokenInput {
+input IDTokenInput @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.IDToken") {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -29,7 +29,7 @@ input IDTokenInput {
     AuthorizedParty: String
 }
 
-type OIDCProvider {
+type OIDCProvider @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.Provider") {
     ID: OIDCProviderID
     Name: String!
     Callback: String!
@@ -64,6 +64,7 @@ type OIDCMutation {
 
     # modifies, creates or deletes an OIDC provider. If id is blank, the provider will be created.
     # If provider is blank, the provider will be deleted.
-    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH])
+    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider
+        @authorized(to: [MODIFY_VALID_AUTH])
 }
 

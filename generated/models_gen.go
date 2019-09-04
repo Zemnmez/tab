@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 
 	"github.com/zemnmez/tab"
-	"github.com/zemnmez/tab/users"
+	"github.com/zemnmez/tab/user"
+	"github.com/zemnmez/tab/user/authn"
+	"github.com/zemnmez/tab/user/authn/oidc"
+	"github.com/zemnmez/tab/user/authz"
 )
 
 type UserMutator interface {
@@ -17,9 +19,8 @@ type UserMutator interface {
 }
 
 type AnonymousUser struct {
-	ID             SpecialUserID   `json:"ID"`
-	Name           string          `json:"Name"`
-	Authorizations []Authorization `json:"Authorizations"`
+	ID   SpecialUserID `json:"ID"`
+	Name string        `json:"Name"`
 }
 
 type AuthenticationMutation struct {
@@ -40,34 +41,10 @@ type DefinedItemInput struct {
 }
 
 type HistoryItem struct {
-	Action      string     `json:"Action"`
-	By          users.User `json:"By"`
-	RequestData string     `json:"RequestData"`
-	IPAddress   string     `json:"IPAddress"`
-}
-
-type IDToken struct {
-	Issuer                              string    `json:"Issuer"`
-	Subject                             string    `json:"Subject"`
-	Audience                            string    `json:"Audience"`
-	Expiration                          time.Time `json:"Expiration"`
-	Issued                              time.Time `json:"Issued"`
-	Nonce                               string    `json:"Nonce"`
-	AuthenticationContextClassReference *int      `json:"AuthenticationContextClassReference"`
-	AuthenticationMethodsReference      []string  `json:"AuthenticationMethodsReference"`
-	AuthorizedParty                     *string   `json:"AuthorizedParty"`
-}
-
-type IDTokenInput struct {
-	Issuer                              string    `json:"Issuer"`
-	Subject                             string    `json:"Subject"`
-	Audience                            string    `json:"Audience"`
-	Expiration                          time.Time `json:"Expiration"`
-	Issued                              time.Time `json:"Issued"`
-	Nonce                               string    `json:"Nonce"`
-	AuthenticationContextClassReference *int      `json:"AuthenticationContextClassReference"`
-	AuthenticationMethodsReference      []string  `json:"AuthenticationMethodsReference"`
-	AuthorizedParty                     *string   `json:"AuthorizedParty"`
+	Action      string    `json:"Action"`
+	By          user.User `json:"By"`
+	RequestData string    `json:"RequestData"`
+	IPAddress   string    `json:"IPAddress"`
 }
 
 type ItemInput struct {
@@ -76,16 +53,8 @@ type ItemInput struct {
 }
 
 type OIDCMutation struct {
-	Authenticate users.User    `json:"Authenticate"`
-	Provider     *OIDCProvider `json:"Provider"`
-}
-
-type OIDCProvider struct {
-	ID                    *string `json:"ID"`
-	Name                  string  `json:"Name"`
-	Callback              string  `json:"Callback"`
-	AuthorizationEndpoint string  `json:"AuthorizationEndpoint"`
-	ClientID              string  `json:"ClientID"`
+	Authenticate user.User      `json:"Authenticate"`
+	Provider     *oidc.Provider `json:"Provider"`
 }
 
 type OIDCProviderInput struct {
@@ -93,8 +62,8 @@ type OIDCProviderInput struct {
 }
 
 type OIDCProviderQuery struct {
-	All  []*OIDCProvider `json:"All"`
-	ByID *OIDCProvider   `json:"ByID"`
+	All  []*oidc.Provider `json:"All"`
+	ByID *oidc.Provider   `json:"ByID"`
 }
 
 type OIDCQuery struct {
@@ -103,74 +72,59 @@ type OIDCQuery struct {
 }
 
 type RootUser struct {
-	ID             SpecialUserID   `json:"ID"`
-	Name           string          `json:"Name"`
-	Authorizations []Authorization `json:"Authorizations"`
+	ID   SpecialUserID `json:"ID"`
+	Name string        `json:"Name"`
 }
 
 type Self struct {
-	Name           string                    `json:"Name"`
-	Authentication *UserAuthentication       `json:"Authentication"`
-	Grants         []*tab.AuthorizationGrant `json:"Grants"`
-	Authorizatons  []Authorization           `json:"Authorizatons"`
-	History        []*HistoryItem            `json:"History"`
+	Name           string                `json:"Name"`
+	Authentication *authn.Authentication `json:"Authentication"`
+	Grants         []*authz.Grant        `json:"Grants"`
+	Authorizatons  []Authorization       `json:"Authorizatons"`
+	// Grant a user some ability the current user has
+	Grant user.User `json:"Grant"`
+	// Grant a special user some ability the current user has
+	GrantSpecial *user.Special  `json:"GrantSpecial"`
+	History      []*HistoryItem `json:"History"`
 }
 
 func (Self) IsUser() {}
-
-type UserAuthentication struct {
-	Etc  *string    `json:"etc"`
-	Oidc []*IDToken `json:"OIDC"`
-}
 
 type UserInput struct {
 	Name string `json:"Name"`
 }
 
-type UserMutation struct {
-	Self         UserMutator    `json:"Self"`
-	Special      UserMutator    `json:"Special"`
-	Regular      UserMutator    `json:"Regular"`
-	GrantRegular *users.Regular `json:"GrantRegular"`
-	GrantSpecial *users.Special `json:"GrantSpecial"`
-}
-
-type UserQuery struct {
-	Self    *Self          `json:"Self"`
-	Special *users.Special `json:"Special"`
-	Regular *users.Regular `json:"Regular"`
-	WhoCan  []users.User   `json:"WhoCan"`
-}
-
+// Authorization is a list of all the possible permissions
+// a User can have.
 type Authorization string
 
 const (
 	AuthorizationViewUsers             Authorization = "VIEW_USERS"
 	AuthorizationModifyValidAuth       Authorization = "MODIFY_VALID_AUTH"
-	AuthorizationViewOtherUsersHistory Authorization = "VIEW_OTHER_USERS_HISTORY"
-	AuthorizationViewOwnHistory        Authorization = "VIEW_OWN_HISTORY"
 	AuthorizationAddItems              Authorization = "ADD_ITEMS"
 	AuthorizationModifyItems           Authorization = "MODIFY_ITEMS"
 	AuthorizationModifyOtherUsers      Authorization = "MODIFY_OTHER_USERS"
 	AuthorizationModifySpecialUsers    Authorization = "MODIFY_SPECIAL_USERS"
 	AuthorizationModifySelf            Authorization = "MODIFY_SELF"
+	AuthorizationViewOtherUsersHistory Authorization = "VIEW_OTHER_USERS_HISTORY"
+	AuthorizationViewOwnHistory        Authorization = "VIEW_OWN_HISTORY"
 )
 
 var AllAuthorization = []Authorization{
 	AuthorizationViewUsers,
 	AuthorizationModifyValidAuth,
-	AuthorizationViewOtherUsersHistory,
-	AuthorizationViewOwnHistory,
 	AuthorizationAddItems,
 	AuthorizationModifyItems,
 	AuthorizationModifyOtherUsers,
 	AuthorizationModifySpecialUsers,
 	AuthorizationModifySelf,
+	AuthorizationViewOtherUsersHistory,
+	AuthorizationViewOwnHistory,
 }
 
 func (e Authorization) IsValid() bool {
 	switch e {
-	case AuthorizationViewUsers, AuthorizationModifyValidAuth, AuthorizationViewOtherUsersHistory, AuthorizationViewOwnHistory, AuthorizationAddItems, AuthorizationModifyItems, AuthorizationModifyOtherUsers, AuthorizationModifySpecialUsers, AuthorizationModifySelf:
+	case AuthorizationViewUsers, AuthorizationModifyValidAuth, AuthorizationAddItems, AuthorizationModifyItems, AuthorizationModifyOtherUsers, AuthorizationModifySpecialUsers, AuthorizationModifySelf, AuthorizationViewOtherUsersHistory, AuthorizationViewOwnHistory:
 		return true
 	}
 	return false
@@ -194,45 +148,6 @@ func (e *Authorization) UnmarshalGQL(v interface{}) error {
 }
 
 func (e Authorization) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-type Error string
-
-const (
-	ErrorNotFound Error = "NOT_FOUND"
-)
-
-var AllError = []Error{
-	ErrorNotFound,
-}
-
-func (e Error) IsValid() bool {
-	switch e {
-	case ErrorNotFound:
-		return true
-	}
-	return false
-}
-
-func (e Error) String() string {
-	return string(e)
-}
-
-func (e *Error) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = Error(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid Error", str)
-	}
-	return nil
-}
-
-func (e Error) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
