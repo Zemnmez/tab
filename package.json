@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@zemnmez/graphql": "^14.5.5",
     "graphql": "^14.5.4",
     "graphql-tools": "^4.0.5",
     "node-glob": "^1.2.0"

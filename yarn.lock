@@ -9,6 +9,13 @@
   dependencies:
     tslib "^1.9.3"
 
+"@zemnmez/graphql@^14.5.5":
+  version "14.5.6"
+  resolved "https://registry.yarnpkg.com/@zemnmez/graphql/-/graphql-14.5.6.tgz#c43036a9570fc847d4469fc1ca70446eafe8f2ad"
+  integrity sha512-6KhXkSgluy8Plweol9RSGXQHWLBZqQJGRWKvQVcoGMCUJFBMb9QpjT7Fnr5qvIcS5T7FkqYwh1GDiUuI85RQ/Q==
+  dependencies:
+    iterall "^1.2.2"
+
 apollo-link@^1.2.3:
   version "1.2.12"
   resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.12.tgz#014b514fba95f1945c38ad4c216f31bcfee68429"
