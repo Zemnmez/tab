@@ -7,3 +7,7 @@ import (
 )
 
 type ID uuid.UUID
+
+type ID interface {
+	ID() string
+}
