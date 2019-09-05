@@ -1,5 +1,17 @@
 package storage
 
+type Storage interface {
+	Txn() Txn
+	Commit(Txn) error
+}
+
+type Txn interface {
+	Set(value interface{}) error
+	Get(value interface{}) error
+}
+
+
+
 type ID interface {
 	String() string
 }

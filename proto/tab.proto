@@ -1,0 +1,52 @@
+syntax = "proto3";
+package tab;
+import "github.com/gogo/protobuf@v1.3.0/gogoproto/gogo.proto";
+
+
+enum Authorization {
+    VIEW_USERS = 0;
+    MODIFY_VALID_AUTH = 1;
+    ADD_ITEMS = 2;
+    MODIFY_OTHER_USERS = 3;
+    MODIFY_SPECIAL_USERS = 4;
+    MODIFY_SELF = 5;
+    VIEW_OTHER_USERS_HISTORY = 6;
+    VIEW_OWN_HISTORY = 7;
+}
+
+message ID {
+    string id = 1;
+}
+
+message UserID {
+    oneof ID {
+        SpecialUserID specialUserID = 1;
+        RegularUserID regularUserID = 2;
+    }
+}
+
+message HistoryID { ID id = 1; }
+message RegularUserID { ID id = 1; }
+
+enum SpecialUserID {
+    ROOT = 0;
+    ANONYMOUS = 1;
+}
+
+message RegularUser {
+    UserID id = 1;
+    string name = 2;
+    repeated Authorization authorizations = 3 [(gogoproto.nullable) = false];
+    repeated HistoryID historyID = 4 [(gogoproto.nullable) = false];
+}
+
+message SpecialUser {
+    SpecialUserID id = 1;
+    repeated Authorization authorizations = 2 [(gogoproto.nullable) = false];
+    repeated HistoryID historyID = 3 [(gogoproto.nullable) = false];
+}
+
+message AuthorizationGrant {
+    UserID from = 1;
+    repeated Authorization Of = 2 [(gogoproto.nullable) = false];
+}

@@ -30,6 +30,8 @@ type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/user.Re
 
     # Name is the name of this user.
     Name: String!
+
+    Created: Time!
 }
 
 # SpecialUsers are special singleton accounts like ANONYMOUS and ROOT

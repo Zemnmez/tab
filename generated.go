@@ -171,6 +171,7 @@ type ComplexityRoot struct {
 	RegularUser struct {
 		Authentication func(childComplexity int) int
 			Authorizations func(childComplexity int) int
+			Created func(childComplexity int) int
 			Grants func(childComplexity int) int
 			History func(childComplexity int) int
 			ID func(childComplexity int) int
@@ -282,6 +283,7 @@ type ComplexityRoot struct {
 		type RegularUserResolver interface {
 		
 		
+		Created(ctx context.Context, obj *user.Regular) (*time.Time, error)
 		Authentication(ctx context.Context, obj *user.Regular) (*authn.Authentication, error)
 		
 		
@@ -733,6 +735,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 							}
 							
 							return e.complexity.RegularUser.Authorizations(childComplexity), true
+						
+			case "RegularUser.Created":
+							if e.complexity.RegularUser.Created == nil {
+								break
+							}
+							
+							return e.complexity.RegularUser.Created(childComplexity), true
 						
 			case "RegularUser.Grants":
 							if e.complexity.RegularUser.Grants == nil {
@@ -1318,6 +1327,8 @@ type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/user.Re
 
     # Name is the name of this user.
     Name: String!
+
+    Created: Time!
 }
 
 # SpecialUsers are special singleton accounts like ANONYMOUS and ROOT
@@ -3544,6 +3555,43 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 		rctx.Result = res
 		ctx = ec.Tracer.StartFieldChildExecution(ctx)
 		return ec.marshalNString2string(ctx, field.Selections, res)
+	}
+
+	func (ec *executionContext) _RegularUser_Created(ctx context.Context, field graphql.CollectedField, obj *user.Regular) (ret graphql.Marshaler) {
+		ctx = ec.Tracer.StartFieldExecution(ctx, field)
+		defer func () {
+			if r := recover(); r != nil {
+				ec.Error(ctx, ec.Recover(ctx, r))
+				ret = graphql.Null
+			}
+			ec.Tracer.EndFieldExecution(ctx)
+		}()
+		rctx := &graphql.ResolverContext{
+			Object: "RegularUser",
+			Field: field,
+			Args:  nil,
+			IsMethod: true,
+		}
+		ctx = graphql.WithResolverContext(ctx, rctx)
+		ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+			resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+				ctx = rctx  // use context from middleware stack in children
+		return ec.resolvers.RegularUser().Created(rctx, obj)
+			})
+			if err != nil {
+				ec.Error(ctx, err)
+				return graphql.Null
+			}
+		if resTmp == nil {
+				if !ec.HasError(rctx) {
+					ec.Errorf(ctx, "must not be null")
+				}
+			return graphql.Null
+		}
+		res := resTmp.(*time.Time)
+		rctx.Result = res
+		ctx = ec.Tracer.StartFieldChildExecution(ctx)
+		return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 	}
 
 	func (ec *executionContext) _RegularUser_Authentication(ctx context.Context, field graphql.CollectedField, obj *user.Regular) (ret graphql.Marshaler) {
@@ -6653,6 +6701,20 @@ func (ec *executionContext) _RegularUser(ctx context.Context, sel ast.SelectionS
 					if out.Values[i] == graphql.Null {
 							atomic.AddUint32(&invalids, 1)
 					}
+		case "Created":
+				field := field
+				out.Concurrently(i, func() (res graphql.Marshaler) {
+					defer func() {
+						if r := recover(); r != nil {
+							ec.Error(ctx, ec.Recover(ctx, r))
+						}
+					}()
+					res = ec._RegularUser_Created(ctx, field, obj)
+						if res == graphql.Null {
+								atomic.AddUint32(&invalids, 1)
+						}
+					return res
+				})
 		case "Authentication":
 				field := field
 				out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -7875,6 +7937,38 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet,ob
 								}
 							}
 							return res
+		}
+	
+		func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+						return graphql.UnmarshalTime(v)
+		}
+
+	
+		func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+							res := graphql.MarshalTime(v)
+							if res == graphql.Null {
+								if !ec.HasError(graphql.GetResolverContext(ctx)) {
+									ec.Errorf(ctx, "must not be null")
+								}
+							}
+							return res
+		}
+	
+		func (ec *executionContext) unmarshalNTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+				if v == nil { return nil, nil }
+				res, err := ec.unmarshalNTime2timeᚐTime(ctx, v)
+				return &res, err
+		}
+
+	
+		func (ec *executionContext) marshalNTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+				if v == nil {
+						if !ec.HasError(graphql.GetResolverContext(ctx)) {
+							ec.Errorf(ctx, "must not be null")
+						}
+					return graphql.Null
+				}
+						return ec.marshalNTime2timeᚐTime(ctx, sel, *v)
 		}
 	
 
