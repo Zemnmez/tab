@@ -1,7 +1,14 @@
 syntax = "proto3";
-package tab;
+package protos;
 import "github.com/gogo/protobuf@v1.3.0/gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
 
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.verbose_equal_all) = true;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.compare_all) = true;
+option (gogoproto.testgen_all) = true;
 
 enum Authorization {
     VIEW_USERS = 0;
@@ -15,7 +22,7 @@ enum Authorization {
 }
 
 message ID {
-    string id = 1;
+    string id = 1 [(gogoproto.embed) = true];
 }
 
 message UserID {
@@ -25,8 +32,9 @@ message UserID {
     }
 }
 
-message HistoryID { ID id = 1; }
-message RegularUserID { ID id = 1; }
+message HistoryID { ID id = 1 [(gogoproto.embed) = true]; }
+message RegularUserID { ID id = 1 [(gogoproto.embed) = true]; }
+message OIDCProviderID { ID id = 1 [(gogoproto.embed) = true]; }
 
 enum SpecialUserID {
     ROOT = 0;
@@ -36,17 +44,35 @@ enum SpecialUserID {
 message RegularUser {
     UserID id = 1;
     string name = 2;
-    repeated Authorization authorizations = 3 [(gogoproto.nullable) = false];
-    repeated HistoryID historyID = 4 [(gogoproto.nullable) = false];
+    repeated Authorization authorizations = 3;
+    repeated HistoryID historyID = 4;
 }
 
 message SpecialUser {
     SpecialUserID id = 1;
-    repeated Authorization authorizations = 2 [(gogoproto.nullable) = false];
-    repeated HistoryID historyID = 3 [(gogoproto.nullable) = false];
+    repeated Authorization authorizations = 2;
+    repeated HistoryID historyID = 3;
 }
 
 message AuthorizationGrant {
     UserID from = 1;
-    repeated Authorization Of = 2 [(gogoproto.nullable) = false];
+    repeated Authorization Of = 2;
+}
+
+message IDToken {
+    string issuer = 1;
+    string subject = 2;
+    string audicence = 3;
+    google.protobuf.Timestamp expiration = 4;
+    google.protobuf.Timestamp issued = 5;
+    string nonce = 6;
+    string authorizedParty = 7;
+}
+
+message OIDCProvider { 
+    OIDCProviderID id = 1;
+    string name = 2;
+    string callback = 3;
+    string authorizationEndpoint = 4;
+    string clientID = 5;
 }
