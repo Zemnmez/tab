@@ -1,12 +1,12 @@
 syntax = "proto3";
 package user;
 
-option go_package = "github.com/zemnmez/user";
+option go_package = "github.com/zemnmez/tab/user";
+import "google/protobuf/timestamp.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "github.com/zemnmez/tab/tab.proto";
 import "github.com/zemnmez/tab/user/authz/authz.proto";
 import "github.com/zemnmez/tab/user/history/history.proto";
-import "google/protobuf/timestamp.proto";
 
 option (gogoproto.gostring_all) = true;
 option (gogoproto.equal_all) = true;
@@ -24,13 +24,13 @@ message RegularID { tab.ID id = 1 [(gogoproto.embed) = true]; }
 
 message ID {
     oneof ID {
-        SpecialUserID specialUserID = 1;
-        RegularUserID regularUserID = 2;
+        SpecialID specialUserID = 1;
+        RegularID regularUserID = 2;
     }
 }
 
 message Regular {
-    UserID id = 1;
+    ID id = 1;
     string name = 2;
     repeated authz.Authorization authorizations = 3;
     repeated history.ID historyID = 4;
@@ -38,7 +38,7 @@ message Regular {
 }
 
 message Special {
-    SpecialUserID id = 1;
+    SpecialID id = 1;
     repeated authz.Authorization authorizations = 2;
     repeated history.ID historyID = 3;
 }

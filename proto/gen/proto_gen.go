@@ -131,7 +131,7 @@ if err != nil { return }
 
 	args := []string {
 		"protoc",
-		"-I", protocPath,
+		"--proto_path", protocPath,
 		"--plugin", fmt.Sprintf(
 			"%s=%s",
 			binaryName, 
@@ -144,6 +144,8 @@ if err != nil { return }
 	args = append(args, remainingArgs...)
 
 	cmd := Command(args[0], args[1:]...)
+
+	cmd.Dir = protocPath
 
 
 

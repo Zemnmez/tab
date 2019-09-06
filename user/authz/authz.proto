@@ -2,7 +2,7 @@ syntax = "proto3";
 package authz;
 
 option go_package = "github.com/zemnmez/tab/user/authz";
-import "github.com/gogo/protobuf@v1.3.0/gogoproto/gogo.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 option (gogoproto.gostring_all) = true;
 option (gogoproto.equal_all) = true;

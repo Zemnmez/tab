@@ -1,6 +1,7 @@
 syntax = "proto3";
 package tab;
 
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 option go_package= "github.com/zemnnmez/tab";
 
 message ID {
