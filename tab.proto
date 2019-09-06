@@ -1,0 +1,8 @@
+syntax = "proto3";
+package tab;
+
+option go_package= "github.com/zemnnmez/tab";
+
+message ID {
+    string id = 1 [(gogoproto.embed) = true];
+}

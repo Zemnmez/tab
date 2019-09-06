@@ -1,0 +1,17 @@
+syntax = "proto3";
+package history;
+
+option go_package = "github.com/zemnmez/tab/user/history";
+
+import "github.com/zemnmez/tab/tab.proto";
+import "github.com/gogo/protobuf@v1.3.0/gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.verbose_equal_all) = true;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.compare_all) = true;
+option (gogoproto.testgen_all) = true;
+
+message ID { tab.ID id = 1 [(gogoproto.embed) = true]; }

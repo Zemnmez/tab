@@ -1,6 +1,6 @@
 syntax = "proto3";
 package protos;
-import "github.com/gogo/protobuf@v1.3.0/gogoproto/gogo.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
 option (gogoproto.gostring_all) = true;
@@ -10,49 +10,9 @@ option (gogoproto.stringer_all) = true;
 option (gogoproto.compare_all) = true;
 option (gogoproto.testgen_all) = true;
 
-enum Authorization {
-    VIEW_USERS = 0;
-    MODIFY_VALID_AUTH = 1;
-    ADD_ITEMS = 2;
-    MODIFY_OTHER_USERS = 3;
-    MODIFY_SPECIAL_USERS = 4;
-    MODIFY_SELF = 5;
-    VIEW_OTHER_USERS_HISTORY = 6;
-    VIEW_OWN_HISTORY = 7;
-}
-
-message ID {
-    string id = 1 [(gogoproto.embed) = true];
-}
-
-message UserID {
-    oneof ID {
-        SpecialUserID specialUserID = 1;
-        RegularUserID regularUserID = 2;
-    }
-}
-
-message HistoryID { ID id = 1 [(gogoproto.embed) = true]; }
-message RegularUserID { ID id = 1 [(gogoproto.embed) = true]; }
 message OIDCProviderID { ID id = 1 [(gogoproto.embed) = true]; }
 
-enum SpecialUserID {
-    ROOT = 0;
-    ANONYMOUS = 1;
-}
 
-message RegularUser {
-    UserID id = 1;
-    string name = 2;
-    repeated Authorization authorizations = 3;
-    repeated HistoryID historyID = 4;
-}
-
-message SpecialUser {
-    SpecialUserID id = 1;
-    repeated Authorization authorizations = 2;
-    repeated HistoryID historyID = 3;
-}
 
 message AuthorizationGrant {
     UserID from = 1;
