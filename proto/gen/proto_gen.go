@@ -1,17 +1,19 @@
 package main
 
 import (
-	"os/exec"
-	"path/filepath"
-	"os"
-	"strings"
-	"io/ioutil"
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
-	if err := do(); err != nil { panic(err) }
+	if err := do(); err != nil {
+		panic(err)
+	}
 }
 
 func Command(cmd string, args ...string) (n *exec.Cmd) {
@@ -29,7 +31,9 @@ func cmdOutput(cmd string, params ...string) (output string, err error) {
 	p.Stdout = nil
 
 	opb, err := p.Output()
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	return strings.TrimSpace(string(opb)), nil
 }
@@ -49,26 +53,38 @@ func do() (err error) {
 
 	// detect our root module path
 	ourPkg, err := goList(".")
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	rootModule, err := goList("-m")
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	rootModuleDir, err := goList("-f", "{{.Dir}}", "-m", rootModule)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	// we are going to make a temporary folder containing
 	// a 'vendor' kind of thing to allow protoc to do fully qualified import
 	// paths on modules. yes it is a huge faff.
 
 	depList, err := cmdOutput("go", "mod", "graph")
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
-if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	// make the temp folder
 	protocPath, err := ioutil.TempDir("", "tab-protoc")
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	defer os.RemoveAll(protocPath)
 
@@ -82,18 +98,17 @@ if err != nil { return }
 
 	// get the version used
 	binPath, err := goList(
-		 "-f", "{{.Dir}}",
-		  binary,
-		)
+		"-f", "{{.Dir}}",
+		binary,
+	)
 
-if err != nil { return }
+	if err != nil {
+		return
+	}
 
-		// get our location
+	// get our location
 
-
-	
 	binaryName := filepath.Base(binary)
-
 
 	//binaryLoc := filepath.Join(modRoot, binary)
 
@@ -107,47 +122,64 @@ if err != nil { return }
 		// skip if it's an indirect import
 
 		importedBy := string(bytes.Split(pair, []byte(" "))[0])
-		
-		if !strings.HasPrefix(importedBy, rootModule) { continue }
+
+		if !strings.HasPrefix(importedBy, rootModule) {
+			continue
+		}
 
 		importedPkg := string(bytes.Split(pair, []byte(" "))[1])
 
 		var dirs = filepath.Join(protocPath, filepath.Dir(importedPkg))
 		fmt.Fprintf(os.Stderr, "making dir path %s\n", dirs)
 
-		if err = os.MkdirAll(dirs, 0700); err != nil { return }
+		if err = os.MkdirAll(dirs, 0700); err != nil {
+			return
+		}
 
 		var oldpath = filepath.Join(modRoot, importedPkg)
 		var newpath = filepath.Join(protocPath, strings.Split(importedPkg, "@")[0])
 
 		fmt.Fprintf(os.Stderr, "ln -s %s %s\n", oldpath, newpath)
 
-		if err = os.Symlink(oldpath, newpath); err != nil { return }
+		if err = os.Symlink(oldpath, newpath); err != nil {
+			return
+		}
 	}
-
-
 
 	Command("go", "get", binary).Run()
 
-	args := []string {
+	var remapsMap = map[string]string{
+		"google/protobuf/timestamp.proto": "github.com/gogo/protobuf/types",
+		"google/protobuf/duration.proto":  "github.com/gogo/protobuf/types",
+		"google/protobuf/struct.proto":    "github.com/gogo/protobuf/types",
+		"google/protobuf/wrappers.proto":  "github.com/gogo/protobuf/types",
+		"google/protobuf/any.proto":       "github.com/gogo/googleapis/google/api",
+	}
+
+	var remapsFlat []string
+	for k, v := range remapsMap {
+		remapsFlat = append(remapsFlat, strings.Join([]string{k, v}, "="))
+	}
+
+	var remaps = strings.Join(remapsFlat, ",M")
+
+	args := []string{
 		"protoc",
 		"--proto_path", protocPath,
 		"--plugin", fmt.Sprintf(
 			"%s=%s",
-			binaryName, 
+			binaryName,
 			filepath.Join(goPath, "bin", binaryName),
 		),
-		fmt.Sprintf("--%s_out=.", strings.TrimPrefix(binaryName, "protoc-gen-")),
+		fmt.Sprintf("--%s_out=M%s:.", strings.TrimPrefix(binaryName, "protoc-gen-"), remaps),
 		filepath.Join(protocPath, ourPkg, target),
 	}
-	
+
 	args = append(args, remainingArgs...)
 
 	cmd := Command(args[0], args[1:]...)
 
 	cmd.Dir = protocPath
-
-
 
 	return cmd.Run()
 }

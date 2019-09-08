@@ -7,10 +7,10 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/gogo/protobuf/types"
+	tab "github.com/zemnmez/tab"
 	authz "github.com/zemnmez/tab/user/authz"
 	history "github.com/zemnmez/tab/user/history"
-	tab "github.com/zemnnmez/tab"
-	protobuf "google/protobuf"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -179,7 +179,7 @@ type Regular struct {
 	Name           string                `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Authorizations []authz.Authorization `protobuf:"varint,3,rep,packed,name=authorizations,proto3,enum=authz.Authorization" json:"authorizations,omitempty"`
 	HistoryID      []*history.ID         `protobuf:"bytes,4,rep,name=historyID,proto3" json:"historyID,omitempty"`
-	Created        *protobuf.Timestamp   `protobuf:"bytes,5,opt,name=created,proto3" json:"created,omitempty"`
+	Created        *types.Timestamp      `protobuf:"bytes,5,opt,name=created,proto3" json:"created,omitempty"`
 }
 
 func (m *Regular) Reset()      { *m = Regular{} }
@@ -242,7 +242,7 @@ func (m *Regular) GetHistoryID() []*history.ID {
 	return nil
 }
 
-func (m *Regular) GetCreated() *protobuf.Timestamp {
+func (m *Regular) GetCreated() *types.Timestamp {
 	if m != nil {
 		return m.Created
 	}
@@ -1554,7 +1554,7 @@ func (this *Regular) String() string {
 		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
 		`Authorizations:` + fmt.Sprintf("%v", this.Authorizations) + `,`,
 		`HistoryID:` + repeatedStringForHistoryID + `,`,
-		`Created:` + strings.Replace(fmt.Sprintf("%v", this.Created), "Timestamp", "protobuf.Timestamp", 1) + `,`,
+		`Created:` + strings.Replace(fmt.Sprintf("%v", this.Created), "Timestamp", "types.Timestamp", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2011,7 +2011,7 @@ func (m *Regular) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Created == nil {
-				m.Created = &protobuf.Timestamp{}
+				m.Created = &types.Timestamp{}
 			}
 			if err := m.Created.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

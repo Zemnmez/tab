@@ -2,8 +2,16 @@ syntax = "proto3";
 package tab;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-option go_package= "github.com/zemnnmez/tab";
+option go_package= "github.com/zemnmez/tab";
+
+
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.verbose_equal_all) = true;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.compare_all) = true;
+option (gogoproto.testgen_all) = true;
 
 message ID {
-    string id = 1 [(gogoproto.embed) = true];
+    string id = 1;
 }
