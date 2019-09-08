@@ -42,6 +42,13 @@ enum Authorization {
 
 message HistoryID { types.ID id = 1 [(gogoproto.embed) = true]; }
 
+message HistoryItem {
+    string action = 1;
+    UserID by = 2;
+    string requestData = 3;
+    string IPAddress = 4;
+}
+
 // USERS
 
 enum SpecialUserID {
@@ -82,4 +89,18 @@ message Item {
     string location = 3;
     ItemID parent = 4;
     repeated ItemID children = 5;
+}
+
+// oidc
+
+message IDToken {
+    string issuer = 1;
+    string subject = 2;
+    string audience = 3;
+    google.protobuf.Timestamp expiration = 4;
+    google.protobuf.Timestamp issued = 5;
+    string nonce = 6;
+    int64 authenticationContextClassReference = 7;
+    repeated string authenticationMethodsReference = 8;
+    string authorizedParty = 9;
 }

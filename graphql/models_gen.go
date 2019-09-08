@@ -3,11 +3,6 @@
 package graphql
 
 import (
-	"fmt"
-	"io"
-	"strconv"
-	"time"
-
 	"github.com/zemnmez/tab/types"
 )
 
@@ -20,8 +15,8 @@ type UserMutator interface {
 }
 
 type AnonymousUser struct {
-	ID   SpecialUserID `json:"ID"`
-	Name string        `json:"Name"`
+	ID   types.SpecialUserID `json:"ID"`
+	Name string              `json:"Name"`
 }
 
 type AuthenticationMutation struct {
@@ -39,37 +34,6 @@ type DefinedItemInput struct {
 	Location string       `json:"Location"`
 	Parent   *ItemInput   `json:"Parent"`
 	Children []*ItemInput `json:"Children"`
-}
-
-type HistoryItem struct {
-	Action      string `json:"Action"`
-	By          User   `json:"By"`
-	RequestData string `json:"RequestData"`
-	IPAddress   string `json:"IPAddress"`
-}
-
-type IDToken struct {
-	Issuer                              string    `json:"Issuer"`
-	Subject                             string    `json:"Subject"`
-	Audience                            string    `json:"Audience"`
-	Expiration                          time.Time `json:"Expiration"`
-	Issued                              time.Time `json:"Issued"`
-	Nonce                               string    `json:"Nonce"`
-	AuthenticationContextClassReference *int      `json:"AuthenticationContextClassReference"`
-	AuthenticationMethodsReference      []string  `json:"AuthenticationMethodsReference"`
-	AuthorizedParty                     *string   `json:"AuthorizedParty"`
-}
-
-type IDTokenInput struct {
-	Issuer                              string    `json:"Issuer"`
-	Subject                             string    `json:"Subject"`
-	Audience                            string    `json:"Audience"`
-	Expiration                          time.Time `json:"Expiration"`
-	Issued                              time.Time `json:"Issued"`
-	Nonce                               string    `json:"Nonce"`
-	AuthenticationContextClassReference *int      `json:"AuthenticationContextClassReference"`
-	AuthenticationMethodsReference      []string  `json:"AuthenticationMethodsReference"`
-	AuthorizedParty                     *string   `json:"AuthorizedParty"`
 }
 
 type ItemInput struct {
@@ -105,8 +69,8 @@ type OIDCQuery struct {
 }
 
 type RootUser struct {
-	ID   SpecialUserID `json:"ID"`
-	Name string        `json:"Name"`
+	ID   types.SpecialUserID `json:"ID"`
+	Name string              `json:"Name"`
 }
 
 type Self struct {
@@ -117,15 +81,15 @@ type Self struct {
 	// Grant a user some ability the current user has
 	Grant User `json:"Grant"`
 	// Grant a special user some ability the current user has
-	GrantSpecial *types.SpecialUser `json:"GrantSpecial"`
-	History      []*HistoryItem     `json:"History"`
+	GrantSpecial *types.SpecialUser   `json:"GrantSpecial"`
+	History      []*types.HistoryItem `json:"History"`
 }
 
 func (Self) IsUser() {}
 
 type UserAuthentication struct {
-	Etc  *string    `json:"etc"`
-	Oidc []*IDToken `json:"OIDC"`
+	Etc  *string          `json:"etc"`
+	Oidc []*types.IDToken `json:"OIDC"`
 }
 
 type UserInput struct {
@@ -143,45 +107,4 @@ type UserQuery struct {
 	Special *types.SpecialUser `json:"Special"`
 	Regular *types.RegularUser `json:"Regular"`
 	WhoCan  []User             `json:"WhoCan"`
-}
-
-type SpecialUserID string
-
-const (
-	SpecialUserIDRoot      SpecialUserID = "ROOT"
-	SpecialUserIDAnonymous SpecialUserID = "ANONYMOUS"
-)
-
-var AllSpecialUserID = []SpecialUserID{
-	SpecialUserIDRoot,
-	SpecialUserIDAnonymous,
-}
-
-func (e SpecialUserID) IsValid() bool {
-	switch e {
-	case SpecialUserIDRoot, SpecialUserIDAnonymous:
-		return true
-	}
-	return false
-}
-
-func (e SpecialUserID) String() string {
-	return string(e)
-}
-
-func (e *SpecialUserID) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = SpecialUserID(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid SpecialUserID", str)
-	}
-	return nil
-}
-
-func (e SpecialUserID) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
 }

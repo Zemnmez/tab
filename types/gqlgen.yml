@@ -16,3 +16,5 @@ autobind: []
 models:
   Authorization:
     model: github.com/zemnmez/tab/types.Authorization
+  SpecialUserID:
+    model: github.com/zemnmez/tab/types.SpecialUserID

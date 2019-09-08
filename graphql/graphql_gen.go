@@ -38,6 +38,8 @@ type Config struct {
 
 type ResolverRoot interface {
 	AuthorizationGrant() AuthorizationGrantResolver
+	HistoryItem() HistoryItemResolver
+	IDToken() IDTokenResolver
 	Item() ItemResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
@@ -101,7 +103,7 @@ type ComplexityRoot struct {
 	}
 
 	OIDCMutation struct {
-		Authenticate func(childComplexity int, token *IDTokenInput) int
+		Authenticate func(childComplexity int, token *types.IDToken) int
 		Provider     func(childComplexity int, id *string, provider *OIDCProviderInput) int
 	}
 
@@ -119,7 +121,7 @@ type ComplexityRoot struct {
 	}
 
 	OIDCQuery struct {
-		IsValid  func(childComplexity int, token *IDTokenInput) int
+		IsValid  func(childComplexity int, token *types.IDToken) int
 		Provider func(childComplexity int) int
 	}
 
@@ -144,7 +146,7 @@ type ComplexityRoot struct {
 		Authentication func(childComplexity int) int
 		Authorizatons  func(childComplexity int) int
 		Grant          func(childComplexity int, who *types.RegularUserID, abilities []types.Authorization) int
-		GrantSpecial   func(childComplexity int, who *SpecialUserID, abilities []types.Authorization) int
+		GrantSpecial   func(childComplexity int, who *types.SpecialUserID, abilities []types.Authorization) int
 		Grants         func(childComplexity int) int
 		History        func(childComplexity int) int
 		Name           func(childComplexity int) int
@@ -155,7 +157,7 @@ type ComplexityRoot struct {
 		Authorizations func(childComplexity int) int
 		Grants         func(childComplexity int) int
 		History        func(childComplexity int) int
-		ID             func(childComplexity int) int
+		Id             func(childComplexity int) int
 		Name           func(childComplexity int) int
 	}
 
@@ -167,13 +169,13 @@ type ComplexityRoot struct {
 	UserMutation struct {
 		Regular func(childComplexity int, id *types.RegularUserID) int
 		Self    func(childComplexity int) int
-		Special func(childComplexity int, id *SpecialUserID) int
+		Special func(childComplexity int, id *types.SpecialUserID) int
 	}
 
 	UserQuery struct {
 		Regular func(childComplexity int, id *types.RegularUserID) int
 		Self    func(childComplexity int) int
-		Special func(childComplexity int, id *SpecialUserID) int
+		Special func(childComplexity int, id *types.SpecialUserID) int
 		WhoCan  func(childComplexity int, do []types.Authorization) int
 	}
 }
@@ -182,6 +184,13 @@ type AuthorizationGrantResolver interface {
 	From(ctx context.Context, obj *types.AuthorizationGrant) (User, error)
 
 	Valid(ctx context.Context, obj *types.AuthorizationGrant) (*bool, error)
+}
+type HistoryItemResolver interface {
+	By(ctx context.Context, obj *types.HistoryItem) (User, error)
+}
+type IDTokenResolver interface {
+	Expiration(ctx context.Context, obj *types.IDToken) (*time.Time, error)
+	Issued(ctx context.Context, obj *types.IDToken) (*time.Time, error)
 }
 type ItemResolver interface {
 	Parent(ctx context.Context, obj *types.Item) (*types.Item, error)
@@ -206,15 +215,14 @@ type RegularUserResolver interface {
 	Authentication(ctx context.Context, obj *types.RegularUser) (*UserAuthentication, error)
 	Grants(ctx context.Context, obj *types.RegularUser) ([]*types.AuthorizationGrant, error)
 
-	History(ctx context.Context, obj *types.RegularUser) ([]*HistoryItem, error)
+	History(ctx context.Context, obj *types.RegularUser) ([]*types.HistoryItem, error)
 }
 type SpecialUserResolver interface {
-	ID(ctx context.Context, obj *types.SpecialUser) (SpecialUserID, error)
 	Name(ctx context.Context, obj *types.SpecialUser) (string, error)
 	Authentication(ctx context.Context, obj *types.SpecialUser) (*UserAuthentication, error)
 	Grants(ctx context.Context, obj *types.SpecialUser) ([]*types.AuthorizationGrant, error)
 
-	History(ctx context.Context, obj *types.SpecialUser) ([]*HistoryItem, error)
+	History(ctx context.Context, obj *types.SpecialUser) ([]*types.HistoryItem, error)
 }
 
 type executableSchema struct {
@@ -450,7 +458,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OIDCMutation.Authenticate(childComplexity, args["token"].(*IDTokenInput)), true
+		return e.complexity.OIDCMutation.Authenticate(childComplexity, args["token"].(*types.IDToken)), true
 
 	case "OIDCMutation.Provider":
 		if e.complexity.OIDCMutation.Provider == nil {
@@ -528,7 +536,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OIDCQuery.IsValid(childComplexity, args["token"].(*IDTokenInput)), true
+		return e.complexity.OIDCQuery.IsValid(childComplexity, args["token"].(*types.IDToken)), true
 
 	case "OIDCQuery.Provider":
 		if e.complexity.OIDCQuery.Provider == nil {
@@ -655,7 +663,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Self.GrantSpecial(childComplexity, args["who"].(*SpecialUserID), args["abilities"].([]types.Authorization)), true
+		return e.complexity.Self.GrantSpecial(childComplexity, args["who"].(*types.SpecialUserID), args["abilities"].([]types.Authorization)), true
 
 	case "Self.Grants":
 		if e.complexity.Self.Grants == nil {
@@ -707,11 +715,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.SpecialUser.History(childComplexity), true
 
 	case "SpecialUser.ID":
-		if e.complexity.SpecialUser.ID == nil {
+		if e.complexity.SpecialUser.Id == nil {
 			break
 		}
 
-		return e.complexity.SpecialUser.ID(childComplexity), true
+		return e.complexity.SpecialUser.Id(childComplexity), true
 
 	case "SpecialUser.Name":
 		if e.complexity.SpecialUser.Name == nil {
@@ -763,7 +771,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.UserMutation.Special(childComplexity, args["id"].(*SpecialUserID)), true
+		return e.complexity.UserMutation.Special(childComplexity, args["id"].(*types.SpecialUserID)), true
 
 	case "UserQuery.Regular":
 		if e.complexity.UserQuery.Regular == nil {
@@ -794,7 +802,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.UserQuery.Special(childComplexity, args["id"].(*SpecialUserID)), true
+		return e.complexity.UserQuery.Special(childComplexity, args["id"].(*types.SpecialUserID)), true
 
 	case "UserQuery.WhoCan":
 		if e.complexity.UserQuery.WhoCan == nil {
@@ -877,7 +885,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 scalar Time
 scalar OIDCProviderID
 
-type IDToken {
+type IDToken @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -889,7 +897,7 @@ type IDToken {
     AuthorizedParty: String
 }
 
-input IDTokenInput {
+input IDTokenInput @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -1089,7 +1097,7 @@ extend type SpecialUser {
 }
 
 # A HistoryItem represents a single thing that happened in this user's history
-type HistoryItem {
+type HistoryItem  @goModel(model: "github.com/zemnmez/tab/types.HistoryItem") {
     Action: String!
     By: User!
     RequestData: String!
@@ -1303,9 +1311,9 @@ func (ec *executionContext) field_Mutation_Item_args(ctx context.Context, rawArg
 func (ec *executionContext) field_OIDCMutation_Authenticate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *IDTokenInput
+	var arg0 *types.IDToken
 	if tmp, ok := rawArgs["token"]; ok {
-		arg0, err = ec.unmarshalOIDTokenInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDTokenInput(ctx, tmp)
+		arg0, err = ec.unmarshalOIDTokenInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1353,9 +1361,9 @@ func (ec *executionContext) field_OIDCProviderQuery_ByID_args(ctx context.Contex
 func (ec *executionContext) field_OIDCQuery_IsValid_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *IDTokenInput
+	var arg0 *types.IDToken
 	if tmp, ok := rawArgs["token"]; ok {
-		arg0, err = ec.unmarshalOIDTokenInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDTokenInput(ctx, tmp)
+		arg0, err = ec.unmarshalOIDTokenInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1395,9 +1403,9 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Self_GrantSpecial_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *SpecialUserID
+	var arg0 *types.SpecialUserID
 	if tmp, ok := rawArgs["who"]; ok {
-		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, tmp)
+		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1453,9 +1461,9 @@ func (ec *executionContext) field_UserMutation_Regular_args(ctx context.Context,
 func (ec *executionContext) field_UserMutation_Special_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *SpecialUserID
+	var arg0 *types.SpecialUserID
 	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, tmp)
+		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1481,9 +1489,9 @@ func (ec *executionContext) field_UserQuery_Regular_args(ctx context.Context, ra
 func (ec *executionContext) field_UserQuery_Special_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *SpecialUserID
+	var arg0 *types.SpecialUserID
 	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, tmp)
+		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1786,7 +1794,7 @@ func (ec *executionContext) _AuthorizationGrant_Valid(ctx context.Context, field
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_Action(ctx context.Context, field graphql.CollectedField, obj *HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_Action(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1823,7 +1831,7 @@ func (ec *executionContext) _HistoryItem_Action(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.CollectedField, obj *HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1836,13 +1844,13 @@ func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.C
 		Object:   "HistoryItem",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.By, nil
+		return ec.resolvers.HistoryItem().By(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1860,7 +1868,7 @@ func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.C
 	return ec.marshalNUser2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_RequestData(ctx context.Context, field graphql.CollectedField, obj *HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_RequestData(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1897,7 +1905,7 @@ func (ec *executionContext) _HistoryItem_RequestData(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_IPAddress(ctx context.Context, field graphql.CollectedField, obj *HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_IPAddress(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1934,7 +1942,7 @@ func (ec *executionContext) _HistoryItem_IPAddress(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_Issuer(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_Issuer(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1971,7 +1979,7 @@ func (ec *executionContext) _IDToken_Issuer(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_Subject(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_Subject(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2008,7 +2016,7 @@ func (ec *executionContext) _IDToken_Subject(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_Audience(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_Audience(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2045,7 +2053,7 @@ func (ec *executionContext) _IDToken_Audience(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_Expiration(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_Expiration(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2058,13 +2066,13 @@ func (ec *executionContext) _IDToken_Expiration(ctx context.Context, field graph
 		Object:   "IDToken",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Expiration, nil
+		return ec.resolvers.IDToken().Expiration(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2076,13 +2084,13 @@ func (ec *executionContext) _IDToken_Expiration(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(*time.Time)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_Issued(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_Issued(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2095,13 +2103,13 @@ func (ec *executionContext) _IDToken_Issued(ctx context.Context, field graphql.C
 		Object:   "IDToken",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Issued, nil
+		return ec.resolvers.IDToken().Issued(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2113,13 +2121,13 @@ func (ec *executionContext) _IDToken_Issued(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(*time.Time)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_Nonce(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_Nonce(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2156,7 +2164,7 @@ func (ec *executionContext) _IDToken_Nonce(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_AuthenticationContextClassReference(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_AuthenticationContextClassReference(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2184,13 +2192,13 @@ func (ec *executionContext) _IDToken_AuthenticationContextClassReference(ctx con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_AuthenticationMethodsReference(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_AuthenticationMethodsReference(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2227,7 +2235,7 @@ func (ec *executionContext) _IDToken_AuthenticationMethodsReference(ctx context.
 	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IDToken_AuthorizedParty(ctx context.Context, field graphql.CollectedField, obj *IDToken) (ret graphql.Marshaler) {
+func (ec *executionContext) _IDToken_AuthorizedParty(ctx context.Context, field graphql.CollectedField, obj *types.IDToken) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2255,10 +2263,10 @@ func (ec *executionContext) _IDToken_AuthorizedParty(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Item_Id(ctx context.Context, field graphql.CollectedField, obj *types.Item) (ret graphql.Marshaler) {
@@ -3537,10 +3545,10 @@ func (ec *executionContext) _RegularUser_History(ctx context.Context, field grap
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.([]*HistoryItem); ok {
+		if data, ok := tmp.([]*types.HistoryItem); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/graphql.HistoryItem`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/types.HistoryItem`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3552,10 +3560,10 @@ func (ec *executionContext) _RegularUser_History(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*HistoryItem)
+	res := resTmp.([]*types.HistoryItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx, field.Selections, res)
+	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Self_Name(ctx context.Context, field graphql.CollectedField, obj *Self) (ret graphql.Marshaler) {
@@ -3839,10 +3847,10 @@ func (ec *executionContext) _Self_History(ctx context.Context, field graphql.Col
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.([]*HistoryItem); ok {
+		if data, ok := tmp.([]*types.HistoryItem); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/graphql.HistoryItem`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/types.HistoryItem`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3854,10 +3862,10 @@ func (ec *executionContext) _Self_History(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*HistoryItem)
+	res := resTmp.([]*types.HistoryItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx, field.Selections, res)
+	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _SpecialUser_ID(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
@@ -3873,13 +3881,13 @@ func (ec *executionContext) _SpecialUser_ID(ctx context.Context, field graphql.C
 		Object:   "SpecialUser",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.SpecialUser().ID(rctx, obj)
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3891,10 +3899,10 @@ func (ec *executionContext) _SpecialUser_ID(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(SpecialUserID)
+	res := resTmp.(types.SpecialUserID)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, field.Selections, res)
+	return ec.marshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _SpecialUser_Name(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
@@ -4076,10 +4084,10 @@ func (ec *executionContext) _SpecialUser_History(ctx context.Context, field grap
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.([]*HistoryItem); ok {
+		if data, ok := tmp.([]*types.HistoryItem); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/graphql.HistoryItem`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/types.HistoryItem`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4091,10 +4099,10 @@ func (ec *executionContext) _SpecialUser_History(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*HistoryItem)
+	res := resTmp.([]*types.HistoryItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx, field.Selections, res)
+	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserAuthentication_etc(ctx context.Context, field graphql.CollectedField, obj *UserAuthentication) (ret graphql.Marshaler) {
@@ -4162,10 +4170,10 @@ func (ec *executionContext) _UserAuthentication_OIDC(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*IDToken)
+	res := resTmp.([]*types.IDToken)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNIDToken2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDToken(ctx, field.Selections, res)
+	return ec.marshalNIDToken2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserMutation_Self(ctx context.Context, field graphql.CollectedField, obj *UserMutation) (ret graphql.Marshaler) {
@@ -5728,7 +5736,7 @@ func (ec *executionContext) unmarshalInputAnonymousUser(ctx context.Context, obj
 		switch k {
 		case "ID":
 			var err error
-			it.ID, err = ec.unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, v)
+			it.ID, err = ec.unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5780,8 +5788,8 @@ func (ec *executionContext) unmarshalInputDefinedItemInput(ctx context.Context, 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputIDTokenInput(ctx context.Context, obj interface{}) (IDTokenInput, error) {
-	var it IDTokenInput
+func (ec *executionContext) unmarshalInputIDTokenInput(ctx context.Context, obj interface{}) (types.IDToken, error) {
+	var it types.IDToken
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -5806,13 +5814,13 @@ func (ec *executionContext) unmarshalInputIDTokenInput(ctx context.Context, obj 
 			}
 		case "Expiration":
 			var err error
-			it.Expiration, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.Expiration, err = ec.unmarshalNTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Issued":
 			var err error
-			it.Issued, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.Issued, err = ec.unmarshalNTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5824,7 +5832,7 @@ func (ec *executionContext) unmarshalInputIDTokenInput(ctx context.Context, obj 
 			}
 		case "AuthenticationContextClassReference":
 			var err error
-			it.AuthenticationContextClassReference, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.AuthenticationContextClassReference, err = ec.unmarshalOInt2int64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5836,7 +5844,7 @@ func (ec *executionContext) unmarshalInputIDTokenInput(ctx context.Context, obj 
 			}
 		case "AuthorizedParty":
 			var err error
-			it.AuthorizedParty, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.AuthorizedParty, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5903,7 +5911,7 @@ func (ec *executionContext) unmarshalInputRootUser(ctx context.Context, obj inte
 		switch k {
 		case "ID":
 			var err error
-			it.ID, err = ec.unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, v)
+			it.ID, err = ec.unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6077,7 +6085,7 @@ func (ec *executionContext) _AuthorizationGrant(ctx context.Context, sel ast.Sel
 
 var historyItemImplementors = []string{"HistoryItem"}
 
-func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionSet, obj *HistoryItem) graphql.Marshaler {
+func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionSet, obj *types.HistoryItem) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, historyItemImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -6089,22 +6097,31 @@ func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionS
 		case "Action":
 			out.Values[i] = ec._HistoryItem_Action(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "By":
-			out.Values[i] = ec._HistoryItem_By(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._HistoryItem_By(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "RequestData":
 			out.Values[i] = ec._HistoryItem_RequestData(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "IPAddress":
 			out.Values[i] = ec._HistoryItem_IPAddress(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -6119,7 +6136,7 @@ func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionS
 
 var iDTokenImplementors = []string{"IDToken"}
 
-func (ec *executionContext) _IDToken(ctx context.Context, sel ast.SelectionSet, obj *IDToken) graphql.Marshaler {
+func (ec *executionContext) _IDToken(ctx context.Context, sel ast.SelectionSet, obj *types.IDToken) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, iDTokenImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -6131,39 +6148,57 @@ func (ec *executionContext) _IDToken(ctx context.Context, sel ast.SelectionSet, 
 		case "Issuer":
 			out.Values[i] = ec._IDToken_Issuer(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "Subject":
 			out.Values[i] = ec._IDToken_Subject(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "Audience":
 			out.Values[i] = ec._IDToken_Audience(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "Expiration":
-			out.Values[i] = ec._IDToken_Expiration(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IDToken_Expiration(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "Issued":
-			out.Values[i] = ec._IDToken_Issued(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IDToken_Issued(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "Nonce":
 			out.Values[i] = ec._IDToken_Nonce(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "AuthenticationContextClassReference":
 			out.Values[i] = ec._IDToken_AuthenticationContextClassReference(ctx, field, obj)
 		case "AuthenticationMethodsReference":
 			out.Values[i] = ec._IDToken_AuthenticationMethodsReference(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "AuthorizedParty":
 			out.Values[i] = ec._IDToken_AuthorizedParty(ctx, field, obj)
@@ -6635,19 +6670,10 @@ func (ec *executionContext) _SpecialUser(ctx context.Context, sel ast.SelectionS
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("SpecialUser")
 		case "ID":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._SpecialUser_ID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._SpecialUser_ID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "Name":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -7188,11 +7214,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNHistoryItem2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v HistoryItem) graphql.Marshaler {
+func (ec *executionContext) marshalNHistoryItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v types.HistoryItem) graphql.Marshaler {
 	return ec._HistoryItem(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v []*HistoryItem) graphql.Marshaler {
+func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v []*types.HistoryItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7216,7 +7242,7 @@ func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋt
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7229,7 +7255,7 @@ func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋt
 	return ret
 }
 
-func (ec *executionContext) marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v *HistoryItem) graphql.Marshaler {
+func (ec *executionContext) marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v *types.HistoryItem) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7239,11 +7265,11 @@ func (ec *executionContext) marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtab�
 	return ec._HistoryItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNIDToken2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDToken(ctx context.Context, sel ast.SelectionSet, v IDToken) graphql.Marshaler {
+func (ec *executionContext) marshalNIDToken2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, sel ast.SelectionSet, v types.IDToken) graphql.Marshaler {
 	return ec._IDToken(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIDToken2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDToken(ctx context.Context, sel ast.SelectionSet, v []*IDToken) graphql.Marshaler {
+func (ec *executionContext) marshalNIDToken2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, sel ast.SelectionSet, v []*types.IDToken) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7267,7 +7293,7 @@ func (ec *executionContext) marshalNIDToken2ᚕᚖgithubᚗcomᚋzemnmezᚋtab�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNIDToken2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDToken(ctx, sel, v[i])
+			ret[i] = ec.marshalNIDToken2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7280,7 +7306,7 @@ func (ec *executionContext) marshalNIDToken2ᚕᚖgithubᚗcomᚋzemnmezᚋtab�
 	return ret
 }
 
-func (ec *executionContext) marshalNIDToken2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDToken(ctx context.Context, sel ast.SelectionSet, v *IDToken) graphql.Marshaler {
+func (ec *executionContext) marshalNIDToken2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, sel ast.SelectionSet, v *types.IDToken) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7490,13 +7516,12 @@ func (ec *executionContext) marshalNSelf2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraph
 	return ec._Self(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx context.Context, v interface{}) (SpecialUserID, error) {
-	var res SpecialUserID
-	return res, res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (types.SpecialUserID, error) {
+	return ec.unmarshalInputSpecialUserID(ctx, v)
 }
 
-func (ec *executionContext) marshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v SpecialUserID) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v types.SpecialUserID) graphql.Marshaler {
+	return ec._SpecialUserID(ctx, sel, &v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -7902,39 +7927,24 @@ func (ec *executionContext) unmarshalODefinedItemInput2ᚖgithubᚗcomᚋzemnmez
 	return &res, err
 }
 
-func (ec *executionContext) unmarshalOIDTokenInput2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDTokenInput(ctx context.Context, v interface{}) (IDTokenInput, error) {
+func (ec *executionContext) unmarshalOIDTokenInput2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, v interface{}) (types.IDToken, error) {
 	return ec.unmarshalInputIDTokenInput(ctx, v)
 }
 
-func (ec *executionContext) unmarshalOIDTokenInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDTokenInput(ctx context.Context, v interface{}) (*IDTokenInput, error) {
+func (ec *executionContext) unmarshalOIDTokenInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, v interface{}) (*types.IDToken, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOIDTokenInput2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐIDTokenInput(ctx, v)
+	res, err := ec.unmarshalOIDTokenInput2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx, v)
 	return &res, err
 }
 
-func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
-	return graphql.UnmarshalInt(v)
+func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
+	return graphql.UnmarshalInt64(v)
 }
 
-func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	return graphql.MarshalInt(v)
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalOInt2int(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec.marshalOInt2int(ctx, sel, *v)
+func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
+	return graphql.MarshalInt64(v)
 }
 
 func (ec *executionContext) marshalOItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v types.Item) graphql.Marshaler {
@@ -8107,28 +8117,27 @@ func (ec *executionContext) marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtab�
 	return ec._SpecialUser(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx context.Context, v interface{}) (SpecialUserID, error) {
-	var res SpecialUserID
-	return res, res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (types.SpecialUserID, error) {
+	return ec.unmarshalInputSpecialUserID(ctx, v)
 }
 
-func (ec *executionContext) marshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v SpecialUserID) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v types.SpecialUserID) graphql.Marshaler {
+	return ec._SpecialUserID(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx context.Context, v interface{}) (*SpecialUserID, error) {
+func (ec *executionContext) unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (*types.SpecialUserID, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx, v)
+	res, err := ec.unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, v)
 	return &res, err
 }
 
-func (ec *executionContext) marshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgraphqlᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v *SpecialUserID) graphql.Marshaler {
+func (ec *executionContext) marshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v *types.SpecialUserID) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._SpecialUserID(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

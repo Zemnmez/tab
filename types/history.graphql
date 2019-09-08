@@ -28,7 +28,7 @@ extend type SpecialUser {
 }
 
 # A HistoryItem represents a single thing that happened in this user's history
-type HistoryItem {
+type HistoryItem  @goModel(model: "github.com/zemnmez/tab/types.HistoryItem") {
     Action: String!
     By: User!
     RequestData: String!

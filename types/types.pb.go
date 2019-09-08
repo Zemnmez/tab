@@ -217,6 +217,73 @@ func (m *HistoryID) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_HistoryID proto.InternalMessageInfo
 
+type HistoryItem struct {
+	Action      string  `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"`
+	By          *UserID `protobuf:"bytes,2,opt,name=by,proto3" json:"by,omitempty"`
+	RequestData string  `protobuf:"bytes,3,opt,name=requestData,proto3" json:"requestData,omitempty"`
+	IPAddress   string  `protobuf:"bytes,4,opt,name=IPAddress,json=iPAddress,proto3" json:"IPAddress,omitempty"`
+}
+
+func (m *HistoryItem) Reset()      { *m = HistoryItem{} }
+func (*HistoryItem) ProtoMessage() {}
+func (*HistoryItem) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{3}
+}
+func (m *HistoryItem) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *HistoryItem) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_HistoryItem.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *HistoryItem) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HistoryItem.Merge(m, src)
+}
+func (m *HistoryItem) XXX_Size() int {
+	return m.Size()
+}
+func (m *HistoryItem) XXX_DiscardUnknown() {
+	xxx_messageInfo_HistoryItem.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_HistoryItem proto.InternalMessageInfo
+
+func (m *HistoryItem) GetAction() string {
+	if m != nil {
+		return m.Action
+	}
+	return ""
+}
+
+func (m *HistoryItem) GetBy() *UserID {
+	if m != nil {
+		return m.By
+	}
+	return nil
+}
+
+func (m *HistoryItem) GetRequestData() string {
+	if m != nil {
+		return m.RequestData
+	}
+	return ""
+}
+
+func (m *HistoryItem) GetIPAddress() string {
+	if m != nil {
+		return m.IPAddress
+	}
+	return ""
+}
+
 type RegularUserID struct {
 	*ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id,omitempty"`
 }
@@ -224,7 +291,7 @@ type RegularUserID struct {
 func (m *RegularUserID) Reset()      { *m = RegularUserID{} }
 func (*RegularUserID) ProtoMessage() {}
 func (*RegularUserID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{3}
+	return fileDescriptor_e927c4c8d1099e6c, []int{4}
 }
 func (m *RegularUserID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -263,7 +330,7 @@ type UserID struct {
 func (m *UserID) Reset()      { *m = UserID{} }
 func (*UserID) ProtoMessage() {}
 func (*UserID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{4}
+	return fileDescriptor_e927c4c8d1099e6c, []int{5}
 }
 func (m *UserID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -351,7 +418,7 @@ type RegularUser struct {
 func (m *RegularUser) Reset()      { *m = RegularUser{} }
 func (*RegularUser) ProtoMessage() {}
 func (*RegularUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{5}
+	return fileDescriptor_e927c4c8d1099e6c, []int{6}
 }
 func (m *RegularUser) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -424,7 +491,7 @@ type SpecialUser struct {
 func (m *SpecialUser) Reset()      { *m = SpecialUser{} }
 func (*SpecialUser) ProtoMessage() {}
 func (*SpecialUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{6}
+	return fileDescriptor_e927c4c8d1099e6c, []int{7}
 }
 func (m *SpecialUser) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -481,7 +548,7 @@ type ItemID struct {
 func (m *ItemID) Reset()      { *m = ItemID{} }
 func (*ItemID) ProtoMessage() {}
 func (*ItemID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{7}
+	return fileDescriptor_e927c4c8d1099e6c, []int{8}
 }
 func (m *ItemID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -521,7 +588,7 @@ type Item struct {
 func (m *Item) Reset()      { *m = Item{} }
 func (*Item) ProtoMessage() {}
 func (*Item) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{8}
+	return fileDescriptor_e927c4c8d1099e6c, []int{9}
 }
 func (m *Item) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -585,18 +652,127 @@ func (m *Item) GetChildren() []*ItemID {
 	return nil
 }
 
+type IDToken struct {
+	Issuer                              string           `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	Subject                             string           `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	Audience                            string           `protobuf:"bytes,3,opt,name=audience,proto3" json:"audience,omitempty"`
+	Expiration                          *types.Timestamp `protobuf:"bytes,4,opt,name=expiration,proto3" json:"expiration,omitempty"`
+	Issued                              *types.Timestamp `protobuf:"bytes,5,opt,name=issued,proto3" json:"issued,omitempty"`
+	Nonce                               string           `protobuf:"bytes,6,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	AuthenticationContextClassReference int64            `protobuf:"varint,7,opt,name=authenticationContextClassReference,proto3" json:"authenticationContextClassReference,omitempty"`
+	AuthenticationMethodsReference      []string         `protobuf:"bytes,8,rep,name=authenticationMethodsReference,proto3" json:"authenticationMethodsReference,omitempty"`
+	AuthorizedParty                     string           `protobuf:"bytes,9,opt,name=authorizedParty,proto3" json:"authorizedParty,omitempty"`
+}
+
+func (m *IDToken) Reset()      { *m = IDToken{} }
+func (*IDToken) ProtoMessage() {}
+func (*IDToken) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{10}
+}
+func (m *IDToken) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *IDToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_IDToken.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *IDToken) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IDToken.Merge(m, src)
+}
+func (m *IDToken) XXX_Size() int {
+	return m.Size()
+}
+func (m *IDToken) XXX_DiscardUnknown() {
+	xxx_messageInfo_IDToken.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_IDToken proto.InternalMessageInfo
+
+func (m *IDToken) GetIssuer() string {
+	if m != nil {
+		return m.Issuer
+	}
+	return ""
+}
+
+func (m *IDToken) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *IDToken) GetAudience() string {
+	if m != nil {
+		return m.Audience
+	}
+	return ""
+}
+
+func (m *IDToken) GetExpiration() *types.Timestamp {
+	if m != nil {
+		return m.Expiration
+	}
+	return nil
+}
+
+func (m *IDToken) GetIssued() *types.Timestamp {
+	if m != nil {
+		return m.Issued
+	}
+	return nil
+}
+
+func (m *IDToken) GetNonce() string {
+	if m != nil {
+		return m.Nonce
+	}
+	return ""
+}
+
+func (m *IDToken) GetAuthenticationContextClassReference() int64 {
+	if m != nil {
+		return m.AuthenticationContextClassReference
+	}
+	return 0
+}
+
+func (m *IDToken) GetAuthenticationMethodsReference() []string {
+	if m != nil {
+		return m.AuthenticationMethodsReference
+	}
+	return nil
+}
+
+func (m *IDToken) GetAuthorizedParty() string {
+	if m != nil {
+		return m.AuthorizedParty
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterEnum("types.Authorization", Authorization_name, Authorization_value)
 	proto.RegisterEnum("types.SpecialUserID", SpecialUserID_name, SpecialUserID_value)
 	proto.RegisterType((*ID)(nil), "types.ID")
 	proto.RegisterType((*AuthorizationGrant)(nil), "types.AuthorizationGrant")
 	proto.RegisterType((*HistoryID)(nil), "types.HistoryID")
+	proto.RegisterType((*HistoryItem)(nil), "types.HistoryItem")
 	proto.RegisterType((*RegularUserID)(nil), "types.RegularUserID")
 	proto.RegisterType((*UserID)(nil), "types.UserID")
 	proto.RegisterType((*RegularUser)(nil), "types.RegularUser")
 	proto.RegisterType((*SpecialUser)(nil), "types.SpecialUser")
 	proto.RegisterType((*ItemID)(nil), "types.ItemID")
 	proto.RegisterType((*Item)(nil), "types.Item")
+	proto.RegisterType((*IDToken)(nil), "types.IDToken")
 }
 
 func init() {
@@ -604,51 +780,65 @@ func init() {
 }
 
 var fileDescriptor_e927c4c8d1099e6c = []byte{
-	// 700 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xcd, 0x6e, 0xda, 0x4c,
-	0x14, 0xf5, 0x18, 0x43, 0xc2, 0x45, 0xf0, 0xf9, 0x1b, 0xf1, 0x7d, 0xb2, 0x50, 0x3a, 0x49, 0x51,
-	0x2b, 0x91, 0xa8, 0x85, 0x8a, 0x76, 0x99, 0x0d, 0xa9, 0x49, 0xb1, 0x94, 0x84, 0xca, 0x40, 0xa2,
-	0x54, 0x6a, 0x91, 0x81, 0x01, 0x2c, 0x61, 0x06, 0x19, 0xb3, 0x48, 0x56, 0x5d, 0x77, 0xd5, 0x57,
-	0xe8, 0xaa, 0x79, 0x84, 0x2e, 0xfa, 0x00, 0x5d, 0xb2, 0xcc, 0xaa, 0x0a, 0xa6, 0x8b, 0x2e, 0xf3,
-	0x08, 0x15, 0x63, 0x43, 0x4c, 0x9a, 0x9f, 0xaa, 0x1b, 0xe4, 0x99, 0x73, 0xce, 0xbd, 0xe7, 0x9e,
-	0xb9, 0x02, 0x32, 0x1d, 0xd3, 0xe9, 0x8e, 0x1a, 0xd9, 0x26, 0xb3, 0x72, 0xa7, 0xd4, 0xea, 0x5b,
-	0xf4, 0x34, 0xe7, 0x18, 0x8d, 0x9c, 0x73, 0x32, 0xa0, 0x43, 0xef, 0x37, 0x3b, 0xb0, 0x99, 0xc3,
-	0x70, 0x98, 0x1f, 0x52, 0x4f, 0x03, 0x82, 0x0e, 0xeb, 0xb0, 0x1c, 0x47, 0x1b, 0xa3, 0x36, 0x3f,
-	0xf1, 0x03, 0xff, 0xf2, 0x54, 0xa9, 0xf5, 0x0e, 0x63, 0x9d, 0x1e, 0xbd, 0x62, 0x39, 0xa6, 0x45,
-	0x87, 0x8e, 0x61, 0x0d, 0x3c, 0x42, 0x3a, 0x09, 0xa2, 0xa6, 0xe2, 0x04, 0x88, 0x66, 0x4b, 0x41,
-	0x1b, 0x28, 0x13, 0xd5, 0x45, 0xb3, 0x95, 0x7e, 0x0b, 0xb8, 0x30, 0x72, 0xba, 0xcc, 0x36, 0x4f,
-	0x0d, 0xc7, 0x64, 0xfd, 0x57, 0xb6, 0xd1, 0x77, 0xf0, 0x43, 0x90, 0xda, 0x36, 0xb3, 0x38, 0x2f,
-	0x96, 0x8f, 0x67, 0x3d, 0x7b, 0xb5, 0x21, 0xb5, 0x35, 0x55, 0xe7, 0x10, 0x7e, 0x04, 0x22, 0x6b,
-	0x2b, 0xe2, 0x46, 0x28, 0x93, 0xc8, 0x27, 0x7d, 0xc2, 0x52, 0x25, 0x5d, 0x64, 0xed, 0xf4, 0x13,
-	0x88, 0x96, 0xcc, 0xa1, 0xc3, 0xec, 0x13, 0x4d, 0xc5, 0xeb, 0x8b, 0xde, 0xb1, 0x7c, 0xd4, 0x97,
-	0x68, 0xea, 0x8e, 0x34, 0xfe, 0xbe, 0x8e, 0xb8, 0x99, 0x67, 0x10, 0xd7, 0x69, 0x67, 0xd4, 0x33,
-	0x6c, 0xaf, 0xd5, 0xfd, 0x8a, 0x0f, 0x08, 0x22, 0x3e, 0x77, 0x1b, 0xe2, 0xc3, 0x01, 0x6d, 0x9a,
-	0x46, 0xcf, 0xbb, 0xe0, 0xb2, 0x2b, 0x6f, 0x95, 0x20, 0x56, 0x12, 0xf4, 0x65, 0xf2, 0x4c, 0x6d,
-	0x07, 0x5b, 0x2b, 0x22, 0x6f, 0x3a, 0x57, 0x2f, 0xd9, 0x9a, 0xa9, 0x97, 0xc8, 0x3b, 0xd2, 0x2c,
-	0xdb, 0xf4, 0x0f, 0x04, 0xb1, 0x00, 0x11, 0x3f, 0x08, 0xb8, 0xbf, 0x96, 0xa1, 0x68, 0xb6, 0x30,
-	0x06, 0xa9, 0x6f, 0x58, 0x94, 0x77, 0x8a, 0xea, 0xfc, 0x1b, 0x6f, 0x43, 0xc2, 0x08, 0x86, 0x38,
-	0x54, 0x42, 0x77, 0x24, 0x7c, 0x8d, 0x8b, 0xb3, 0x10, 0xed, 0xce, 0xd3, 0x56, 0xa4, 0x8d, 0x50,
-	0x26, 0x96, 0x97, 0x7d, 0xe1, 0xe2, 0x15, 0xf4, 0x2b, 0x0a, 0x7e, 0x01, 0x2b, 0x4d, 0x9b, 0x1a,
-	0x0e, 0x6d, 0x29, 0x61, 0xee, 0x32, 0x95, 0xf5, 0xb6, 0x28, 0x3b, 0xdf, 0xa2, 0x6c, 0x75, 0xbe,
-	0x45, 0xfa, 0x9c, 0x9a, 0xfe, 0x84, 0x20, 0x16, 0x48, 0x73, 0xb6, 0x09, 0xfe, 0x98, 0xb7, 0xa4,
-	0xcd, 0xa7, 0xfd, 0x7d, 0x32, 0xf1, 0x6f, 0x27, 0x0b, 0xdd, 0x3b, 0x59, 0x7a, 0x13, 0x22, 0x9a,
-	0x43, 0xad, 0x3f, 0x59, 0xa1, 0xcf, 0x08, 0xa4, 0x19, 0xf7, 0xc6, 0xe7, 0xf2, 0x8a, 0xdc, 0xfa,
-	0x5c, 0x29, 0x58, 0xed, 0xb1, 0x26, 0xf7, 0xa8, 0x84, 0xf8, 0xfd, 0xe2, 0x8c, 0x1f, 0x43, 0x64,
-	0x60, 0xd8, 0xb4, 0xef, 0x28, 0xd2, 0x4d, 0x25, 0x7d, 0x10, 0x6f, 0xc2, 0x6a, 0xb3, 0x6b, 0xf6,
-	0x5a, 0x36, 0xed, 0x2b, 0x61, 0x3e, 0xd8, 0x35, 0xe2, 0x02, 0xde, 0xfa, 0x8a, 0x20, 0xbe, 0x14,
-	0x13, 0x4e, 0x00, 0x1c, 0x6a, 0xc5, 0xa3, 0x7a, 0xad, 0x52, 0xd4, 0x2b, 0xb2, 0x80, 0xff, 0x83,
-	0x7f, 0xf7, 0xcb, 0xaa, 0xb6, 0x7b, 0x5c, 0x3f, 0x2c, 0xec, 0x69, 0x6a, 0xbd, 0x50, 0xab, 0x96,
-	0x64, 0x84, 0xe3, 0x10, 0x2d, 0xa8, 0x6a, 0x5d, 0xab, 0x16, 0xf7, 0x2b, 0xb2, 0x88, 0xff, 0x07,
-	0xec, 0xb3, 0xca, 0xd5, 0x52, 0x51, 0xf7, 0xd5, 0x21, 0xac, 0x40, 0xd2, 0xbf, 0xaf, 0xbc, 0x2e,
-	0xbe, 0xd4, 0x0a, 0x7b, 0x3e, 0x22, 0xe1, 0x7f, 0x20, 0x36, 0x47, 0x8a, 0x7b, 0xbb, 0x72, 0x18,
-	0xaf, 0x81, 0xc2, 0x1b, 0x07, 0x0a, 0xd4, 0x4b, 0x5a, 0xa5, 0x5a, 0xd6, 0x8f, 0xe5, 0x08, 0x4e,
-	0x82, 0xec, 0xa1, 0x47, 0x07, 0x8b, 0xdb, 0x95, 0xad, 0x0c, 0xc4, 0x97, 0xd6, 0x02, 0xaf, 0x82,
-	0xa4, 0x97, 0xcb, 0x55, 0x59, 0xe0, 0x06, 0x0f, 0xca, 0x07, 0xc7, 0xfb, 0xe5, 0x5a, 0x45, 0x46,
-	0x3b, 0xef, 0xc6, 0x13, 0x22, 0x9c, 0x4f, 0x88, 0x70, 0x31, 0x21, 0xe8, 0x72, 0x42, 0xd0, 0x7b,
-	0x97, 0xa0, 0x33, 0x97, 0xa0, 0x2f, 0x2e, 0x41, 0xdf, 0x5c, 0x82, 0xc6, 0x2e, 0x41, 0x17, 0x2e,
-	0x41, 0x3f, 0x5d, 0x22, 0x5c, 0xba, 0x04, 0x7d, 0x9c, 0x12, 0xe1, 0x6c, 0x4a, 0xd0, 0x78, 0x4a,
-	0x84, 0xf3, 0x29, 0x11, 0xde, 0xac, 0xdd, 0xf5, 0x6f, 0xdb, 0x88, 0xf0, 0xf5, 0x7e, 0xfe, 0x2b,
-	0x00, 0x00, 0xff, 0xff, 0x61, 0xd7, 0x29, 0x20, 0x94, 0x05, 0x00, 0x00,
+	// 914 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x4f, 0x6f, 0xe2, 0x46,
+	0x14, 0x67, 0x6c, 0x03, 0xf1, 0x43, 0x64, 0xdd, 0x11, 0x5d, 0x59, 0x51, 0xea, 0x50, 0xda, 0x4a,
+	0xec, 0xaa, 0x25, 0x15, 0xed, 0xa9, 0xda, 0x0b, 0x89, 0x49, 0xb1, 0x94, 0x84, 0xc8, 0x90, 0x5d,
+	0xa5, 0x52, 0x8b, 0x0c, 0x1e, 0xc0, 0x2d, 0x78, 0xa8, 0x3d, 0x48, 0x4b, 0x4e, 0x3d, 0xf4, 0xd4,
+	0x53, 0xbf, 0xc2, 0x9e, 0xba, 0x1f, 0xa1, 0x87, 0x7e, 0x80, 0x1e, 0x73, 0xdc, 0x53, 0xb5, 0x21,
+	0x3d, 0xf4, 0xb8, 0x1f, 0xa1, 0xf2, 0x78, 0x4c, 0x4c, 0xf6, 0x4f, 0xa2, 0xbd, 0x20, 0xbf, 0x79,
+	0xbf, 0xdf, 0x9b, 0xdf, 0x7b, 0xef, 0x37, 0x02, 0xaa, 0x23, 0x8f, 0x8d, 0xe7, 0xfd, 0xda, 0x80,
+	0x4e, 0x77, 0xcf, 0xc9, 0xd4, 0x9f, 0x92, 0xf3, 0x5d, 0xe6, 0xf4, 0x77, 0xd9, 0x62, 0x46, 0xc2,
+	0xf8, 0xb7, 0x36, 0x0b, 0x28, 0xa3, 0x38, 0xcb, 0x83, 0xad, 0x2f, 0x52, 0x84, 0x11, 0x1d, 0xd1,
+	0x5d, 0x9e, 0xed, 0xcf, 0x87, 0x3c, 0xe2, 0x01, 0xff, 0x8a, 0x59, 0x5b, 0x3b, 0x23, 0x4a, 0x47,
+	0x13, 0x72, 0x8d, 0x62, 0xde, 0x94, 0x84, 0xcc, 0x99, 0xce, 0x62, 0x40, 0xa5, 0x04, 0x92, 0x65,
+	0xe2, 0x4d, 0x90, 0x3c, 0x57, 0x47, 0x65, 0x54, 0x55, 0x6d, 0xc9, 0x73, 0x2b, 0xdf, 0x03, 0x6e,
+	0xcc, 0xd9, 0x98, 0x06, 0xde, 0xb9, 0xc3, 0x3c, 0xea, 0x7f, 0x1b, 0x38, 0x3e, 0xc3, 0x1f, 0x83,
+	0x32, 0x0c, 0xe8, 0x94, 0xe3, 0x0a, 0xf5, 0x62, 0x2d, 0x96, 0x77, 0x1a, 0x92, 0xc0, 0x32, 0x6d,
+	0x9e, 0xc2, 0x9f, 0x82, 0x44, 0x87, 0xba, 0x54, 0x96, 0xab, 0x9b, 0xf5, 0x92, 0x00, 0xac, 0x55,
+	0xb2, 0x25, 0x3a, 0xac, 0x7c, 0x0e, 0x6a, 0xcb, 0x0b, 0x19, 0x0d, 0x16, 0x96, 0x89, 0x77, 0x56,
+	0x77, 0x17, 0xea, 0xaa, 0xa0, 0x58, 0xe6, 0x9e, 0x72, 0xf1, 0xcf, 0x0e, 0xe2, 0x62, 0x7e, 0x45,
+	0x50, 0x48, 0xe0, 0x8c, 0x4c, 0xf1, 0x7d, 0xc8, 0x39, 0x83, 0xa8, 0x96, 0x10, 0x2c, 0x22, 0xfc,
+	0x11, 0x48, 0xfd, 0x85, 0x2e, 0xbd, 0x49, 0x9c, 0xd4, 0x5f, 0xe0, 0x32, 0x14, 0x02, 0xf2, 0xf3,
+	0x9c, 0x84, 0xcc, 0x74, 0x98, 0xa3, 0xcb, 0x9c, 0x9b, 0x3e, 0xc2, 0xdb, 0xa0, 0x5a, 0x27, 0x0d,
+	0xd7, 0x0d, 0x48, 0x18, 0xea, 0x0a, 0xcf, 0xab, 0x5e, 0x72, 0x50, 0xf9, 0x12, 0x8a, 0x36, 0x19,
+	0xcd, 0x27, 0x4e, 0x10, 0x17, 0xbd, 0x5d, 0xf8, 0x6f, 0x08, 0x72, 0x02, 0xfb, 0x08, 0x8a, 0xe1,
+	0x8c, 0x0c, 0x3c, 0x67, 0x12, 0x1f, 0x70, 0xda, 0xf5, 0x88, 0x3a, 0xe9, 0x5c, 0x2b, 0x63, 0xaf,
+	0x83, 0x23, 0x76, 0x90, 0xbe, 0x5a, 0x34, 0x99, 0xb0, 0xd7, 0x64, 0x45, 0xec, 0x35, 0xf0, 0x9e,
+	0x12, 0xad, 0xb8, 0xf2, 0x2f, 0x82, 0x42, 0x0a, 0x18, 0x4d, 0x6b, 0xa5, 0xfe, 0xe6, 0xb4, 0x3c,
+	0x17, 0x63, 0x50, 0x7c, 0x67, 0x4a, 0xf8, 0x4d, 0xaa, 0xcd, 0xbf, 0xf1, 0x23, 0xd8, 0x74, 0xd2,
+	0xbb, 0x0c, 0x75, 0xf9, 0x1d, 0x8b, 0xbe, 0x81, 0xc5, 0x35, 0x50, 0xc7, 0xc9, 0xd2, 0x75, 0xa5,
+	0x2c, 0x57, 0x0b, 0x75, 0x4d, 0x10, 0x57, 0x66, 0xb0, 0xaf, 0x21, 0xf8, 0x6b, 0xc8, 0x0f, 0x02,
+	0xe2, 0x30, 0xe2, 0xea, 0x59, 0xae, 0x72, 0xab, 0x16, 0x9b, 0xb9, 0x96, 0x98, 0xb9, 0xd6, 0x4d,
+	0xcc, 0x6c, 0x27, 0xd0, 0xca, 0x33, 0x04, 0x85, 0xd4, 0x34, 0x23, 0x43, 0x8a, 0x36, 0xdf, 0x32,
+	0x6d, 0xde, 0xed, 0xeb, 0x9d, 0x49, 0xef, 0xdb, 0x99, 0x7c, 0x6b, 0x67, 0x95, 0x07, 0x90, 0x8b,
+	0x8c, 0x7c, 0x17, 0x0b, 0xfd, 0x81, 0x40, 0xe1, 0xa6, 0x7f, 0xd3, 0xba, 0xe2, 0x22, 0x6f, 0x5d,
+	0xd7, 0x16, 0x6c, 0x4c, 0xe8, 0x80, 0x6b, 0x14, 0x6e, 0x5f, 0xc5, 0xf8, 0x33, 0xc8, 0xcd, 0x9c,
+	0x80, 0xf8, 0x8c, 0xfb, 0xfc, 0xb5, 0x92, 0x22, 0x89, 0x1f, 0xc0, 0xc6, 0x60, 0xec, 0x4d, 0xdc,
+	0x80, 0xf8, 0x7a, 0x96, 0x37, 0x76, 0x03, 0xb8, 0x4a, 0x57, 0x9e, 0xc9, 0x90, 0xb7, 0xcc, 0x2e,
+	0xfd, 0x89, 0xf8, 0xd1, 0x0b, 0xf5, 0xc2, 0x70, 0x4e, 0x82, 0xe4, 0x85, 0xc6, 0x11, 0xd6, 0x21,
+	0x1f, 0xce, 0xfb, 0x3f, 0x92, 0x01, 0x13, 0x42, 0x93, 0x30, 0xd2, 0xea, 0xcc, 0x5d, 0x8f, 0xf8,
+	0x03, 0x92, 0x68, 0x4d, 0x62, 0xfc, 0x0d, 0x00, 0x79, 0x3a, 0xf3, 0x82, 0xb8, 0x13, 0xe5, 0x56,
+	0x2f, 0xa4, 0xd0, 0xb8, 0x2e, 0x94, 0xdc, 0xc5, 0x43, 0x02, 0x89, 0x4b, 0x90, 0xf5, 0x69, 0x24,
+	0x24, 0xc7, 0x85, 0xc4, 0x01, 0x3e, 0x81, 0x4f, 0xa2, 0xb5, 0x13, 0x9f, 0x79, 0xf1, 0x0c, 0xf7,
+	0xa9, 0xcf, 0xc8, 0x53, 0xb6, 0x3f, 0x71, 0xc2, 0xd0, 0x26, 0x43, 0x12, 0x70, 0xf1, 0xf9, 0x32,
+	0xaa, 0xca, 0xf6, 0x5d, 0xa0, 0xf8, 0x00, 0x8c, 0x75, 0xd8, 0x11, 0x61, 0x63, 0xea, 0xa6, 0x8a,
+	0x6d, 0x94, 0xe5, 0xaa, 0x6a, 0xdf, 0x82, 0xc2, 0x55, 0xb8, 0x97, 0x18, 0x92, 0xb8, 0x27, 0x4e,
+	0xc0, 0x16, 0xba, 0xca, 0x95, 0xdf, 0x3c, 0x7e, 0xf8, 0x17, 0x82, 0xe2, 0x9a, 0x95, 0xf1, 0x26,
+	0xc0, 0x63, 0xab, 0xf9, 0xa4, 0x77, 0xda, 0x69, 0xda, 0x1d, 0x2d, 0x83, 0x3f, 0x84, 0x0f, 0x8e,
+	0xda, 0xa6, 0x75, 0x70, 0xd6, 0x7b, 0xdc, 0x38, 0xb4, 0xcc, 0x5e, 0xe3, 0xb4, 0xdb, 0xd2, 0x10,
+	0x2e, 0x82, 0xda, 0x30, 0xcd, 0x9e, 0xd5, 0x6d, 0x1e, 0x75, 0x34, 0x09, 0xdf, 0x07, 0x2c, 0x50,
+	0xed, 0x6e, 0xab, 0x69, 0x0b, 0xb6, 0x8c, 0x75, 0x28, 0x89, 0xf3, 0xce, 0x49, 0x73, 0xdf, 0x6a,
+	0x1c, 0x8a, 0x8c, 0x82, 0xef, 0x41, 0x21, 0xc9, 0x34, 0x0f, 0x0f, 0xb4, 0x2c, 0xde, 0x06, 0x9d,
+	0x5f, 0x9c, 0x2a, 0xd0, 0x6b, 0x59, 0x9d, 0x6e, 0xdb, 0x3e, 0xd3, 0x72, 0xb8, 0x04, 0x5a, 0x9c,
+	0x7d, 0x72, 0xbc, 0x3a, 0xcd, 0x3f, 0xac, 0x42, 0x71, 0xed, 0xe9, 0xe2, 0x0d, 0x50, 0xec, 0x76,
+	0xbb, 0xab, 0x65, 0xb8, 0xc0, 0xe3, 0xf6, 0xf1, 0xd9, 0x51, 0xfb, 0xb4, 0xa3, 0xa1, 0xbd, 0x1f,
+	0x2e, 0x2e, 0x8d, 0xcc, 0x8b, 0x4b, 0x23, 0xf3, 0xf2, 0xd2, 0x40, 0xaf, 0x2e, 0x0d, 0xf4, 0xcb,
+	0xd2, 0x40, 0xcf, 0x97, 0x06, 0xfa, 0x73, 0x69, 0xa0, 0xbf, 0x97, 0x06, 0xba, 0x58, 0x1a, 0xe8,
+	0xe5, 0xd2, 0x40, 0xff, 0x2d, 0x8d, 0xcc, 0xab, 0xa5, 0x81, 0x7e, 0xbf, 0x32, 0x32, 0xcf, 0xaf,
+	0x0c, 0x74, 0x71, 0x65, 0x64, 0x5e, 0x5c, 0x19, 0x99, 0xef, 0xb6, 0xdf, 0xf5, 0xc7, 0xdc, 0xcf,
+	0x71, 0xfb, 0x7c, 0xf5, 0x7f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x3a, 0xbf, 0x16, 0x0e, 0xbf, 0x07,
+	0x00, 0x00,
 }
 
 func (this *ID) Compare(that interface{}) int {
@@ -755,6 +945,54 @@ func (this *HistoryID) Compare(that interface{}) int {
 	}
 	if c := this.ID.Compare(that1.ID); c != 0 {
 		return c
+	}
+	return 0
+}
+func (this *HistoryItem) Compare(that interface{}) int {
+	if that == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	}
+
+	that1, ok := that.(*HistoryItem)
+	if !ok {
+		that2, ok := that.(HistoryItem)
+		if ok {
+			that1 = &that2
+		} else {
+			return 1
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	} else if this == nil {
+		return -1
+	}
+	if this.Action != that1.Action {
+		if this.Action < that1.Action {
+			return -1
+		}
+		return 1
+	}
+	if c := this.By.Compare(that1.By); c != 0 {
+		return c
+	}
+	if this.RequestData != that1.RequestData {
+		if this.RequestData < that1.RequestData {
+			return -1
+		}
+		return 1
+	}
+	if this.IPAddress != that1.IPAddress {
+		if this.IPAddress < that1.IPAddress {
+			return -1
+		}
+		return 1
 	}
 	return 0
 }
@@ -1121,6 +1359,89 @@ func (this *Item) Compare(that interface{}) int {
 	}
 	return 0
 }
+func (this *IDToken) Compare(that interface{}) int {
+	if that == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	}
+
+	that1, ok := that.(*IDToken)
+	if !ok {
+		that2, ok := that.(IDToken)
+		if ok {
+			that1 = &that2
+		} else {
+			return 1
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	} else if this == nil {
+		return -1
+	}
+	if this.Issuer != that1.Issuer {
+		if this.Issuer < that1.Issuer {
+			return -1
+		}
+		return 1
+	}
+	if this.Subject != that1.Subject {
+		if this.Subject < that1.Subject {
+			return -1
+		}
+		return 1
+	}
+	if this.Audience != that1.Audience {
+		if this.Audience < that1.Audience {
+			return -1
+		}
+		return 1
+	}
+	if c := this.Expiration.Compare(that1.Expiration); c != 0 {
+		return c
+	}
+	if c := this.Issued.Compare(that1.Issued); c != 0 {
+		return c
+	}
+	if this.Nonce != that1.Nonce {
+		if this.Nonce < that1.Nonce {
+			return -1
+		}
+		return 1
+	}
+	if this.AuthenticationContextClassReference != that1.AuthenticationContextClassReference {
+		if this.AuthenticationContextClassReference < that1.AuthenticationContextClassReference {
+			return -1
+		}
+		return 1
+	}
+	if len(this.AuthenticationMethodsReference) != len(that1.AuthenticationMethodsReference) {
+		if len(this.AuthenticationMethodsReference) < len(that1.AuthenticationMethodsReference) {
+			return -1
+		}
+		return 1
+	}
+	for i := range this.AuthenticationMethodsReference {
+		if this.AuthenticationMethodsReference[i] != that1.AuthenticationMethodsReference[i] {
+			if this.AuthenticationMethodsReference[i] < that1.AuthenticationMethodsReference[i] {
+				return -1
+			}
+			return 1
+		}
+	}
+	if this.AuthorizedParty != that1.AuthorizedParty {
+		if this.AuthorizedParty < that1.AuthorizedParty {
+			return -1
+		}
+		return 1
+	}
+	return 0
+}
 func (x Authorization) String() string {
 	s, ok := Authorization_name[int32(x)]
 	if ok {
@@ -1309,6 +1630,78 @@ func (this *HistoryID) Equal(that interface{}) bool {
 		return false
 	}
 	if !this.ID.Equal(that1.ID) {
+		return false
+	}
+	return true
+}
+func (this *HistoryItem) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*HistoryItem)
+	if !ok {
+		that2, ok := that.(HistoryItem)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *HistoryItem")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *HistoryItem but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *HistoryItem but is not nil && this == nil")
+	}
+	if this.Action != that1.Action {
+		return fmt.Errorf("Action this(%v) Not Equal that(%v)", this.Action, that1.Action)
+	}
+	if !this.By.Equal(that1.By) {
+		return fmt.Errorf("By this(%v) Not Equal that(%v)", this.By, that1.By)
+	}
+	if this.RequestData != that1.RequestData {
+		return fmt.Errorf("RequestData this(%v) Not Equal that(%v)", this.RequestData, that1.RequestData)
+	}
+	if this.IPAddress != that1.IPAddress {
+		return fmt.Errorf("IPAddress this(%v) Not Equal that(%v)", this.IPAddress, that1.IPAddress)
+	}
+	return nil
+}
+func (this *HistoryItem) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*HistoryItem)
+	if !ok {
+		that2, ok := that.(HistoryItem)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Action != that1.Action {
+		return false
+	}
+	if !this.By.Equal(that1.By) {
+		return false
+	}
+	if this.RequestData != that1.RequestData {
+		return false
+	}
+	if this.IPAddress != that1.IPAddress {
 		return false
 	}
 	return true
@@ -1867,6 +2260,118 @@ func (this *Item) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *IDToken) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*IDToken)
+	if !ok {
+		that2, ok := that.(IDToken)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *IDToken")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *IDToken but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *IDToken but is not nil && this == nil")
+	}
+	if this.Issuer != that1.Issuer {
+		return fmt.Errorf("Issuer this(%v) Not Equal that(%v)", this.Issuer, that1.Issuer)
+	}
+	if this.Subject != that1.Subject {
+		return fmt.Errorf("Subject this(%v) Not Equal that(%v)", this.Subject, that1.Subject)
+	}
+	if this.Audience != that1.Audience {
+		return fmt.Errorf("Audience this(%v) Not Equal that(%v)", this.Audience, that1.Audience)
+	}
+	if !this.Expiration.Equal(that1.Expiration) {
+		return fmt.Errorf("Expiration this(%v) Not Equal that(%v)", this.Expiration, that1.Expiration)
+	}
+	if !this.Issued.Equal(that1.Issued) {
+		return fmt.Errorf("Issued this(%v) Not Equal that(%v)", this.Issued, that1.Issued)
+	}
+	if this.Nonce != that1.Nonce {
+		return fmt.Errorf("Nonce this(%v) Not Equal that(%v)", this.Nonce, that1.Nonce)
+	}
+	if this.AuthenticationContextClassReference != that1.AuthenticationContextClassReference {
+		return fmt.Errorf("AuthenticationContextClassReference this(%v) Not Equal that(%v)", this.AuthenticationContextClassReference, that1.AuthenticationContextClassReference)
+	}
+	if len(this.AuthenticationMethodsReference) != len(that1.AuthenticationMethodsReference) {
+		return fmt.Errorf("AuthenticationMethodsReference this(%v) Not Equal that(%v)", len(this.AuthenticationMethodsReference), len(that1.AuthenticationMethodsReference))
+	}
+	for i := range this.AuthenticationMethodsReference {
+		if this.AuthenticationMethodsReference[i] != that1.AuthenticationMethodsReference[i] {
+			return fmt.Errorf("AuthenticationMethodsReference this[%v](%v) Not Equal that[%v](%v)", i, this.AuthenticationMethodsReference[i], i, that1.AuthenticationMethodsReference[i])
+		}
+	}
+	if this.AuthorizedParty != that1.AuthorizedParty {
+		return fmt.Errorf("AuthorizedParty this(%v) Not Equal that(%v)", this.AuthorizedParty, that1.AuthorizedParty)
+	}
+	return nil
+}
+func (this *IDToken) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*IDToken)
+	if !ok {
+		that2, ok := that.(IDToken)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Issuer != that1.Issuer {
+		return false
+	}
+	if this.Subject != that1.Subject {
+		return false
+	}
+	if this.Audience != that1.Audience {
+		return false
+	}
+	if !this.Expiration.Equal(that1.Expiration) {
+		return false
+	}
+	if !this.Issued.Equal(that1.Issued) {
+		return false
+	}
+	if this.Nonce != that1.Nonce {
+		return false
+	}
+	if this.AuthenticationContextClassReference != that1.AuthenticationContextClassReference {
+		return false
+	}
+	if len(this.AuthenticationMethodsReference) != len(that1.AuthenticationMethodsReference) {
+		return false
+	}
+	for i := range this.AuthenticationMethodsReference {
+		if this.AuthenticationMethodsReference[i] != that1.AuthenticationMethodsReference[i] {
+			return false
+		}
+	}
+	if this.AuthorizedParty != that1.AuthorizedParty {
+		return false
+	}
+	return true
+}
 func (this *ID) GoString() string {
 	if this == nil {
 		return "nil"
@@ -1899,6 +2404,21 @@ func (this *HistoryID) GoString() string {
 	if this.ID != nil {
 		s = append(s, "ID: "+fmt.Sprintf("%#v", this.ID)+",\n")
 	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *HistoryItem) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&types.HistoryItem{")
+	s = append(s, "Action: "+fmt.Sprintf("%#v", this.Action)+",\n")
+	if this.By != nil {
+		s = append(s, "By: "+fmt.Sprintf("%#v", this.By)+",\n")
+	}
+	s = append(s, "RequestData: "+fmt.Sprintf("%#v", this.RequestData)+",\n")
+	s = append(s, "IPAddress: "+fmt.Sprintf("%#v", this.IPAddress)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2005,6 +2525,28 @@ func (this *Item) GoString() string {
 	if this.Children != nil {
 		s = append(s, "Children: "+fmt.Sprintf("%#v", this.Children)+",\n")
 	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *IDToken) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 13)
+	s = append(s, "&types.IDToken{")
+	s = append(s, "Issuer: "+fmt.Sprintf("%#v", this.Issuer)+",\n")
+	s = append(s, "Subject: "+fmt.Sprintf("%#v", this.Subject)+",\n")
+	s = append(s, "Audience: "+fmt.Sprintf("%#v", this.Audience)+",\n")
+	if this.Expiration != nil {
+		s = append(s, "Expiration: "+fmt.Sprintf("%#v", this.Expiration)+",\n")
+	}
+	if this.Issued != nil {
+		s = append(s, "Issued: "+fmt.Sprintf("%#v", this.Issued)+",\n")
+	}
+	s = append(s, "Nonce: "+fmt.Sprintf("%#v", this.Nonce)+",\n")
+	s = append(s, "AuthenticationContextClassReference: "+fmt.Sprintf("%#v", this.AuthenticationContextClassReference)+",\n")
+	s = append(s, "AuthenticationMethodsReference: "+fmt.Sprintf("%#v", this.AuthenticationMethodsReference)+",\n")
+	s = append(s, "AuthorizedParty: "+fmt.Sprintf("%#v", this.AuthorizedParty)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2128,6 +2670,62 @@ func (m *HistoryID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i -= size
 			i = encodeVarintTypes(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *HistoryItem) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *HistoryItem) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *HistoryItem) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.IPAddress) > 0 {
+		i -= len(m.IPAddress)
+		copy(dAtA[i:], m.IPAddress)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.IPAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.RequestData) > 0 {
+		i -= len(m.RequestData)
+		copy(dAtA[i:], m.RequestData)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.RequestData)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.By != nil {
+		{
+			size, err := m.By.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Action) > 0 {
+		i -= len(m.Action)
+		copy(dAtA[i:], m.Action)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Action)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2279,20 +2877,20 @@ func (m *RegularUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 	}
 	if len(m.Authorizations) > 0 {
-		dAtA9 := make([]byte, len(m.Authorizations)*10)
-		var j8 int
+		dAtA10 := make([]byte, len(m.Authorizations)*10)
+		var j9 int
 		for _, num := range m.Authorizations {
 			for num >= 1<<7 {
-				dAtA9[j8] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA10[j9] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j8++
+				j9++
 			}
-			dAtA9[j8] = uint8(num)
-			j8++
+			dAtA10[j9] = uint8(num)
+			j9++
 		}
-		i -= j8
-		copy(dAtA[i:], dAtA9[:j8])
-		i = encodeVarintTypes(dAtA, i, uint64(j8))
+		i -= j9
+		copy(dAtA[i:], dAtA10[:j9])
+		i = encodeVarintTypes(dAtA, i, uint64(j9))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -2353,20 +2951,20 @@ func (m *SpecialUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 	}
 	if len(m.Authorizations) > 0 {
-		dAtA12 := make([]byte, len(m.Authorizations)*10)
-		var j11 int
+		dAtA13 := make([]byte, len(m.Authorizations)*10)
+		var j12 int
 		for _, num := range m.Authorizations {
 			for num >= 1<<7 {
-				dAtA12[j11] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA13[j12] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j11++
+				j12++
 			}
-			dAtA12[j11] = uint8(num)
-			j11++
+			dAtA13[j12] = uint8(num)
+			j12++
 		}
-		i -= j11
-		copy(dAtA[i:], dAtA12[:j11])
-		i = encodeVarintTypes(dAtA, i, uint64(j11))
+		i -= j12
+		copy(dAtA[i:], dAtA13[:j12])
+		i = encodeVarintTypes(dAtA, i, uint64(j12))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -2488,6 +3086,102 @@ func (m *Item) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *IDToken) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *IDToken) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *IDToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.AuthorizedParty) > 0 {
+		i -= len(m.AuthorizedParty)
+		copy(dAtA[i:], m.AuthorizedParty)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.AuthorizedParty)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.AuthenticationMethodsReference) > 0 {
+		for iNdEx := len(m.AuthenticationMethodsReference) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.AuthenticationMethodsReference[iNdEx])
+			copy(dAtA[i:], m.AuthenticationMethodsReference[iNdEx])
+			i = encodeVarintTypes(dAtA, i, uint64(len(m.AuthenticationMethodsReference[iNdEx])))
+			i--
+			dAtA[i] = 0x42
+		}
+	}
+	if m.AuthenticationContextClassReference != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.AuthenticationContextClassReference))
+		i--
+		dAtA[i] = 0x38
+	}
+	if len(m.Nonce) > 0 {
+		i -= len(m.Nonce)
+		copy(dAtA[i:], m.Nonce)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Nonce)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Issued != nil {
+		{
+			size, err := m.Issued.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Expiration != nil {
+		{
+			size, err := m.Expiration.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Audience) > 0 {
+		i -= len(m.Audience)
+		copy(dAtA[i:], m.Audience)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Audience)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Issuer) > 0 {
+		i -= len(m.Issuer)
+		copy(dAtA[i:], m.Issuer)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Issuer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTypes(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTypes(v)
 	base := offset
@@ -2540,6 +3234,31 @@ func (m *HistoryID) Size() (n int) {
 	_ = l
 	if m.ID != nil {
 		l = m.ID.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	return n
+}
+
+func (m *HistoryItem) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Action)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.By != nil {
+		l = m.By.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.RequestData)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.IPAddress)
+	if l > 0 {
 		n += 1 + l + sovTypes(uint64(l))
 	}
 	return n
@@ -2694,6 +3413,52 @@ func (m *Item) Size() (n int) {
 	return n
 }
 
+func (m *IDToken) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Issuer)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.Audience)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Expiration != nil {
+		l = m.Expiration.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Issued != nil {
+		l = m.Issued.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.Nonce)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.AuthenticationContextClassReference != 0 {
+		n += 1 + sovTypes(uint64(m.AuthenticationContextClassReference))
+	}
+	if len(m.AuthenticationMethodsReference) > 0 {
+		for _, s := range m.AuthenticationMethodsReference {
+			l = len(s)
+			n += 1 + l + sovTypes(uint64(l))
+		}
+	}
+	l = len(m.AuthorizedParty)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	return n
+}
+
 func sovTypes(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
@@ -2727,6 +3492,19 @@ func (this *HistoryID) String() string {
 	}
 	s := strings.Join([]string{`&HistoryID{`,
 		`ID:` + strings.Replace(this.ID.String(), "ID", "ID", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *HistoryItem) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&HistoryItem{`,
+		`Action:` + fmt.Sprintf("%v", this.Action) + `,`,
+		`By:` + strings.Replace(this.By.String(), "UserID", "UserID", 1) + `,`,
+		`RequestData:` + fmt.Sprintf("%v", this.RequestData) + `,`,
+		`IPAddress:` + fmt.Sprintf("%v", this.IPAddress) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2832,6 +3610,24 @@ func (this *Item) String() string {
 		`Location:` + fmt.Sprintf("%v", this.Location) + `,`,
 		`Parent:` + strings.Replace(this.Parent.String(), "ItemID", "ItemID", 1) + `,`,
 		`Children:` + repeatedStringForChildren + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *IDToken) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&IDToken{`,
+		`Issuer:` + fmt.Sprintf("%v", this.Issuer) + `,`,
+		`Subject:` + fmt.Sprintf("%v", this.Subject) + `,`,
+		`Audience:` + fmt.Sprintf("%v", this.Audience) + `,`,
+		`Expiration:` + strings.Replace(fmt.Sprintf("%v", this.Expiration), "Timestamp", "types.Timestamp", 1) + `,`,
+		`Issued:` + strings.Replace(fmt.Sprintf("%v", this.Issued), "Timestamp", "types.Timestamp", 1) + `,`,
+		`Nonce:` + fmt.Sprintf("%v", this.Nonce) + `,`,
+		`AuthenticationContextClassReference:` + fmt.Sprintf("%v", this.AuthenticationContextClassReference) + `,`,
+		`AuthenticationMethodsReference:` + fmt.Sprintf("%v", this.AuthenticationMethodsReference) + `,`,
+		`AuthorizedParty:` + fmt.Sprintf("%v", this.AuthorizedParty) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3151,6 +3947,191 @@ func (m *HistoryID) Unmarshal(dAtA []byte) error {
 			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *HistoryItem) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HistoryItem: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HistoryItem: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Action", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Action = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field By", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.By == nil {
+				m.By = &UserID{}
+			}
+			if err := m.By.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RequestData", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RequestData = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IPAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IPAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4095,6 +5076,342 @@ func (m *Item) Unmarshal(dAtA []byte) error {
 			if err := m.Children[len(m.Children)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *IDToken) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: IDToken: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: IDToken: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Issuer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Audience", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Audience = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Expiration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Expiration == nil {
+				m.Expiration = &types.Timestamp{}
+			}
+			if err := m.Expiration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Issued", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Issued == nil {
+				m.Issued = &types.Timestamp{}
+			}
+			if err := m.Issued.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nonce", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Nonce = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticationContextClassReference", wireType)
+			}
+			m.AuthenticationContextClassReference = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AuthenticationContextClassReference |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticationMethodsReference", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AuthenticationMethodsReference = append(m.AuthenticationMethodsReference, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthorizedParty", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AuthorizedParty = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
