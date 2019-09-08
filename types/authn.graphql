@@ -1,6 +1,6 @@
 scalar etc
 
-type UserAuthentication {
+type UserAuthentication @goModel(model: "github.com/zemnmez/tab/gql/resolvers.UserAuthentication") {
     etc: etc
 }
 
@@ -16,7 +16,7 @@ extend type Query {
     Authentication: AuthenticationQuery
 }
 
-type AuthenticationQuery {
+type AuthenticationQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.AuthenticationQuery") {
     etc: etc
 }
 
@@ -24,6 +24,6 @@ extend type Mutation {
     Authentication: AuthenticationMutation
 }
 
-type AuthenticationMutation {
+type AuthenticationMutation @goModel(model: "github.com/zemnmez/tab/gql/resolvers.AuthenticationMutation") {
     etc: etc
 }

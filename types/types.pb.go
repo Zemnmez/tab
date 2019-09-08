@@ -7,19 +7,22 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	types "github.com/gogo/protobuf/types"
+	_ "github.com/gogo/protobuf/types"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
 	reflect "reflect"
 	strconv "strconv"
 	strings "strings"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -182,7 +185,7 @@ func (m *AuthorizationGrant) GetOf() []Authorization {
 }
 
 type HistoryID struct {
-	*ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id,omitempty"`
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
 }
 
 func (m *HistoryID) Reset()      { *m = HistoryID{} }
@@ -285,7 +288,7 @@ func (m *HistoryItem) GetIPAddress() string {
 }
 
 type RegularUserID struct {
-	*ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id,omitempty"`
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
 }
 
 func (m *RegularUserID) Reset()      { *m = RegularUserID{} }
@@ -408,11 +411,11 @@ func (*UserID) XXX_OneofWrappers() []interface{} {
 }
 
 type RegularUser struct {
-	Id             *UserID          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name           string           `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Authorizations []Authorization  `protobuf:"varint,3,rep,packed,name=authorizations,proto3,enum=types.Authorization" json:"authorizations,omitempty"`
-	HistoryID      []*HistoryID     `protobuf:"bytes,4,rep,name=historyID,proto3" json:"historyID,omitempty"`
-	Created        *types.Timestamp `protobuf:"bytes,5,opt,name=created,proto3" json:"created,omitempty"`
+	Id             *UserID         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name           string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Authorizations []Authorization `protobuf:"varint,3,rep,packed,name=authorizations,proto3,enum=types.Authorization" json:"authorizations,omitempty"`
+	HistoryID      []*HistoryID    `protobuf:"bytes,4,rep,name=historyID,proto3" json:"historyID,omitempty"`
+	Created        *time.Time      `protobuf:"bytes,5,opt,name=created,proto3,stdtime" json:"created,omitempty"`
 }
 
 func (m *RegularUser) Reset()      { *m = RegularUser{} }
@@ -475,7 +478,7 @@ func (m *RegularUser) GetHistoryID() []*HistoryID {
 	return nil
 }
 
-func (m *RegularUser) GetCreated() *types.Timestamp {
+func (m *RegularUser) GetCreated() *time.Time {
 	if m != nil {
 		return m.Created
 	}
@@ -542,7 +545,7 @@ func (m *SpecialUser) GetHistoryID() []*HistoryID {
 }
 
 type ItemID struct {
-	*ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id,omitempty"`
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
 }
 
 func (m *ItemID) Reset()      { *m = ItemID{} }
@@ -652,22 +655,133 @@ func (m *Item) GetChildren() []*ItemID {
 	return nil
 }
 
+type OIDCProviderID struct {
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
+}
+
+func (m *OIDCProviderID) Reset()      { *m = OIDCProviderID{} }
+func (*OIDCProviderID) ProtoMessage() {}
+func (*OIDCProviderID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{10}
+}
+func (m *OIDCProviderID) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *OIDCProviderID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_OIDCProviderID.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *OIDCProviderID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OIDCProviderID.Merge(m, src)
+}
+func (m *OIDCProviderID) XXX_Size() int {
+	return m.Size()
+}
+func (m *OIDCProviderID) XXX_DiscardUnknown() {
+	xxx_messageInfo_OIDCProviderID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OIDCProviderID proto.InternalMessageInfo
+
+type OIDCProvider struct {
+	Id                    *OIDCProviderID `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                  string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Callback              string          `protobuf:"bytes,3,opt,name=callback,proto3" json:"callback,omitempty"`
+	AuthorizationEndpoint string          `protobuf:"bytes,4,opt,name=authorizationEndpoint,proto3" json:"authorizationEndpoint,omitempty"`
+	ClientID              string          `protobuf:"bytes,5,opt,name=clientID,proto3" json:"clientID,omitempty"`
+}
+
+func (m *OIDCProvider) Reset()      { *m = OIDCProvider{} }
+func (*OIDCProvider) ProtoMessage() {}
+func (*OIDCProvider) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{11}
+}
+func (m *OIDCProvider) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *OIDCProvider) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_OIDCProvider.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *OIDCProvider) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OIDCProvider.Merge(m, src)
+}
+func (m *OIDCProvider) XXX_Size() int {
+	return m.Size()
+}
+func (m *OIDCProvider) XXX_DiscardUnknown() {
+	xxx_messageInfo_OIDCProvider.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OIDCProvider proto.InternalMessageInfo
+
+func (m *OIDCProvider) GetId() *OIDCProviderID {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *OIDCProvider) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *OIDCProvider) GetCallback() string {
+	if m != nil {
+		return m.Callback
+	}
+	return ""
+}
+
+func (m *OIDCProvider) GetAuthorizationEndpoint() string {
+	if m != nil {
+		return m.AuthorizationEndpoint
+	}
+	return ""
+}
+
+func (m *OIDCProvider) GetClientID() string {
+	if m != nil {
+		return m.ClientID
+	}
+	return ""
+}
+
 type IDToken struct {
-	Issuer                              string           `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
-	Subject                             string           `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
-	Audience                            string           `protobuf:"bytes,3,opt,name=audience,proto3" json:"audience,omitempty"`
-	Expiration                          *types.Timestamp `protobuf:"bytes,4,opt,name=expiration,proto3" json:"expiration,omitempty"`
-	Issued                              *types.Timestamp `protobuf:"bytes,5,opt,name=issued,proto3" json:"issued,omitempty"`
-	Nonce                               string           `protobuf:"bytes,6,opt,name=nonce,proto3" json:"nonce,omitempty"`
-	AuthenticationContextClassReference int64            `protobuf:"varint,7,opt,name=authenticationContextClassReference,proto3" json:"authenticationContextClassReference,omitempty"`
-	AuthenticationMethodsReference      []string         `protobuf:"bytes,8,rep,name=authenticationMethodsReference,proto3" json:"authenticationMethodsReference,omitempty"`
-	AuthorizedParty                     string           `protobuf:"bytes,9,opt,name=authorizedParty,proto3" json:"authorizedParty,omitempty"`
+	Issuer                              string     `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	Subject                             string     `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	Audience                            string     `protobuf:"bytes,3,opt,name=audience,proto3" json:"audience,omitempty"`
+	Expiration                          *time.Time `protobuf:"bytes,4,opt,name=expiration,proto3,stdtime" json:"expiration,omitempty"`
+	Issued                              *time.Time `protobuf:"bytes,5,opt,name=issued,proto3,stdtime" json:"issued,omitempty"`
+	Nonce                               string     `protobuf:"bytes,6,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	AuthenticationContextClassReference int64      `protobuf:"varint,7,opt,name=authenticationContextClassReference,proto3" json:"authenticationContextClassReference,omitempty"`
+	AuthenticationMethodsReference      []string   `protobuf:"bytes,8,rep,name=authenticationMethodsReference,proto3" json:"authenticationMethodsReference,omitempty"`
+	AuthorizedParty                     string     `protobuf:"bytes,9,opt,name=authorizedParty,proto3" json:"authorizedParty,omitempty"`
 }
 
 func (m *IDToken) Reset()      { *m = IDToken{} }
 func (*IDToken) ProtoMessage() {}
 func (*IDToken) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{10}
+	return fileDescriptor_e927c4c8d1099e6c, []int{12}
 }
 func (m *IDToken) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -717,14 +831,14 @@ func (m *IDToken) GetAudience() string {
 	return ""
 }
 
-func (m *IDToken) GetExpiration() *types.Timestamp {
+func (m *IDToken) GetExpiration() *time.Time {
 	if m != nil {
 		return m.Expiration
 	}
 	return nil
 }
 
-func (m *IDToken) GetIssued() *types.Timestamp {
+func (m *IDToken) GetIssued() *time.Time {
 	if m != nil {
 		return m.Issued
 	}
@@ -772,6 +886,8 @@ func init() {
 	proto.RegisterType((*SpecialUser)(nil), "types.SpecialUser")
 	proto.RegisterType((*ItemID)(nil), "types.ItemID")
 	proto.RegisterType((*Item)(nil), "types.Item")
+	proto.RegisterType((*OIDCProviderID)(nil), "types.OIDCProviderID")
+	proto.RegisterType((*OIDCProvider)(nil), "types.OIDCProvider")
 	proto.RegisterType((*IDToken)(nil), "types.IDToken")
 }
 
@@ -780,65 +896,70 @@ func init() {
 }
 
 var fileDescriptor_e927c4c8d1099e6c = []byte{
-	// 914 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x4f, 0x6f, 0xe2, 0x46,
-	0x14, 0x67, 0x6c, 0x03, 0xf1, 0x43, 0x64, 0xdd, 0x11, 0x5d, 0x59, 0x51, 0xea, 0x50, 0xda, 0x4a,
-	0xec, 0xaa, 0x25, 0x15, 0xed, 0xa9, 0xda, 0x0b, 0x89, 0x49, 0xb1, 0x94, 0x84, 0xc8, 0x90, 0x5d,
-	0xa5, 0x52, 0x8b, 0x0c, 0x1e, 0xc0, 0x2d, 0x78, 0xa8, 0x3d, 0x48, 0x4b, 0x4e, 0x3d, 0xf4, 0xd4,
-	0x53, 0xbf, 0xc2, 0x9e, 0xba, 0x1f, 0xa1, 0x87, 0x7e, 0x80, 0x1e, 0x73, 0xdc, 0x53, 0xb5, 0x21,
-	0x3d, 0xf4, 0xb8, 0x1f, 0xa1, 0xf2, 0x78, 0x4c, 0x4c, 0xf6, 0x4f, 0xa2, 0xbd, 0x20, 0xbf, 0x79,
-	0xbf, 0xdf, 0x9b, 0xdf, 0x7b, 0xef, 0x37, 0x02, 0xaa, 0x23, 0x8f, 0x8d, 0xe7, 0xfd, 0xda, 0x80,
-	0x4e, 0x77, 0xcf, 0xc9, 0xd4, 0x9f, 0x92, 0xf3, 0x5d, 0xe6, 0xf4, 0x77, 0xd9, 0x62, 0x46, 0xc2,
-	0xf8, 0xb7, 0x36, 0x0b, 0x28, 0xa3, 0x38, 0xcb, 0x83, 0xad, 0x2f, 0x52, 0x84, 0x11, 0x1d, 0xd1,
-	0x5d, 0x9e, 0xed, 0xcf, 0x87, 0x3c, 0xe2, 0x01, 0xff, 0x8a, 0x59, 0x5b, 0x3b, 0x23, 0x4a, 0x47,
-	0x13, 0x72, 0x8d, 0x62, 0xde, 0x94, 0x84, 0xcc, 0x99, 0xce, 0x62, 0x40, 0xa5, 0x04, 0x92, 0x65,
-	0xe2, 0x4d, 0x90, 0x3c, 0x57, 0x47, 0x65, 0x54, 0x55, 0x6d, 0xc9, 0x73, 0x2b, 0xdf, 0x03, 0x6e,
-	0xcc, 0xd9, 0x98, 0x06, 0xde, 0xb9, 0xc3, 0x3c, 0xea, 0x7f, 0x1b, 0x38, 0x3e, 0xc3, 0x1f, 0x83,
-	0x32, 0x0c, 0xe8, 0x94, 0xe3, 0x0a, 0xf5, 0x62, 0x2d, 0x96, 0x77, 0x1a, 0x92, 0xc0, 0x32, 0x6d,
-	0x9e, 0xc2, 0x9f, 0x82, 0x44, 0x87, 0xba, 0x54, 0x96, 0xab, 0x9b, 0xf5, 0x92, 0x00, 0xac, 0x55,
-	0xb2, 0x25, 0x3a, 0xac, 0x7c, 0x0e, 0x6a, 0xcb, 0x0b, 0x19, 0x0d, 0x16, 0x96, 0x89, 0x77, 0x56,
-	0x77, 0x17, 0xea, 0xaa, 0xa0, 0x58, 0xe6, 0x9e, 0x72, 0xf1, 0xcf, 0x0e, 0xe2, 0x62, 0x7e, 0x45,
-	0x50, 0x48, 0xe0, 0x8c, 0x4c, 0xf1, 0x7d, 0xc8, 0x39, 0x83, 0xa8, 0x96, 0x10, 0x2c, 0x22, 0xfc,
-	0x11, 0x48, 0xfd, 0x85, 0x2e, 0xbd, 0x49, 0x9c, 0xd4, 0x5f, 0xe0, 0x32, 0x14, 0x02, 0xf2, 0xf3,
-	0x9c, 0x84, 0xcc, 0x74, 0x98, 0xa3, 0xcb, 0x9c, 0x9b, 0x3e, 0xc2, 0xdb, 0xa0, 0x5a, 0x27, 0x0d,
-	0xd7, 0x0d, 0x48, 0x18, 0xea, 0x0a, 0xcf, 0xab, 0x5e, 0x72, 0x50, 0xf9, 0x12, 0x8a, 0x36, 0x19,
-	0xcd, 0x27, 0x4e, 0x10, 0x17, 0xbd, 0x5d, 0xf8, 0x6f, 0x08, 0x72, 0x02, 0xfb, 0x08, 0x8a, 0xe1,
-	0x8c, 0x0c, 0x3c, 0x67, 0x12, 0x1f, 0x70, 0xda, 0xf5, 0x88, 0x3a, 0xe9, 0x5c, 0x2b, 0x63, 0xaf,
-	0x83, 0x23, 0x76, 0x90, 0xbe, 0x5a, 0x34, 0x99, 0xb0, 0xd7, 0x64, 0x45, 0xec, 0x35, 0xf0, 0x9e,
-	0x12, 0xad, 0xb8, 0xf2, 0x2f, 0x82, 0x42, 0x0a, 0x18, 0x4d, 0x6b, 0xa5, 0xfe, 0xe6, 0xb4, 0x3c,
-	0x17, 0x63, 0x50, 0x7c, 0x67, 0x4a, 0xf8, 0x4d, 0xaa, 0xcd, 0xbf, 0xf1, 0x23, 0xd8, 0x74, 0xd2,
-	0xbb, 0x0c, 0x75, 0xf9, 0x1d, 0x8b, 0xbe, 0x81, 0xc5, 0x35, 0x50, 0xc7, 0xc9, 0xd2, 0x75, 0xa5,
-	0x2c, 0x57, 0x0b, 0x75, 0x4d, 0x10, 0x57, 0x66, 0xb0, 0xaf, 0x21, 0xf8, 0x6b, 0xc8, 0x0f, 0x02,
-	0xe2, 0x30, 0xe2, 0xea, 0x59, 0xae, 0x72, 0xab, 0x16, 0x9b, 0xb9, 0x96, 0x98, 0xb9, 0xd6, 0x4d,
-	0xcc, 0x6c, 0x27, 0xd0, 0xca, 0x33, 0x04, 0x85, 0xd4, 0x34, 0x23, 0x43, 0x8a, 0x36, 0xdf, 0x32,
-	0x6d, 0xde, 0xed, 0xeb, 0x9d, 0x49, 0xef, 0xdb, 0x99, 0x7c, 0x6b, 0x67, 0x95, 0x07, 0x90, 0x8b,
-	0x8c, 0x7c, 0x17, 0x0b, 0xfd, 0x81, 0x40, 0xe1, 0xa6, 0x7f, 0xd3, 0xba, 0xe2, 0x22, 0x6f, 0x5d,
-	0xd7, 0x16, 0x6c, 0x4c, 0xe8, 0x80, 0x6b, 0x14, 0x6e, 0x5f, 0xc5, 0xf8, 0x33, 0xc8, 0xcd, 0x9c,
-	0x80, 0xf8, 0x8c, 0xfb, 0xfc, 0xb5, 0x92, 0x22, 0x89, 0x1f, 0xc0, 0xc6, 0x60, 0xec, 0x4d, 0xdc,
-	0x80, 0xf8, 0x7a, 0x96, 0x37, 0x76, 0x03, 0xb8, 0x4a, 0x57, 0x9e, 0xc9, 0x90, 0xb7, 0xcc, 0x2e,
-	0xfd, 0x89, 0xf8, 0xd1, 0x0b, 0xf5, 0xc2, 0x70, 0x4e, 0x82, 0xe4, 0x85, 0xc6, 0x11, 0xd6, 0x21,
-	0x1f, 0xce, 0xfb, 0x3f, 0x92, 0x01, 0x13, 0x42, 0x93, 0x30, 0xd2, 0xea, 0xcc, 0x5d, 0x8f, 0xf8,
-	0x03, 0x92, 0x68, 0x4d, 0x62, 0xfc, 0x0d, 0x00, 0x79, 0x3a, 0xf3, 0x82, 0xb8, 0x13, 0xe5, 0x56,
-	0x2f, 0xa4, 0xd0, 0xb8, 0x2e, 0x94, 0xdc, 0xc5, 0x43, 0x02, 0x89, 0x4b, 0x90, 0xf5, 0x69, 0x24,
-	0x24, 0xc7, 0x85, 0xc4, 0x01, 0x3e, 0x81, 0x4f, 0xa2, 0xb5, 0x13, 0x9f, 0x79, 0xf1, 0x0c, 0xf7,
-	0xa9, 0xcf, 0xc8, 0x53, 0xb6, 0x3f, 0x71, 0xc2, 0xd0, 0x26, 0x43, 0x12, 0x70, 0xf1, 0xf9, 0x32,
-	0xaa, 0xca, 0xf6, 0x5d, 0xa0, 0xf8, 0x00, 0x8c, 0x75, 0xd8, 0x11, 0x61, 0x63, 0xea, 0xa6, 0x8a,
-	0x6d, 0x94, 0xe5, 0xaa, 0x6a, 0xdf, 0x82, 0xc2, 0x55, 0xb8, 0x97, 0x18, 0x92, 0xb8, 0x27, 0x4e,
-	0xc0, 0x16, 0xba, 0xca, 0x95, 0xdf, 0x3c, 0x7e, 0xf8, 0x17, 0x82, 0xe2, 0x9a, 0x95, 0xf1, 0x26,
-	0xc0, 0x63, 0xab, 0xf9, 0xa4, 0x77, 0xda, 0x69, 0xda, 0x1d, 0x2d, 0x83, 0x3f, 0x84, 0x0f, 0x8e,
-	0xda, 0xa6, 0x75, 0x70, 0xd6, 0x7b, 0xdc, 0x38, 0xb4, 0xcc, 0x5e, 0xe3, 0xb4, 0xdb, 0xd2, 0x10,
-	0x2e, 0x82, 0xda, 0x30, 0xcd, 0x9e, 0xd5, 0x6d, 0x1e, 0x75, 0x34, 0x09, 0xdf, 0x07, 0x2c, 0x50,
-	0xed, 0x6e, 0xab, 0x69, 0x0b, 0xb6, 0x8c, 0x75, 0x28, 0x89, 0xf3, 0xce, 0x49, 0x73, 0xdf, 0x6a,
-	0x1c, 0x8a, 0x8c, 0x82, 0xef, 0x41, 0x21, 0xc9, 0x34, 0x0f, 0x0f, 0xb4, 0x2c, 0xde, 0x06, 0x9d,
-	0x5f, 0x9c, 0x2a, 0xd0, 0x6b, 0x59, 0x9d, 0x6e, 0xdb, 0x3e, 0xd3, 0x72, 0xb8, 0x04, 0x5a, 0x9c,
-	0x7d, 0x72, 0xbc, 0x3a, 0xcd, 0x3f, 0xac, 0x42, 0x71, 0xed, 0xe9, 0xe2, 0x0d, 0x50, 0xec, 0x76,
-	0xbb, 0xab, 0x65, 0xb8, 0xc0, 0xe3, 0xf6, 0xf1, 0xd9, 0x51, 0xfb, 0xb4, 0xa3, 0xa1, 0xbd, 0x1f,
-	0x2e, 0x2e, 0x8d, 0xcc, 0x8b, 0x4b, 0x23, 0xf3, 0xf2, 0xd2, 0x40, 0xaf, 0x2e, 0x0d, 0xf4, 0xcb,
-	0xd2, 0x40, 0xcf, 0x97, 0x06, 0xfa, 0x73, 0x69, 0xa0, 0xbf, 0x97, 0x06, 0xba, 0x58, 0x1a, 0xe8,
-	0xe5, 0xd2, 0x40, 0xff, 0x2d, 0x8d, 0xcc, 0xab, 0xa5, 0x81, 0x7e, 0xbf, 0x32, 0x32, 0xcf, 0xaf,
-	0x0c, 0x74, 0x71, 0x65, 0x64, 0x5e, 0x5c, 0x19, 0x99, 0xef, 0xb6, 0xdf, 0xf5, 0xc7, 0xdc, 0xcf,
-	0x71, 0xfb, 0x7c, 0xf5, 0x7f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x3a, 0xbf, 0x16, 0x0e, 0xbf, 0x07,
-	0x00, 0x00,
+	// 1002 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xb1, 0x6f, 0xdb, 0xc6,
+	0x17, 0xe6, 0x51, 0xb4, 0x6c, 0x3e, 0xfd, 0xe4, 0xe8, 0x77, 0xb0, 0x03, 0xc2, 0x70, 0x69, 0x55,
+	0x69, 0x00, 0x35, 0x40, 0xe4, 0xc2, 0x4d, 0x81, 0xa2, 0xc8, 0x50, 0xd9, 0x94, 0x6b, 0x02, 0xb6,
+	0x65, 0x50, 0x72, 0x02, 0x17, 0x68, 0x05, 0x8a, 0x3c, 0x49, 0x6c, 0x24, 0x9e, 0x4a, 0x9e, 0x8a,
+	0xc8, 0x53, 0x87, 0x4e, 0x9d, 0xf2, 0x2f, 0x74, 0x6a, 0x96, 0xce, 0xed, 0xd0, 0x3f, 0x20, 0xa3,
+	0xc7, 0x4c, 0x69, 0x2c, 0x2f, 0x45, 0xa7, 0xfc, 0x09, 0x05, 0x8f, 0x47, 0x99, 0x72, 0x1c, 0x47,
+	0xe8, 0x22, 0xf0, 0xdd, 0xfb, 0xbe, 0x77, 0xdf, 0xbb, 0xf7, 0xdd, 0x41, 0x50, 0xee, 0x7a, 0xac,
+	0x37, 0x6a, 0x57, 0x1c, 0x3a, 0xd8, 0x3c, 0x25, 0x03, 0x7f, 0x40, 0x4e, 0x37, 0x99, 0xdd, 0xde,
+	0x64, 0xe3, 0x21, 0x09, 0xe3, 0xdf, 0xca, 0x30, 0xa0, 0x8c, 0xe2, 0x05, 0x1e, 0xac, 0xdd, 0x4f,
+	0x11, 0xba, 0xb4, 0x4b, 0x37, 0x79, 0xb6, 0x3d, 0xea, 0xf0, 0x88, 0x07, 0xfc, 0x2b, 0x66, 0xad,
+	0x6d, 0x74, 0x29, 0xed, 0xf6, 0xc9, 0x25, 0x8a, 0x79, 0x03, 0x12, 0x32, 0x7b, 0x30, 0x8c, 0x01,
+	0xa5, 0x15, 0x90, 0x4d, 0x03, 0x2f, 0x83, 0xec, 0xb9, 0x1a, 0x2a, 0xa2, 0xb2, 0x6a, 0xc9, 0x9e,
+	0x5b, 0xfa, 0x06, 0x70, 0x75, 0xc4, 0x7a, 0x34, 0xf0, 0x4e, 0x6d, 0xe6, 0x51, 0xff, 0xab, 0xc0,
+	0xf6, 0x19, 0xfe, 0x10, 0x94, 0x4e, 0x40, 0x07, 0x1c, 0x97, 0xdb, 0xca, 0x57, 0x62, 0x79, 0xc7,
+	0x21, 0x09, 0x4c, 0xc3, 0xe2, 0x29, 0xfc, 0x11, 0xc8, 0xb4, 0xa3, 0xc9, 0xc5, 0x4c, 0x79, 0x79,
+	0x6b, 0x45, 0x00, 0x66, 0x2a, 0x59, 0x32, 0xed, 0x94, 0x3e, 0x01, 0x75, 0xcf, 0x0b, 0x19, 0x0d,
+	0xc6, 0xa6, 0x81, 0xef, 0x4c, 0xf7, 0xce, 0x6d, 0xa9, 0x82, 0x62, 0x1a, 0xdb, 0x4b, 0x2f, 0x5e,
+	0x6d, 0x48, 0x67, 0xaf, 0x36, 0x10, 0x17, 0xf4, 0x13, 0x82, 0x5c, 0x42, 0x61, 0x64, 0x80, 0x6f,
+	0x43, 0xd6, 0x76, 0xa2, 0x7a, 0x42, 0xb4, 0x88, 0xf0, 0x07, 0x20, 0xb7, 0xc7, 0x9a, 0x7c, 0x9d,
+	0x40, 0xb9, 0x3d, 0xc6, 0x45, 0xc8, 0x05, 0xe4, 0xfb, 0x11, 0x09, 0x99, 0x61, 0x33, 0x5b, 0xcb,
+	0x70, 0x6e, 0x7a, 0x09, 0xaf, 0x83, 0x6a, 0x1e, 0x55, 0x5d, 0x37, 0x20, 0x61, 0xa8, 0x29, 0x3c,
+	0xaf, 0x7a, 0xc9, 0x42, 0xe9, 0x01, 0xe4, 0x2d, 0xd2, 0x1d, 0xf5, 0xed, 0x20, 0x2e, 0x3a, 0x9f,
+	0xf8, 0x9f, 0x11, 0x64, 0x05, 0xfe, 0x21, 0xe4, 0xc3, 0x21, 0x71, 0x3c, 0xbb, 0x1f, 0x2f, 0x70,
+	0xea, 0xe5, 0x51, 0x35, 0xd2, 0xb9, 0x3d, 0xc9, 0x9a, 0x05, 0x47, 0xec, 0x20, 0xbd, 0xbd, 0x68,
+	0x34, 0x61, 0xcf, 0x48, 0x8b, 0xd8, 0x33, 0xe0, 0x6d, 0x25, 0x1a, 0x75, 0xe9, 0x1f, 0x04, 0xb9,
+	0x14, 0x30, 0x3a, 0xb1, 0x69, 0x07, 0x57, 0x4f, 0xcc, 0x73, 0x31, 0x06, 0xc5, 0xb7, 0x07, 0x84,
+	0xef, 0xa4, 0x5a, 0xfc, 0x1b, 0x3f, 0x84, 0x65, 0x3b, 0x3d, 0xd3, 0x50, 0xcb, 0xdc, 0x30, 0xf0,
+	0x2b, 0x58, 0x5c, 0x01, 0xb5, 0x97, 0x0c, 0x5f, 0x53, 0x8a, 0x99, 0x72, 0x6e, 0xab, 0x20, 0x88,
+	0x53, 0x53, 0x58, 0x97, 0x10, 0xfc, 0x05, 0x2c, 0x3a, 0x01, 0xb1, 0x19, 0x71, 0xb5, 0x05, 0xae,
+	0x72, 0xad, 0x12, 0x9b, 0xba, 0x92, 0x98, 0xba, 0xd2, 0x4c, 0x4c, 0xbd, 0xad, 0x3c, 0xfb, 0x6b,
+	0x03, 0x59, 0x09, 0xa1, 0xf4, 0x0b, 0x82, 0x5c, 0xea, 0x4c, 0x23, 0x7b, 0x8a, 0x66, 0xdf, 0x71,
+	0xe6, 0xbc, 0xe7, 0xb7, 0xfb, 0x93, 0xff, 0x6b, 0x7f, 0x99, 0xf7, 0xf6, 0x57, 0xba, 0x0f, 0xd9,
+	0xc8, 0xd2, 0xf3, 0x9a, 0xe9, 0x57, 0x04, 0x0a, 0xbf, 0x02, 0xd7, 0x0d, 0x2e, 0x2e, 0xf4, 0xce,
+	0xc1, 0xad, 0xc1, 0x52, 0x9f, 0x3a, 0x5c, 0xa7, 0xf0, 0xfe, 0x34, 0xc6, 0x77, 0x21, 0x3b, 0xb4,
+	0x03, 0xe2, 0x33, 0xee, 0xfa, 0xb7, 0x4a, 0x8a, 0x24, 0xfe, 0x18, 0x96, 0x9c, 0x9e, 0xd7, 0x77,
+	0x03, 0xe2, 0x6b, 0x0b, 0xbc, 0xb9, 0x2b, 0xc0, 0x69, 0xba, 0xf4, 0x19, 0x2c, 0xd7, 0x4d, 0x63,
+	0xe7, 0x28, 0xa0, 0x3f, 0x78, 0xee, 0xfc, 0xb7, 0xe5, 0x77, 0x04, 0xff, 0x4b, 0xf3, 0xf0, 0xdd,
+	0x14, 0x6b, 0x55, 0xb0, 0x66, 0x0b, 0xdf, 0xd4, 0xb0, 0x63, 0xf7, 0xfb, 0x6d, 0xdb, 0x79, 0x92,
+	0x34, 0x9c, 0xc4, 0xf8, 0x01, 0xac, 0xce, 0x4c, 0xae, 0xe6, 0xbb, 0x43, 0xea, 0x89, 0xfe, 0x55,
+	0xeb, 0xfa, 0x24, 0xaf, 0xd8, 0xf7, 0x88, 0xcf, 0x4c, 0x83, 0xdb, 0x31, 0xaa, 0x28, 0xe2, 0xd2,
+	0x6f, 0x19, 0x58, 0x34, 0x8d, 0x26, 0x7d, 0x42, 0xfc, 0xe8, 0x81, 0xf2, 0xc2, 0x70, 0x44, 0x82,
+	0xe4, 0x81, 0x8a, 0x23, 0xac, 0xc1, 0x62, 0x38, 0x6a, 0x7f, 0x47, 0x1c, 0x26, 0x84, 0x26, 0x61,
+	0x54, 0xd9, 0x1e, 0xb9, 0x1e, 0xf1, 0x1d, 0x92, 0x68, 0x4d, 0x62, 0xfc, 0x25, 0x00, 0x79, 0x3a,
+	0xf4, 0x82, 0x78, 0x74, 0xca, 0x9c, 0xd7, 0x20, 0xc5, 0xc1, 0x9f, 0x0b, 0x3d, 0xf3, 0x5f, 0x22,
+	0x81, 0xc7, 0x2b, 0xb0, 0xe0, 0xd3, 0x48, 0x54, 0x96, 0x8b, 0x8a, 0x03, 0x7c, 0x04, 0x77, 0xa2,
+	0x03, 0x22, 0x3e, 0xf3, 0x62, 0x03, 0xed, 0x50, 0x9f, 0x91, 0xa7, 0x6c, 0xa7, 0x6f, 0x87, 0xa1,
+	0x45, 0x3a, 0x24, 0xe0, 0x8d, 0x2c, 0x16, 0x51, 0x39, 0x63, 0xcd, 0x03, 0xc5, 0xbb, 0xa0, 0xcf,
+	0xc2, 0x0e, 0x08, 0xeb, 0x51, 0x37, 0x55, 0x6c, 0xa9, 0x98, 0x29, 0xab, 0xd6, 0x7b, 0x50, 0xb8,
+	0x0c, 0xb7, 0x92, 0xd1, 0x11, 0xf7, 0xc8, 0x0e, 0xd8, 0x58, 0x53, 0xb9, 0xf2, 0xab, 0xcb, 0xf7,
+	0xfe, 0x44, 0x90, 0x9f, 0xb9, 0xcb, 0x78, 0x19, 0xe0, 0x91, 0x59, 0x7b, 0xdc, 0x3a, 0x6e, 0xd4,
+	0xac, 0x46, 0x41, 0xc2, 0xab, 0xf0, 0xff, 0x83, 0xba, 0x61, 0xee, 0x9e, 0xb4, 0x1e, 0x55, 0xf7,
+	0x4d, 0xa3, 0x55, 0x3d, 0x6e, 0xee, 0x15, 0x10, 0xce, 0x83, 0x5a, 0x35, 0x8c, 0x96, 0xd9, 0xac,
+	0x1d, 0x34, 0x0a, 0x32, 0xbe, 0x0d, 0x58, 0xa0, 0xea, 0xcd, 0xbd, 0x9a, 0x25, 0xd8, 0x19, 0xac,
+	0xc1, 0x8a, 0x58, 0x6f, 0x1c, 0xd5, 0x76, 0xcc, 0xea, 0xbe, 0xc8, 0x28, 0xf8, 0x16, 0xe4, 0x92,
+	0x4c, 0x6d, 0x7f, 0xb7, 0xb0, 0x80, 0xd7, 0x41, 0xe3, 0x1b, 0xa7, 0x0a, 0xb4, 0xf6, 0xcc, 0x46,
+	0xb3, 0x6e, 0x9d, 0x14, 0xb2, 0x78, 0x05, 0x0a, 0x71, 0xf6, 0xf1, 0xe1, 0x74, 0x75, 0xf1, 0x5e,
+	0x19, 0xf2, 0x33, 0x6f, 0x17, 0x5e, 0x02, 0xc5, 0xaa, 0xd7, 0x9b, 0x05, 0x89, 0x0b, 0x3c, 0xac,
+	0x1f, 0x9e, 0x1c, 0xd4, 0x8f, 0x1b, 0x05, 0xb4, 0xfd, 0xed, 0xd9, 0xb9, 0x2e, 0xbd, 0x3c, 0xd7,
+	0xa5, 0xd7, 0xe7, 0x3a, 0x7a, 0x73, 0xae, 0xa3, 0x1f, 0x27, 0x3a, 0x7a, 0x3e, 0xd1, 0xd1, 0x1f,
+	0x13, 0x1d, 0xbd, 0x98, 0xe8, 0xe8, 0x6c, 0xa2, 0xa3, 0xd7, 0x13, 0x1d, 0xfd, 0x3d, 0xd1, 0xa5,
+	0x37, 0x13, 0x1d, 0x3d, 0xbb, 0xd0, 0xa5, 0xe7, 0x17, 0x3a, 0x3a, 0xbb, 0xd0, 0xa5, 0x97, 0x17,
+	0xba, 0xf4, 0xf5, 0xfa, 0x4d, 0xff, 0x53, 0xda, 0x59, 0x6e, 0xa2, 0x4f, 0xff, 0x0d, 0x00, 0x00,
+	0xff, 0xff, 0xe7, 0xfc, 0x9f, 0x62, 0xce, 0x08, 0x00, 0x00,
 }
 
 func (this *ID) Compare(that interface{}) int {
@@ -943,7 +1064,7 @@ func (this *HistoryID) Compare(that interface{}) int {
 	} else if this == nil {
 		return -1
 	}
-	if c := this.ID.Compare(that1.ID); c != 0 {
+	if c := this.ID.Compare(&that1.ID); c != 0 {
 		return c
 	}
 	return 0
@@ -1021,7 +1142,7 @@ func (this *RegularUserID) Compare(that interface{}) int {
 	} else if this == nil {
 		return -1
 	}
-	if c := this.ID.Compare(that1.ID); c != 0 {
+	if c := this.ID.Compare(&that1.ID); c != 0 {
 		return c
 	}
 	return 0
@@ -1298,7 +1419,7 @@ func (this *ItemID) Compare(that interface{}) int {
 	} else if this == nil {
 		return -1
 	}
-	if c := this.ID.Compare(that1.ID); c != 0 {
+	if c := this.ID.Compare(&that1.ID); c != 0 {
 		return c
 	}
 	return 0
@@ -1356,6 +1477,90 @@ func (this *Item) Compare(that interface{}) int {
 		if c := this.Children[i].Compare(that1.Children[i]); c != 0 {
 			return c
 		}
+	}
+	return 0
+}
+func (this *OIDCProviderID) Compare(that interface{}) int {
+	if that == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	}
+
+	that1, ok := that.(*OIDCProviderID)
+	if !ok {
+		that2, ok := that.(OIDCProviderID)
+		if ok {
+			that1 = &that2
+		} else {
+			return 1
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	} else if this == nil {
+		return -1
+	}
+	if c := this.ID.Compare(&that1.ID); c != 0 {
+		return c
+	}
+	return 0
+}
+func (this *OIDCProvider) Compare(that interface{}) int {
+	if that == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	}
+
+	that1, ok := that.(*OIDCProvider)
+	if !ok {
+		that2, ok := that.(OIDCProvider)
+		if ok {
+			that1 = &that2
+		} else {
+			return 1
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return 0
+		}
+		return 1
+	} else if this == nil {
+		return -1
+	}
+	if c := this.Id.Compare(that1.Id); c != 0 {
+		return c
+	}
+	if this.Name != that1.Name {
+		if this.Name < that1.Name {
+			return -1
+		}
+		return 1
+	}
+	if this.Callback != that1.Callback {
+		if this.Callback < that1.Callback {
+			return -1
+		}
+		return 1
+	}
+	if this.AuthorizationEndpoint != that1.AuthorizationEndpoint {
+		if this.AuthorizationEndpoint < that1.AuthorizationEndpoint {
+			return -1
+		}
+		return 1
+	}
+	if this.ClientID != that1.ClientID {
+		if this.ClientID < that1.ClientID {
+			return -1
+		}
+		return 1
 	}
 	return 0
 }
@@ -1605,7 +1810,7 @@ func (this *HistoryID) VerboseEqual(that interface{}) error {
 	} else if this == nil {
 		return fmt.Errorf("that is type *HistoryID but is not nil && this == nil")
 	}
-	if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
 	}
 	return nil
@@ -1629,7 +1834,7 @@ func (this *HistoryID) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return false
 	}
 	return true
@@ -1731,7 +1936,7 @@ func (this *RegularUserID) VerboseEqual(that interface{}) error {
 	} else if this == nil {
 		return fmt.Errorf("that is type *RegularUserID but is not nil && this == nil")
 	}
-	if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
 	}
 	return nil
@@ -1755,7 +1960,7 @@ func (this *RegularUserID) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return false
 	}
 	return true
@@ -1981,7 +2186,11 @@ func (this *RegularUser) VerboseEqual(that interface{}) error {
 			return fmt.Errorf("HistoryID this[%v](%v) Not Equal that[%v](%v)", i, this.HistoryID[i], i, that1.HistoryID[i])
 		}
 	}
-	if !this.Created.Equal(that1.Created) {
+	if that1.Created == nil {
+		if this.Created != nil {
+			return fmt.Errorf("this.Created != nil && that1.Created == nil")
+		}
+	} else if !this.Created.Equal(*that1.Created) {
 		return fmt.Errorf("Created this(%v) Not Equal that(%v)", this.Created, that1.Created)
 	}
 	return nil
@@ -2027,7 +2236,11 @@ func (this *RegularUser) Equal(that interface{}) bool {
 			return false
 		}
 	}
-	if !this.Created.Equal(that1.Created) {
+	if that1.Created == nil {
+		if this.Created != nil {
+			return false
+		}
+	} else if !this.Created.Equal(*that1.Created) {
 		return false
 	}
 	return true
@@ -2143,7 +2356,7 @@ func (this *ItemID) VerboseEqual(that interface{}) error {
 	} else if this == nil {
 		return fmt.Errorf("that is type *ItemID but is not nil && this == nil")
 	}
-	if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
 	}
 	return nil
@@ -2167,7 +2380,7 @@ func (this *ItemID) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return false
 	}
 	return true
@@ -2260,6 +2473,138 @@ func (this *Item) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *OIDCProviderID) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*OIDCProviderID)
+	if !ok {
+		that2, ok := that.(OIDCProviderID)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *OIDCProviderID")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *OIDCProviderID but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *OIDCProviderID but is not nil && this == nil")
+	}
+	if !this.ID.Equal(&that1.ID) {
+		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
+	}
+	return nil
+}
+func (this *OIDCProviderID) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*OIDCProviderID)
+	if !ok {
+		that2, ok := that.(OIDCProviderID)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.ID.Equal(&that1.ID) {
+		return false
+	}
+	return true
+}
+func (this *OIDCProvider) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*OIDCProvider)
+	if !ok {
+		that2, ok := that.(OIDCProvider)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *OIDCProvider")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *OIDCProvider but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *OIDCProvider but is not nil && this == nil")
+	}
+	if !this.Id.Equal(that1.Id) {
+		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
+	}
+	if this.Name != that1.Name {
+		return fmt.Errorf("Name this(%v) Not Equal that(%v)", this.Name, that1.Name)
+	}
+	if this.Callback != that1.Callback {
+		return fmt.Errorf("Callback this(%v) Not Equal that(%v)", this.Callback, that1.Callback)
+	}
+	if this.AuthorizationEndpoint != that1.AuthorizationEndpoint {
+		return fmt.Errorf("AuthorizationEndpoint this(%v) Not Equal that(%v)", this.AuthorizationEndpoint, that1.AuthorizationEndpoint)
+	}
+	if this.ClientID != that1.ClientID {
+		return fmt.Errorf("ClientID this(%v) Not Equal that(%v)", this.ClientID, that1.ClientID)
+	}
+	return nil
+}
+func (this *OIDCProvider) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*OIDCProvider)
+	if !ok {
+		that2, ok := that.(OIDCProvider)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Id.Equal(that1.Id) {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if this.Callback != that1.Callback {
+		return false
+	}
+	if this.AuthorizationEndpoint != that1.AuthorizationEndpoint {
+		return false
+	}
+	if this.ClientID != that1.ClientID {
+		return false
+	}
+	return true
+}
 func (this *IDToken) VerboseEqual(that interface{}) error {
 	if that == nil {
 		if this == nil {
@@ -2294,10 +2639,18 @@ func (this *IDToken) VerboseEqual(that interface{}) error {
 	if this.Audience != that1.Audience {
 		return fmt.Errorf("Audience this(%v) Not Equal that(%v)", this.Audience, that1.Audience)
 	}
-	if !this.Expiration.Equal(that1.Expiration) {
+	if that1.Expiration == nil {
+		if this.Expiration != nil {
+			return fmt.Errorf("this.Expiration != nil && that1.Expiration == nil")
+		}
+	} else if !this.Expiration.Equal(*that1.Expiration) {
 		return fmt.Errorf("Expiration this(%v) Not Equal that(%v)", this.Expiration, that1.Expiration)
 	}
-	if !this.Issued.Equal(that1.Issued) {
+	if that1.Issued == nil {
+		if this.Issued != nil {
+			return fmt.Errorf("this.Issued != nil && that1.Issued == nil")
+		}
+	} else if !this.Issued.Equal(*that1.Issued) {
 		return fmt.Errorf("Issued this(%v) Not Equal that(%v)", this.Issued, that1.Issued)
 	}
 	if this.Nonce != that1.Nonce {
@@ -2347,10 +2700,18 @@ func (this *IDToken) Equal(that interface{}) bool {
 	if this.Audience != that1.Audience {
 		return false
 	}
-	if !this.Expiration.Equal(that1.Expiration) {
+	if that1.Expiration == nil {
+		if this.Expiration != nil {
+			return false
+		}
+	} else if !this.Expiration.Equal(*that1.Expiration) {
 		return false
 	}
-	if !this.Issued.Equal(that1.Issued) {
+	if that1.Issued == nil {
+		if this.Issued != nil {
+			return false
+		}
+	} else if !this.Issued.Equal(*that1.Issued) {
 		return false
 	}
 	if this.Nonce != that1.Nonce {
@@ -2401,9 +2762,7 @@ func (this *HistoryID) GoString() string {
 	}
 	s := make([]string, 0, 5)
 	s = append(s, "&types.HistoryID{")
-	if this.ID != nil {
-		s = append(s, "ID: "+fmt.Sprintf("%#v", this.ID)+",\n")
-	}
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2428,9 +2787,7 @@ func (this *RegularUserID) GoString() string {
 	}
 	s := make([]string, 0, 5)
 	s = append(s, "&types.RegularUserID{")
-	if this.ID != nil {
-		s = append(s, "ID: "+fmt.Sprintf("%#v", this.ID)+",\n")
-	}
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2476,9 +2833,7 @@ func (this *RegularUser) GoString() string {
 	if this.HistoryID != nil {
 		s = append(s, "HistoryID: "+fmt.Sprintf("%#v", this.HistoryID)+",\n")
 	}
-	if this.Created != nil {
-		s = append(s, "Created: "+fmt.Sprintf("%#v", this.Created)+",\n")
-	}
+	s = append(s, "Created: "+fmt.Sprintf("%#v", this.Created)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2502,9 +2857,7 @@ func (this *ItemID) GoString() string {
 	}
 	s := make([]string, 0, 5)
 	s = append(s, "&types.ItemID{")
-	if this.ID != nil {
-		s = append(s, "ID: "+fmt.Sprintf("%#v", this.ID)+",\n")
-	}
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2528,6 +2881,32 @@ func (this *Item) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
+func (this *OIDCProviderID) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&types.OIDCProviderID{")
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *OIDCProvider) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 9)
+	s = append(s, "&types.OIDCProvider{")
+	if this.Id != nil {
+		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	}
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "Callback: "+fmt.Sprintf("%#v", this.Callback)+",\n")
+	s = append(s, "AuthorizationEndpoint: "+fmt.Sprintf("%#v", this.AuthorizationEndpoint)+",\n")
+	s = append(s, "ClientID: "+fmt.Sprintf("%#v", this.ClientID)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *IDToken) GoString() string {
 	if this == nil {
 		return "nil"
@@ -2537,12 +2916,8 @@ func (this *IDToken) GoString() string {
 	s = append(s, "Issuer: "+fmt.Sprintf("%#v", this.Issuer)+",\n")
 	s = append(s, "Subject: "+fmt.Sprintf("%#v", this.Subject)+",\n")
 	s = append(s, "Audience: "+fmt.Sprintf("%#v", this.Audience)+",\n")
-	if this.Expiration != nil {
-		s = append(s, "Expiration: "+fmt.Sprintf("%#v", this.Expiration)+",\n")
-	}
-	if this.Issued != nil {
-		s = append(s, "Issued: "+fmt.Sprintf("%#v", this.Issued)+",\n")
-	}
+	s = append(s, "Expiration: "+fmt.Sprintf("%#v", this.Expiration)+",\n")
+	s = append(s, "Issued: "+fmt.Sprintf("%#v", this.Issued)+",\n")
 	s = append(s, "Nonce: "+fmt.Sprintf("%#v", this.Nonce)+",\n")
 	s = append(s, "AuthenticationContextClassReference: "+fmt.Sprintf("%#v", this.AuthenticationContextClassReference)+",\n")
 	s = append(s, "AuthenticationMethodsReference: "+fmt.Sprintf("%#v", this.AuthenticationMethodsReference)+",\n")
@@ -2661,18 +3036,16 @@ func (m *HistoryID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.ID != nil {
-		{
-			size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -2752,18 +3125,16 @@ func (m *RegularUserID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.ID != nil {
-		{
-			size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -2851,14 +3222,12 @@ func (m *RegularUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if m.Created != nil {
-		{
-			size, err := m.Created.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
+		n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Created, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Created):])
+		if err8 != nil {
+			return 0, err8
 		}
+		i -= n8
+		i = encodeVarintTypes(dAtA, i, uint64(n8))
 		i--
 		dAtA[i] = 0x2a
 	}
@@ -2996,18 +3365,16 @@ func (m *ItemID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.ID != nil {
-		{
-			size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -3086,6 +3453,102 @@ func (m *Item) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *OIDCProviderID) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OIDCProviderID) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OIDCProviderID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *OIDCProvider) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OIDCProvider) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *OIDCProvider) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ClientID) > 0 {
+		i -= len(m.ClientID)
+		copy(dAtA[i:], m.ClientID)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.ClientID)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.AuthorizationEndpoint) > 0 {
+		i -= len(m.AuthorizationEndpoint)
+		copy(dAtA[i:], m.AuthorizationEndpoint)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.AuthorizationEndpoint)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Callback) > 0 {
+		i -= len(m.Callback)
+		copy(dAtA[i:], m.Callback)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Callback)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != nil {
+		{
+			size, err := m.Id.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *IDToken) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -3135,26 +3598,22 @@ func (m *IDToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x32
 	}
 	if m.Issued != nil {
-		{
-			size, err := m.Issued.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
+		n19, err19 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Issued, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Issued):])
+		if err19 != nil {
+			return 0, err19
 		}
+		i -= n19
+		i = encodeVarintTypes(dAtA, i, uint64(n19))
 		i--
 		dAtA[i] = 0x2a
 	}
 	if m.Expiration != nil {
-		{
-			size, err := m.Expiration.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
+		n20, err20 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Expiration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Expiration):])
+		if err20 != nil {
+			return 0, err20
 		}
+		i -= n20
+		i = encodeVarintTypes(dAtA, i, uint64(n20))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -3232,10 +3691,8 @@ func (m *HistoryID) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != nil {
-		l = m.ID.Size()
-		n += 1 + l + sovTypes(uint64(l))
-	}
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -3270,10 +3727,8 @@ func (m *RegularUserID) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != nil {
-		l = m.ID.Size()
-		n += 1 + l + sovTypes(uint64(l))
-	}
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -3338,7 +3793,7 @@ func (m *RegularUser) Size() (n int) {
 		}
 	}
 	if m.Created != nil {
-		l = m.Created.Size()
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.Created)
 		n += 1 + l + sovTypes(uint64(l))
 	}
 	return n
@@ -3375,10 +3830,8 @@ func (m *ItemID) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != nil {
-		l = m.ID.Size()
-		n += 1 + l + sovTypes(uint64(l))
-	}
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -3413,6 +3866,46 @@ func (m *Item) Size() (n int) {
 	return n
 }
 
+func (m *OIDCProviderID) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *OIDCProvider) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != nil {
+		l = m.Id.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.Callback)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.AuthorizationEndpoint)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.ClientID)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	return n
+}
+
 func (m *IDToken) Size() (n int) {
 	if m == nil {
 		return 0
@@ -3432,11 +3925,11 @@ func (m *IDToken) Size() (n int) {
 		n += 1 + l + sovTypes(uint64(l))
 	}
 	if m.Expiration != nil {
-		l = m.Expiration.Size()
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.Expiration)
 		n += 1 + l + sovTypes(uint64(l))
 	}
 	if m.Issued != nil {
-		l = m.Issued.Size()
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.Issued)
 		n += 1 + l + sovTypes(uint64(l))
 	}
 	l = len(m.Nonce)
@@ -3491,7 +3984,7 @@ func (this *HistoryID) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&HistoryID{`,
-		`ID:` + strings.Replace(this.ID.String(), "ID", "ID", 1) + `,`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3514,7 +4007,7 @@ func (this *RegularUserID) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&RegularUserID{`,
-		`ID:` + strings.Replace(this.ID.String(), "ID", "ID", 1) + `,`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3590,7 +4083,7 @@ func (this *ItemID) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&ItemID{`,
-		`ID:` + strings.Replace(this.ID.String(), "ID", "ID", 1) + `,`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3610,6 +4103,30 @@ func (this *Item) String() string {
 		`Location:` + fmt.Sprintf("%v", this.Location) + `,`,
 		`Parent:` + strings.Replace(this.Parent.String(), "ItemID", "ItemID", 1) + `,`,
 		`Children:` + repeatedStringForChildren + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *OIDCProviderID) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&OIDCProviderID{`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *OIDCProvider) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&OIDCProvider{`,
+		`Id:` + strings.Replace(this.Id.String(), "OIDCProviderID", "OIDCProviderID", 1) + `,`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`Callback:` + fmt.Sprintf("%v", this.Callback) + `,`,
+		`AuthorizationEndpoint:` + fmt.Sprintf("%v", this.AuthorizationEndpoint) + `,`,
+		`ClientID:` + fmt.Sprintf("%v", this.ClientID) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3941,9 +4458,6 @@ func (m *HistoryID) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.ID == nil {
-				m.ID = &ID{}
-			}
 			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -4214,9 +4728,6 @@ func (m *RegularUserID) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.ID == nil {
-				m.ID = &ID{}
 			}
 			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -4584,9 +5095,9 @@ func (m *RegularUser) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Created == nil {
-				m.Created = &types.Timestamp{}
+				m.Created = new(time.Time)
 			}
-			if err := m.Created.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.Created, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4847,9 +5358,6 @@ func (m *ItemID) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.ID == nil {
-				m.ID = &ID{}
-			}
 			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -5101,6 +5609,309 @@ func (m *Item) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *OIDCProviderID) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OIDCProviderID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OIDCProviderID: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *OIDCProvider) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OIDCProvider: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OIDCProvider: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Id == nil {
+				m.Id = &OIDCProviderID{}
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Callback", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Callback = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthorizationEndpoint", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AuthorizationEndpoint = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClientID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *IDToken) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5256,9 +6067,9 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Expiration == nil {
-				m.Expiration = &types.Timestamp{}
+				m.Expiration = new(time.Time)
 			}
-			if err := m.Expiration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.Expiration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5292,9 +6103,9 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Issued == nil {
-				m.Issued = &types.Timestamp{}
+				m.Issued = new(time.Time)
 			}
-			if err := m.Issued.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.Issued, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

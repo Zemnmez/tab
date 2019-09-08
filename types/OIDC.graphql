@@ -17,7 +17,7 @@ type IDToken @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
     AuthorizedParty: String
 }
 
-input IDTokenInput @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
+input IDTokenInput {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -29,7 +29,7 @@ input IDTokenInput @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
     AuthorizedParty: String
 }
 
-type OIDCProvider {
+type OIDCProvider @goModel(model: "github.com/zemnmez/tab/types.OIDCProvider") {
     ID: OIDCProviderID
     Name: String!
     Callback: String!
@@ -42,12 +42,13 @@ extend type UserAuthentication {
 }
 
 extend type AuthenticationQuery { OIDC: OIDCQuery } 
-type OIDCQuery {
+
+type OIDCQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.OIDCQuery") {
     Provider: OIDCProviderQuery
     IsValid(token: IDTokenInput): Boolean
 }
 
-type OIDCProviderQuery {
+type OIDCProviderQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.OIDCProviderQuery") {
     All: [OIDCProvider!]!
     ByID(id: OIDCProviderID): OIDCProvider
 }
@@ -58,13 +59,12 @@ input OIDCProviderInput {
 }
 
 extend type AuthenticationMutation { OIDC: OIDCMutation }
-type OIDCMutation {
+
+type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolvers.OIDCMutation") {
     # Authenticates by OIDC ID Token and returns the corresponding User, if any.
     Authenticate(token: IDTokenInput): User
 
     # modifies, creates or deletes an OIDC provider. If id is blank, the provider will be created.
     # If provider is blank, the provider will be deleted.
-    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider
-        @authorized(to: [MODIFY_VALID_AUTH])
-}
+    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH]) }
 
