@@ -20,6 +20,7 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// MarshalJSON implements json.Marshaler
 func (this ID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -28,15 +29,21 @@ func (this ID) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *ID) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this ID) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *ID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -44,6 +51,8 @@ func (this *ID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this AuthorizationGrant) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -52,15 +61,21 @@ func (this AuthorizationGrant) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *AuthorizationGrant) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this AuthorizationGrant) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *AuthorizationGrant) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -68,6 +83,8 @@ func (this *AuthorizationGrant) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this HistoryID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -76,15 +93,21 @@ func (this HistoryID) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *HistoryID) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this HistoryID) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *HistoryID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -92,6 +115,8 @@ func (this *HistoryID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this HistoryItem) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -100,15 +125,21 @@ func (this HistoryItem) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *HistoryItem) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this HistoryItem) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *HistoryItem) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -116,6 +147,8 @@ func (this *HistoryItem) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this RegularUserID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -124,15 +157,21 @@ func (this RegularUserID) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *RegularUserID) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this RegularUserID) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -140,6 +179,8 @@ func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this UserID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -148,15 +189,21 @@ func (this UserID) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *UserID) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this UserID) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *UserID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -164,6 +211,8 @@ func (this *UserID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this RegularUser) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -172,15 +221,21 @@ func (this RegularUser) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *RegularUser) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this RegularUser) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -188,6 +243,8 @@ func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this SpecialUser) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -196,15 +253,21 @@ func (this SpecialUser) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *SpecialUser) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this SpecialUser) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *SpecialUser) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -212,6 +275,8 @@ func (this *SpecialUser) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this ItemID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -220,15 +285,21 @@ func (this ItemID) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *ItemID) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this ItemID) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *ItemID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -236,6 +307,8 @@ func (this *ItemID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this Item) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -244,15 +317,21 @@ func (this Item) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *Item) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this Item) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *Item) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -260,6 +339,8 @@ func (this *Item) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this OIDCProviderID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -268,15 +349,21 @@ func (this OIDCProviderID) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *OIDCProviderID) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this OIDCProviderID) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *OIDCProviderID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -284,6 +371,8 @@ func (this *OIDCProviderID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this OIDCProvider) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -292,15 +381,21 @@ func (this OIDCProvider) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *OIDCProvider) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this OIDCProvider) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *OIDCProvider) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -308,6 +403,8 @@ func (this *OIDCProvider) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this IDToken) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
@@ -316,15 +413,21 @@ func (this IDToken) MarshalJSON() (json []byte, err error) {
 	json = b.Bytes()
 	return
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *IDToken) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this IDToken) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *IDToken) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -332,12 +435,16 @@ func (this *IDToken) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this Authorization) MarshalJSON() (json []byte, err error) {
 	if _, ok := Authorization_name[int32(this)]; !ok {
 		return nil, ErrInvalidEnum{EnumName: "Authorization", Value: this}
 	}
 	return encoding_json.Marshal(this.String())
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *Authorization) UnmarshalJSON(json []byte) (err error) {
 	var text string
 	if err = encoding_json.Unmarshal(json, &text); err != nil {
@@ -350,6 +457,8 @@ func (this *Authorization) UnmarshalJSON(json []byte) (err error) {
 	}
 	return
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this Authorization) MarshalGQL(w io.Writer) {
 	var err error
 	b, err := this.MarshalJSON()
@@ -360,6 +469,8 @@ func (this Authorization) MarshalGQL(w io.Writer) {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *Authorization) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
@@ -367,12 +478,16 @@ func (this *Authorization) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalJSON implements json.Marshaler
 func (this SpecialUserID) MarshalJSON() (json []byte, err error) {
 	if _, ok := SpecialUserID_name[int32(this)]; !ok {
 		return nil, ErrInvalidEnum{EnumName: "SpecialUserID", Value: this}
 	}
 	return encoding_json.Marshal(this.String())
 }
+
+// UnmarshalJSON implements json.Unmarshaler
 func (this *SpecialUserID) UnmarshalJSON(json []byte) (err error) {
 	var text string
 	if err = encoding_json.Unmarshal(json, &text); err != nil {
@@ -385,6 +500,8 @@ func (this *SpecialUserID) UnmarshalJSON(json []byte) (err error) {
 	}
 	return
 }
+
+// MarshalGQL implements graphql.Marshaler
 func (this SpecialUserID) MarshalGQL(w io.Writer) {
 	var err error
 	b, err := this.MarshalJSON()
@@ -395,6 +512,8 @@ func (this SpecialUserID) MarshalGQL(w io.Writer) {
 		panic(err)
 	}
 }
+
+// UnmarshalGQL implements graphql.Unmarshaler
 func (this *SpecialUserID) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {

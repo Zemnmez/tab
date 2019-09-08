@@ -49,6 +49,8 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 
 
 		ccTypeName := generator.CamelCaseSlice(message.TypeName())
+
+		p.P(`// MarshalJSON implements json.Marshaler`)
 		p.P(`func (this `, ccTypeName, `) MarshalJSON() (json []byte, err error) {`)
 		p.In()
 
@@ -72,7 +74,7 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 
 		
 
-
+		p.P(`// UnmarshalJSON implements json.Unmarshaler`)
 		p.P(`func (this *`, ccTypeName, `) UnmarshalJSON(json []byte) (err error) {`)
 		p.In()
 		switch message.(type) {
@@ -95,6 +97,7 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 		p.Out()
 		p.P(`}`)
 
+		p.P(`// MarshalGQL implements graphql.Marshaler`)
 		p.P(`func (this `, ccTypeName, `) MarshalGQL(w `, ioPkg.Use(), `.Writer) {var err error;`)
 		switch message.(type) {
 
@@ -113,6 +116,8 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 
 		// this is going to be really dumb... to avoid serious type fuckery
 		// we'll need to encode back into JSON and then re parse it
+
+		p.P(`// UnmarshalGQL implements graphql.Unmarshaler`)
 		p.P(`func (this *`, ccTypeName, `) UnmarshalGQL(v interface{}) (err error) {`+
 		`var newJSON []byte;if newJSON, err = `, jsonPkg.Use(), `.Marshal(v);err!=nil{return};`+
 		`;return this.UnmarshalJSON(newJSON);`+
