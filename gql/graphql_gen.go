@@ -52,6 +52,7 @@ type ResolverRoot interface {
 	SpecialUser() SpecialUserResolver
 	UserAuthentication() UserAuthenticationResolver
 	UserMutation() UserMutationResolver
+	UserQuery() UserQueryResolver
 }
 
 type DirectiveRoot struct {
@@ -180,9 +181,9 @@ type ComplexityRoot struct {
 	}
 
 	UserQuery struct {
-		Regular func(childComplexity int, id *types.RegularUserID) int
+		Regular func(childComplexity int, id types.RegularUserID) int
 		Self    func(childComplexity int) int
-		Special func(childComplexity int, id *types.SpecialUserID) int
+		Special func(childComplexity int, id types.SpecialUserID) int
 		WhoCan  func(childComplexity int, do []types.Authorization) int
 	}
 }
@@ -248,6 +249,9 @@ type UserAuthenticationResolver interface {
 type UserMutationResolver interface {
 	Special(ctx context.Context, obj *resolvers.UserMutation, id *types.SpecialUserID) (resolvers.UserMutator, error)
 	Regular(ctx context.Context, obj *resolvers.UserMutation, id *types.RegularUserID) (resolvers.UserMutator, error)
+}
+type UserQueryResolver interface {
+	WhoCan(ctx context.Context, obj *resolvers.UserQuery, do []types.Authorization) ([]resolvers.User, error)
 }
 
 type executableSchema struct {
@@ -808,7 +812,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.UserQuery.Regular(childComplexity, args["id"].(*types.RegularUserID)), true
+		return e.complexity.UserQuery.Regular(childComplexity, args["id"].(types.RegularUserID)), true
 
 	case "UserQuery.Self":
 		if e.complexity.UserQuery.Self == nil {
@@ -827,7 +831,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.UserQuery.Special(childComplexity, args["id"].(*types.SpecialUserID)), true
+		return e.complexity.UserQuery.Special(childComplexity, args["id"].(types.SpecialUserID)), true
 
 	case "UserQuery.WhoCan":
 		if e.complexity.UserQuery.WhoCan == nil {
@@ -1198,8 +1202,7 @@ type Mutation @goModel(model: "github.com/zemnmez/tab/gql/resolvers.Mutation") {
 # This module deals with users existing!
 
 # RegularUserID represents the ID of a regular user i.e. a user that is not ANONYMOUS or ROOT.
-scalar RegularUserID
-    @goModel(model: "github.com/zemnmez/tab/types.RegularUserID")
+scalar RegularUserID @goModel(model: "github.com/zemnmez/tab/types.RegularUserID")
 
 # Special users are singleton users with special functionality
 enum SpecialUserID {
@@ -1210,7 +1213,7 @@ enum SpecialUserID {
     ANONYMOUS
 }
 
-interface User {
+interface User @goModel(model: "github.com/zemnmez/tab/gql/resolvers.User") {
     Name: String!
 }
 
@@ -1257,7 +1260,7 @@ extend type Query {
     User: UserQuery
 }
 
-type UserQuery {
+type UserQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.UserQuery") {
     # Self returns the currently logged in user
     Self: Self!
 
@@ -1500,9 +1503,9 @@ func (ec *executionContext) field_UserMutation_Special_args(ctx context.Context,
 func (ec *executionContext) field_UserQuery_Regular_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *types.RegularUserID
+	var arg0 types.RegularUserID
 	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalORegularUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx, tmp)
+		arg0, err = ec.unmarshalORegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1514,9 +1517,9 @@ func (ec *executionContext) field_UserQuery_Regular_args(ctx context.Context, ra
 func (ec *executionContext) field_UserQuery_Special_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *types.SpecialUserID
+	var arg0 types.SpecialUserID
 	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, tmp)
+		arg0, err = ec.unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4387,13 +4390,13 @@ func (ec *executionContext) _UserQuery_Self(ctx context.Context, field graphql.C
 		Object:   "UserQuery",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Self, nil
+		return obj.Self(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4405,10 +4408,10 @@ func (ec *executionContext) _UserQuery_Self(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*resolvers.Self)
+	res := resTmp.(resolvers.Self)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNSelf2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolversᚐSelf(ctx, field.Selections, res)
+	return ec.marshalNSelf2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolversᚐSelf(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphql.CollectedField, obj *resolvers.UserQuery) (ret graphql.Marshaler) {
@@ -4424,7 +4427,7 @@ func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphq
 		Object:   "UserQuery",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
@@ -4438,7 +4441,7 @@ func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphq
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return obj.Special, nil
+			return obj.Special(args["id"].(types.SpecialUserID)), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"VIEW_USERS"})
@@ -4452,12 +4455,10 @@ func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphq
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(*types.SpecialUser); ok {
+		if data, ok := tmp.(types.SpecialUser); ok {
 			return data, nil
-		} else if tmp == nil {
-			return nil, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/types.SpecialUser`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/types.SpecialUser`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4466,10 +4467,10 @@ func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.SpecialUser)
+	res := resTmp.(types.SpecialUser)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx, field.Selections, res)
+	return ec.marshalOSpecialUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphql.CollectedField, obj *resolvers.UserQuery) (ret graphql.Marshaler) {
@@ -4485,7 +4486,7 @@ func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphq
 		Object:   "UserQuery",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
@@ -4499,7 +4500,7 @@ func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphq
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return obj.Regular, nil
+			return obj.Regular(args["id"].(types.RegularUserID)), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"VIEW_USERS"})
@@ -4513,12 +4514,10 @@ func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphq
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(*types.RegularUser); ok {
+		if data, ok := tmp.(types.RegularUser); ok {
 			return data, nil
-		} else if tmp == nil {
-			return nil, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/types.RegularUser`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/types.RegularUser`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4527,10 +4526,10 @@ func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.RegularUser)
+	res := resTmp.(types.RegularUser)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalORegularUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx, field.Selections, res)
+	return ec.marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserQuery_WhoCan(ctx context.Context, field graphql.CollectedField, obj *resolvers.UserQuery) (ret graphql.Marshaler) {
@@ -4546,7 +4545,7 @@ func (ec *executionContext) _UserQuery_WhoCan(ctx context.Context, field graphql
 		Object:   "UserQuery",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
@@ -4560,7 +4559,7 @@ func (ec *executionContext) _UserQuery_WhoCan(ctx context.Context, field graphql
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return obj.WhoCan, nil
+			return ec.resolvers.UserQuery().WhoCan(rctx, obj, args["do"].([]types.Authorization))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"VIEW_USERS"})
@@ -5984,6 +5983,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		return ec._Self(ctx, sel, obj)
 	case *types.RegularUser:
 		return ec._RegularUser(ctx, sel, obj)
+	case types.SpecialUser:
+		return ec._SpecialUser(ctx, sel, &obj)
 	case *types.SpecialUser:
 		return ec._SpecialUser(ctx, sel, obj)
 	default:
@@ -6896,17 +6897,26 @@ func (ec *executionContext) _UserQuery(ctx context.Context, sel ast.SelectionSet
 		case "Self":
 			out.Values[i] = ec._UserQuery_Self(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "Special":
 			out.Values[i] = ec._UserQuery_Special(ctx, field, obj)
 		case "Regular":
 			out.Values[i] = ec._UserQuery_Regular(ctx, field, obj)
 		case "WhoCan":
-			out.Values[i] = ec._UserQuery_WhoCan(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserQuery_WhoCan(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -7565,16 +7575,6 @@ func (ec *executionContext) marshalNSelf2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋre
 	return ec._Self(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSelf2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolversᚐSelf(ctx context.Context, sel ast.SelectionSet, v *resolvers.Self) graphql.Marshaler {
-	if v == nil {
-		if !ec.HasError(graphql.GetResolverContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._Self(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (types.SpecialUserID, error) {
 	return ec.unmarshalInputSpecialUserID(ctx, v)
 }
@@ -8142,13 +8142,6 @@ func (ec *executionContext) marshalOOIDCQuery2ᚖgithubᚗcomᚋzemnmezᚋtabᚋ
 
 func (ec *executionContext) marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx context.Context, sel ast.SelectionSet, v types.RegularUser) graphql.Marshaler {
 	return ec._RegularUser(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalORegularUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx context.Context, sel ast.SelectionSet, v *types.RegularUser) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._RegularUser(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalORegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, v interface{}) (types.RegularUserID, error) {

@@ -365,10 +365,8 @@ var xxx_messageInfo_UserID proto.InternalMessageInfo
 type isUserID_ID interface {
 	isUserID_ID()
 	Equal(interface{}) bool
-	VerboseEqual(interface{}) error
 	MarshalTo([]byte) (int, error)
 	Size() int
-	Compare(interface{}) int
 }
 
 type UserID_SpecialUserID struct {
@@ -896,757 +894,72 @@ func init() {
 }
 
 var fileDescriptor_e927c4c8d1099e6c = []byte{
-	// 1002 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xb1, 0x6f, 0xdb, 0xc6,
-	0x17, 0xe6, 0x51, 0xb4, 0x6c, 0x3e, 0xfd, 0xe4, 0xe8, 0x77, 0xb0, 0x03, 0xc2, 0x70, 0x69, 0x55,
-	0x69, 0x00, 0x35, 0x40, 0xe4, 0xc2, 0x4d, 0x81, 0xa2, 0xc8, 0x50, 0xd9, 0x94, 0x6b, 0x02, 0xb6,
-	0x65, 0x50, 0x72, 0x02, 0x17, 0x68, 0x05, 0x8a, 0x3c, 0x49, 0x6c, 0x24, 0x9e, 0x4a, 0x9e, 0x8a,
-	0xc8, 0x53, 0x87, 0x4e, 0x9d, 0xf2, 0x2f, 0x74, 0x6a, 0x96, 0xce, 0xed, 0xd0, 0x3f, 0x20, 0xa3,
-	0xc7, 0x4c, 0x69, 0x2c, 0x2f, 0x45, 0xa7, 0xfc, 0x09, 0x05, 0x8f, 0x47, 0x99, 0x72, 0x1c, 0x47,
-	0xe8, 0x22, 0xf0, 0xdd, 0xfb, 0xbe, 0x77, 0xdf, 0xbb, 0xf7, 0xdd, 0x41, 0x50, 0xee, 0x7a, 0xac,
-	0x37, 0x6a, 0x57, 0x1c, 0x3a, 0xd8, 0x3c, 0x25, 0x03, 0x7f, 0x40, 0x4e, 0x37, 0x99, 0xdd, 0xde,
-	0x64, 0xe3, 0x21, 0x09, 0xe3, 0xdf, 0xca, 0x30, 0xa0, 0x8c, 0xe2, 0x05, 0x1e, 0xac, 0xdd, 0x4f,
-	0x11, 0xba, 0xb4, 0x4b, 0x37, 0x79, 0xb6, 0x3d, 0xea, 0xf0, 0x88, 0x07, 0xfc, 0x2b, 0x66, 0xad,
-	0x6d, 0x74, 0x29, 0xed, 0xf6, 0xc9, 0x25, 0x8a, 0x79, 0x03, 0x12, 0x32, 0x7b, 0x30, 0x8c, 0x01,
-	0xa5, 0x15, 0x90, 0x4d, 0x03, 0x2f, 0x83, 0xec, 0xb9, 0x1a, 0x2a, 0xa2, 0xb2, 0x6a, 0xc9, 0x9e,
-	0x5b, 0xfa, 0x06, 0x70, 0x75, 0xc4, 0x7a, 0x34, 0xf0, 0x4e, 0x6d, 0xe6, 0x51, 0xff, 0xab, 0xc0,
-	0xf6, 0x19, 0xfe, 0x10, 0x94, 0x4e, 0x40, 0x07, 0x1c, 0x97, 0xdb, 0xca, 0x57, 0x62, 0x79, 0xc7,
-	0x21, 0x09, 0x4c, 0xc3, 0xe2, 0x29, 0xfc, 0x11, 0xc8, 0xb4, 0xa3, 0xc9, 0xc5, 0x4c, 0x79, 0x79,
-	0x6b, 0x45, 0x00, 0x66, 0x2a, 0x59, 0x32, 0xed, 0x94, 0x3e, 0x01, 0x75, 0xcf, 0x0b, 0x19, 0x0d,
-	0xc6, 0xa6, 0x81, 0xef, 0x4c, 0xf7, 0xce, 0x6d, 0xa9, 0x82, 0x62, 0x1a, 0xdb, 0x4b, 0x2f, 0x5e,
-	0x6d, 0x48, 0x67, 0xaf, 0x36, 0x10, 0x17, 0xf4, 0x13, 0x82, 0x5c, 0x42, 0x61, 0x64, 0x80, 0x6f,
-	0x43, 0xd6, 0x76, 0xa2, 0x7a, 0x42, 0xb4, 0x88, 0xf0, 0x07, 0x20, 0xb7, 0xc7, 0x9a, 0x7c, 0x9d,
-	0x40, 0xb9, 0x3d, 0xc6, 0x45, 0xc8, 0x05, 0xe4, 0xfb, 0x11, 0x09, 0x99, 0x61, 0x33, 0x5b, 0xcb,
-	0x70, 0x6e, 0x7a, 0x09, 0xaf, 0x83, 0x6a, 0x1e, 0x55, 0x5d, 0x37, 0x20, 0x61, 0xa8, 0x29, 0x3c,
-	0xaf, 0x7a, 0xc9, 0x42, 0xe9, 0x01, 0xe4, 0x2d, 0xd2, 0x1d, 0xf5, 0xed, 0x20, 0x2e, 0x3a, 0x9f,
-	0xf8, 0x9f, 0x11, 0x64, 0x05, 0xfe, 0x21, 0xe4, 0xc3, 0x21, 0x71, 0x3c, 0xbb, 0x1f, 0x2f, 0x70,
-	0xea, 0xe5, 0x51, 0x35, 0xd2, 0xb9, 0x3d, 0xc9, 0x9a, 0x05, 0x47, 0xec, 0x20, 0xbd, 0xbd, 0x68,
-	0x34, 0x61, 0xcf, 0x48, 0x8b, 0xd8, 0x33, 0xe0, 0x6d, 0x25, 0x1a, 0x75, 0xe9, 0x1f, 0x04, 0xb9,
-	0x14, 0x30, 0x3a, 0xb1, 0x69, 0x07, 0x57, 0x4f, 0xcc, 0x73, 0x31, 0x06, 0xc5, 0xb7, 0x07, 0x84,
-	0xef, 0xa4, 0x5a, 0xfc, 0x1b, 0x3f, 0x84, 0x65, 0x3b, 0x3d, 0xd3, 0x50, 0xcb, 0xdc, 0x30, 0xf0,
-	0x2b, 0x58, 0x5c, 0x01, 0xb5, 0x97, 0x0c, 0x5f, 0x53, 0x8a, 0x99, 0x72, 0x6e, 0xab, 0x20, 0x88,
-	0x53, 0x53, 0x58, 0x97, 0x10, 0xfc, 0x05, 0x2c, 0x3a, 0x01, 0xb1, 0x19, 0x71, 0xb5, 0x05, 0xae,
-	0x72, 0xad, 0x12, 0x9b, 0xba, 0x92, 0x98, 0xba, 0xd2, 0x4c, 0x4c, 0xbd, 0xad, 0x3c, 0xfb, 0x6b,
-	0x03, 0x59, 0x09, 0xa1, 0xf4, 0x0b, 0x82, 0x5c, 0xea, 0x4c, 0x23, 0x7b, 0x8a, 0x66, 0xdf, 0x71,
-	0xe6, 0xbc, 0xe7, 0xb7, 0xfb, 0x93, 0xff, 0x6b, 0x7f, 0x99, 0xf7, 0xf6, 0x57, 0xba, 0x0f, 0xd9,
-	0xc8, 0xd2, 0xf3, 0x9a, 0xe9, 0x57, 0x04, 0x0a, 0xbf, 0x02, 0xd7, 0x0d, 0x2e, 0x2e, 0xf4, 0xce,
-	0xc1, 0xad, 0xc1, 0x52, 0x9f, 0x3a, 0x5c, 0xa7, 0xf0, 0xfe, 0x34, 0xc6, 0x77, 0x21, 0x3b, 0xb4,
-	0x03, 0xe2, 0x33, 0xee, 0xfa, 0xb7, 0x4a, 0x8a, 0x24, 0xfe, 0x18, 0x96, 0x9c, 0x9e, 0xd7, 0x77,
-	0x03, 0xe2, 0x6b, 0x0b, 0xbc, 0xb9, 0x2b, 0xc0, 0x69, 0xba, 0xf4, 0x19, 0x2c, 0xd7, 0x4d, 0x63,
-	0xe7, 0x28, 0xa0, 0x3f, 0x78, 0xee, 0xfc, 0xb7, 0xe5, 0x77, 0x04, 0xff, 0x4b, 0xf3, 0xf0, 0xdd,
-	0x14, 0x6b, 0x55, 0xb0, 0x66, 0x0b, 0xdf, 0xd4, 0xb0, 0x63, 0xf7, 0xfb, 0x6d, 0xdb, 0x79, 0x92,
-	0x34, 0x9c, 0xc4, 0xf8, 0x01, 0xac, 0xce, 0x4c, 0xae, 0xe6, 0xbb, 0x43, 0xea, 0x89, 0xfe, 0x55,
-	0xeb, 0xfa, 0x24, 0xaf, 0xd8, 0xf7, 0x88, 0xcf, 0x4c, 0x83, 0xdb, 0x31, 0xaa, 0x28, 0xe2, 0xd2,
-	0x6f, 0x19, 0x58, 0x34, 0x8d, 0x26, 0x7d, 0x42, 0xfc, 0xe8, 0x81, 0xf2, 0xc2, 0x70, 0x44, 0x82,
-	0xe4, 0x81, 0x8a, 0x23, 0xac, 0xc1, 0x62, 0x38, 0x6a, 0x7f, 0x47, 0x1c, 0x26, 0x84, 0x26, 0x61,
-	0x54, 0xd9, 0x1e, 0xb9, 0x1e, 0xf1, 0x1d, 0x92, 0x68, 0x4d, 0x62, 0xfc, 0x25, 0x00, 0x79, 0x3a,
-	0xf4, 0x82, 0x78, 0x74, 0xca, 0x9c, 0xd7, 0x20, 0xc5, 0xc1, 0x9f, 0x0b, 0x3d, 0xf3, 0x5f, 0x22,
-	0x81, 0xc7, 0x2b, 0xb0, 0xe0, 0xd3, 0x48, 0x54, 0x96, 0x8b, 0x8a, 0x03, 0x7c, 0x04, 0x77, 0xa2,
-	0x03, 0x22, 0x3e, 0xf3, 0x62, 0x03, 0xed, 0x50, 0x9f, 0x91, 0xa7, 0x6c, 0xa7, 0x6f, 0x87, 0xa1,
-	0x45, 0x3a, 0x24, 0xe0, 0x8d, 0x2c, 0x16, 0x51, 0x39, 0x63, 0xcd, 0x03, 0xc5, 0xbb, 0xa0, 0xcf,
-	0xc2, 0x0e, 0x08, 0xeb, 0x51, 0x37, 0x55, 0x6c, 0xa9, 0x98, 0x29, 0xab, 0xd6, 0x7b, 0x50, 0xb8,
-	0x0c, 0xb7, 0x92, 0xd1, 0x11, 0xf7, 0xc8, 0x0e, 0xd8, 0x58, 0x53, 0xb9, 0xf2, 0xab, 0xcb, 0xf7,
-	0xfe, 0x44, 0x90, 0x9f, 0xb9, 0xcb, 0x78, 0x19, 0xe0, 0x91, 0x59, 0x7b, 0xdc, 0x3a, 0x6e, 0xd4,
-	0xac, 0x46, 0x41, 0xc2, 0xab, 0xf0, 0xff, 0x83, 0xba, 0x61, 0xee, 0x9e, 0xb4, 0x1e, 0x55, 0xf7,
-	0x4d, 0xa3, 0x55, 0x3d, 0x6e, 0xee, 0x15, 0x10, 0xce, 0x83, 0x5a, 0x35, 0x8c, 0x96, 0xd9, 0xac,
-	0x1d, 0x34, 0x0a, 0x32, 0xbe, 0x0d, 0x58, 0xa0, 0xea, 0xcd, 0xbd, 0x9a, 0x25, 0xd8, 0x19, 0xac,
-	0xc1, 0x8a, 0x58, 0x6f, 0x1c, 0xd5, 0x76, 0xcc, 0xea, 0xbe, 0xc8, 0x28, 0xf8, 0x16, 0xe4, 0x92,
-	0x4c, 0x6d, 0x7f, 0xb7, 0xb0, 0x80, 0xd7, 0x41, 0xe3, 0x1b, 0xa7, 0x0a, 0xb4, 0xf6, 0xcc, 0x46,
-	0xb3, 0x6e, 0x9d, 0x14, 0xb2, 0x78, 0x05, 0x0a, 0x71, 0xf6, 0xf1, 0xe1, 0x74, 0x75, 0xf1, 0x5e,
-	0x19, 0xf2, 0x33, 0x6f, 0x17, 0x5e, 0x02, 0xc5, 0xaa, 0xd7, 0x9b, 0x05, 0x89, 0x0b, 0x3c, 0xac,
-	0x1f, 0x9e, 0x1c, 0xd4, 0x8f, 0x1b, 0x05, 0xb4, 0xfd, 0xed, 0xd9, 0xb9, 0x2e, 0xbd, 0x3c, 0xd7,
-	0xa5, 0xd7, 0xe7, 0x3a, 0x7a, 0x73, 0xae, 0xa3, 0x1f, 0x27, 0x3a, 0x7a, 0x3e, 0xd1, 0xd1, 0x1f,
-	0x13, 0x1d, 0xbd, 0x98, 0xe8, 0xe8, 0x6c, 0xa2, 0xa3, 0xd7, 0x13, 0x1d, 0xfd, 0x3d, 0xd1, 0xa5,
-	0x37, 0x13, 0x1d, 0x3d, 0xbb, 0xd0, 0xa5, 0xe7, 0x17, 0x3a, 0x3a, 0xbb, 0xd0, 0xa5, 0x97, 0x17,
-	0xba, 0xf4, 0xf5, 0xfa, 0x4d, 0xff, 0x53, 0xda, 0x59, 0x6e, 0xa2, 0x4f, 0xff, 0x0d, 0x00, 0x00,
-	0xff, 0xff, 0xe7, 0xfc, 0x9f, 0x62, 0xce, 0x08, 0x00, 0x00,
+	// 993 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0x41, 0x6f, 0xe3, 0x44,
+	0x14, 0xf6, 0x38, 0x6e, 0x5a, 0xbf, 0x90, 0x6e, 0x18, 0xb5, 0x2b, 0xab, 0x2a, 0x6e, 0xc8, 0xb2,
+	0x52, 0x58, 0x69, 0x53, 0x54, 0x16, 0x09, 0xa1, 0x3d, 0x90, 0xd6, 0x29, 0xb5, 0xd4, 0x36, 0x95,
+	0x93, 0x76, 0x55, 0x24, 0x14, 0x39, 0xf6, 0x24, 0x31, 0x9b, 0x78, 0x82, 0x3d, 0x41, 0x9b, 0x9e,
+	0x38, 0x70, 0xe2, 0xb4, 0x7f, 0x81, 0x13, 0x5c, 0x38, 0xc3, 0x81, 0x1f, 0xb0, 0xc7, 0x1e, 0xf7,
+	0xb4, 0xd0, 0xf4, 0x82, 0x38, 0xed, 0x4f, 0x40, 0x1e, 0x8f, 0x53, 0xa7, 0xdb, 0xed, 0x46, 0x5c,
+	0x22, 0xbf, 0x79, 0xdf, 0xf7, 0xe6, 0x7b, 0xf3, 0xbe, 0x19, 0x05, 0xca, 0x5d, 0x8f, 0xf5, 0x46,
+	0xed, 0x8a, 0x43, 0x07, 0x9b, 0x67, 0x64, 0xe0, 0x0f, 0xc8, 0xd9, 0x26, 0xb3, 0xdb, 0x9b, 0x6c,
+	0x3c, 0x24, 0x61, 0xfc, 0x5b, 0x19, 0x06, 0x94, 0x51, 0xbc, 0xc0, 0x83, 0xb5, 0x87, 0x29, 0x42,
+	0x97, 0x76, 0xe9, 0x26, 0xcf, 0xb6, 0x47, 0x1d, 0x1e, 0xf1, 0x80, 0x7f, 0xc5, 0xac, 0xb5, 0x8d,
+	0x2e, 0xa5, 0xdd, 0x3e, 0xb9, 0x42, 0x31, 0x6f, 0x40, 0x42, 0x66, 0x0f, 0x86, 0x31, 0xa0, 0xb4,
+	0x02, 0xb2, 0x69, 0xe0, 0x65, 0x90, 0x3d, 0x57, 0x43, 0x45, 0x54, 0x56, 0x2d, 0xd9, 0x73, 0x4b,
+	0xdf, 0x00, 0xae, 0x8e, 0x58, 0x8f, 0x06, 0xde, 0x99, 0xcd, 0x3c, 0xea, 0x7f, 0x15, 0xd8, 0x3e,
+	0xc3, 0x1f, 0x82, 0xd2, 0x09, 0xe8, 0x80, 0xe3, 0x72, 0x5b, 0xf9, 0x4a, 0x2c, 0xef, 0x38, 0x24,
+	0x81, 0x69, 0x58, 0x3c, 0x85, 0x3f, 0x02, 0x99, 0x76, 0x34, 0xb9, 0x98, 0x29, 0x2f, 0x6f, 0xad,
+	0x08, 0xc0, 0x4c, 0x25, 0x4b, 0xa6, 0x9d, 0xd2, 0x27, 0xa0, 0xee, 0x79, 0x21, 0xa3, 0xc1, 0xd8,
+	0x34, 0xf0, 0xbd, 0xe9, 0xde, 0xb9, 0x2d, 0x55, 0x50, 0x4c, 0x63, 0x7b, 0xe9, 0xc5, 0xab, 0x0d,
+	0xe9, 0xfc, 0xd5, 0x06, 0xe2, 0x82, 0x7e, 0x44, 0x90, 0x4b, 0x28, 0x8c, 0x0c, 0xf0, 0x5d, 0xc8,
+	0xda, 0x4e, 0x54, 0x4f, 0x88, 0x16, 0x11, 0xfe, 0x00, 0xe4, 0xf6, 0x58, 0x93, 0x6f, 0x12, 0x28,
+	0xb7, 0xc7, 0xb8, 0x08, 0xb9, 0x80, 0x7c, 0x37, 0x22, 0x21, 0x33, 0x6c, 0x66, 0x6b, 0x19, 0xce,
+	0x4d, 0x2f, 0xe1, 0x75, 0x50, 0xcd, 0xa3, 0xaa, 0xeb, 0x06, 0x24, 0x0c, 0x35, 0x85, 0xe7, 0x55,
+	0x2f, 0x59, 0x28, 0x3d, 0x82, 0xbc, 0x45, 0xba, 0xa3, 0xbe, 0x1d, 0xc4, 0x45, 0xe7, 0x13, 0xff,
+	0x13, 0x82, 0xac, 0xc0, 0x3f, 0x86, 0x7c, 0x38, 0x24, 0x8e, 0x67, 0xf7, 0xe3, 0x05, 0x4e, 0xbd,
+	0x3a, 0xaa, 0x46, 0x3a, 0xb7, 0x27, 0x59, 0xb3, 0xe0, 0x88, 0x1d, 0xa4, 0xb7, 0x17, 0x8d, 0x26,
+	0xec, 0x19, 0x69, 0x11, 0x7b, 0x06, 0xbc, 0xad, 0x44, 0xa3, 0x2e, 0xfd, 0x8b, 0x20, 0x97, 0x02,
+	0x46, 0x27, 0x36, 0xed, 0xe0, 0xfa, 0x89, 0x79, 0x2e, 0xc6, 0xa0, 0xf8, 0xf6, 0x80, 0xf0, 0x9d,
+	0x54, 0x8b, 0x7f, 0xe3, 0xc7, 0xb0, 0x6c, 0xa7, 0x67, 0x1a, 0x6a, 0x99, 0x5b, 0x06, 0x7e, 0x0d,
+	0x8b, 0x2b, 0xa0, 0xf6, 0x92, 0xe1, 0x6b, 0x4a, 0x31, 0x53, 0xce, 0x6d, 0x15, 0x04, 0x71, 0x6a,
+	0x0a, 0xeb, 0x0a, 0x82, 0xbf, 0x80, 0x45, 0x27, 0x20, 0x36, 0x23, 0xae, 0xb6, 0xc0, 0x55, 0xae,
+	0x55, 0x62, 0x53, 0x57, 0x12, 0x53, 0x57, 0x9a, 0x89, 0xa9, 0xb7, 0x95, 0xe7, 0x7f, 0x6d, 0x20,
+	0x2b, 0x21, 0x94, 0x7e, 0x46, 0x90, 0x4b, 0x9d, 0x69, 0x64, 0x4f, 0xd1, 0xec, 0x5b, 0xce, 0x9c,
+	0xf7, 0xfc, 0x66, 0x7f, 0xf2, 0xff, 0xed, 0x2f, 0xf3, 0xce, 0xfe, 0x4a, 0x0f, 0x21, 0x1b, 0x59,
+	0x7a, 0x5e, 0x33, 0xfd, 0x82, 0x40, 0xe1, 0x57, 0xe0, 0xa6, 0xc1, 0xc5, 0x85, 0xde, 0x3a, 0xb8,
+	0x35, 0x58, 0xea, 0x53, 0x87, 0xeb, 0x14, 0xde, 0x9f, 0xc6, 0xf8, 0x3e, 0x64, 0x87, 0x76, 0x40,
+	0x7c, 0xc6, 0x5d, 0xff, 0x46, 0x49, 0x91, 0xc4, 0x1f, 0xc3, 0x92, 0xd3, 0xf3, 0xfa, 0x6e, 0x40,
+	0x7c, 0x6d, 0x81, 0x37, 0x77, 0x0d, 0x38, 0x4d, 0x97, 0x3e, 0x83, 0xe5, 0xba, 0x69, 0xec, 0x1c,
+	0x05, 0xf4, 0x7b, 0xcf, 0x9d, 0xff, 0xb6, 0xfc, 0x8e, 0xe0, 0xbd, 0x34, 0x0f, 0xdf, 0x4f, 0xb1,
+	0x56, 0x05, 0x6b, 0xb6, 0xf0, 0x6d, 0x0d, 0x3b, 0x76, 0xbf, 0xdf, 0xb6, 0x9d, 0xa7, 0x49, 0xc3,
+	0x49, 0x8c, 0x1f, 0xc1, 0xea, 0xcc, 0xe4, 0x6a, 0xbe, 0x3b, 0xa4, 0x9e, 0xe8, 0x5f, 0xb5, 0x6e,
+	0x4e, 0xf2, 0x8a, 0x7d, 0x8f, 0xf8, 0xcc, 0x34, 0xb8, 0x1d, 0xa3, 0x8a, 0x22, 0x2e, 0xfd, 0x96,
+	0x81, 0x45, 0xd3, 0x68, 0xd2, 0xa7, 0xc4, 0x8f, 0x1e, 0x28, 0x2f, 0x0c, 0x47, 0x24, 0x48, 0x1e,
+	0xa8, 0x38, 0xc2, 0x1a, 0x2c, 0x86, 0xa3, 0xf6, 0xb7, 0xc4, 0x61, 0x42, 0x68, 0x12, 0x46, 0x95,
+	0xed, 0x91, 0xeb, 0x11, 0xdf, 0x21, 0x89, 0xd6, 0x24, 0xc6, 0x5f, 0x02, 0x90, 0x67, 0x43, 0x2f,
+	0x88, 0x47, 0xa7, 0xcc, 0x79, 0x0d, 0x52, 0x1c, 0xfc, 0xb9, 0xd0, 0x33, 0xff, 0x25, 0x12, 0x78,
+	0xbc, 0x02, 0x0b, 0x3e, 0x8d, 0x44, 0x65, 0xb9, 0xa8, 0x38, 0xc0, 0x47, 0x70, 0x2f, 0x3a, 0x20,
+	0xe2, 0x33, 0x2f, 0x36, 0xd0, 0x0e, 0xf5, 0x19, 0x79, 0xc6, 0x76, 0xfa, 0x76, 0x18, 0x5a, 0xa4,
+	0x43, 0x02, 0xde, 0xc8, 0x62, 0x11, 0x95, 0x33, 0xd6, 0x3c, 0x50, 0xbc, 0x0b, 0xfa, 0x2c, 0xec,
+	0x80, 0xb0, 0x1e, 0x75, 0x53, 0xc5, 0x96, 0x8a, 0x99, 0xb2, 0x6a, 0xbd, 0x03, 0x85, 0xcb, 0x70,
+	0x27, 0x19, 0x1d, 0x71, 0x8f, 0xec, 0x80, 0x8d, 0x35, 0x95, 0x2b, 0xbf, 0xbe, 0xfc, 0xe0, 0x4f,
+	0x04, 0xf9, 0x99, 0xbb, 0x8c, 0x97, 0x01, 0x4e, 0xcc, 0xda, 0x93, 0xd6, 0x71, 0xa3, 0x66, 0x35,
+	0x0a, 0x12, 0x5e, 0x85, 0xf7, 0x0f, 0xea, 0x86, 0xb9, 0x7b, 0xda, 0x3a, 0xa9, 0xee, 0x9b, 0x46,
+	0xab, 0x7a, 0xdc, 0xdc, 0x2b, 0x20, 0x9c, 0x07, 0xb5, 0x6a, 0x18, 0x2d, 0xb3, 0x59, 0x3b, 0x68,
+	0x14, 0x64, 0x7c, 0x17, 0xb0, 0x40, 0xd5, 0x9b, 0x7b, 0x35, 0x4b, 0xb0, 0x33, 0x58, 0x83, 0x15,
+	0xb1, 0xde, 0x38, 0xaa, 0xed, 0x98, 0xd5, 0x7d, 0x91, 0x51, 0xf0, 0x1d, 0xc8, 0x25, 0x99, 0xda,
+	0xfe, 0x6e, 0x61, 0x01, 0xaf, 0x83, 0xc6, 0x37, 0x4e, 0x15, 0x68, 0xed, 0x99, 0x8d, 0x66, 0xdd,
+	0x3a, 0x2d, 0x64, 0xf1, 0x0a, 0x14, 0xe2, 0xec, 0x93, 0xc3, 0xe9, 0xea, 0xe2, 0x83, 0x32, 0xe4,
+	0x67, 0xde, 0x2e, 0xbc, 0x04, 0x8a, 0x55, 0xaf, 0x37, 0x0b, 0x12, 0x17, 0x78, 0x58, 0x3f, 0x3c,
+	0x3d, 0xa8, 0x1f, 0x37, 0x0a, 0x68, 0xfb, 0xe4, 0xfc, 0x42, 0x97, 0x5e, 0x5e, 0xe8, 0xd2, 0xeb,
+	0x0b, 0x1d, 0xfd, 0x30, 0xd1, 0xd1, 0xaf, 0x13, 0x1d, 0xfd, 0x31, 0xd1, 0xd1, 0x8b, 0x89, 0x8e,
+	0xce, 0x27, 0x3a, 0xfa, 0x7b, 0xa2, 0xa3, 0x7f, 0x26, 0xba, 0xf4, 0x7a, 0xa2, 0xa3, 0xe7, 0x97,
+	0xba, 0x74, 0x7e, 0xa9, 0x4b, 0x2f, 0x2f, 0x75, 0xe9, 0xeb, 0xf5, 0xdb, 0xfe, 0x9f, 0xb4, 0xb3,
+	0xdc, 0x3c, 0x9f, 0xfe, 0x17, 0x00, 0x00, 0xff, 0xff, 0x51, 0x3d, 0xc7, 0xb3, 0xc6, 0x08, 0x00,
+	0x00,
 }
 
-func (this *ID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*ID)
-	if !ok {
-		that2, ok := that.(ID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if this.Id != that1.Id {
-		if this.Id < that1.Id {
-			return -1
-		}
-		return 1
-	}
-	return 0
-}
-func (this *AuthorizationGrant) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*AuthorizationGrant)
-	if !ok {
-		that2, ok := that.(AuthorizationGrant)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.From.Compare(that1.From); c != 0 {
-		return c
-	}
-	if len(this.Of) != len(that1.Of) {
-		if len(this.Of) < len(that1.Of) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.Of {
-		if this.Of[i] != that1.Of[i] {
-			if this.Of[i] < that1.Of[i] {
-				return -1
-			}
-			return 1
-		}
-	}
-	return 0
-}
-func (this *HistoryID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*HistoryID)
-	if !ok {
-		that2, ok := that.(HistoryID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.ID.Compare(&that1.ID); c != 0 {
-		return c
-	}
-	return 0
-}
-func (this *HistoryItem) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*HistoryItem)
-	if !ok {
-		that2, ok := that.(HistoryItem)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if this.Action != that1.Action {
-		if this.Action < that1.Action {
-			return -1
-		}
-		return 1
-	}
-	if c := this.By.Compare(that1.By); c != 0 {
-		return c
-	}
-	if this.RequestData != that1.RequestData {
-		if this.RequestData < that1.RequestData {
-			return -1
-		}
-		return 1
-	}
-	if this.IPAddress != that1.IPAddress {
-		if this.IPAddress < that1.IPAddress {
-			return -1
-		}
-		return 1
-	}
-	return 0
-}
-func (this *RegularUserID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*RegularUserID)
-	if !ok {
-		that2, ok := that.(RegularUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.ID.Compare(&that1.ID); c != 0 {
-		return c
-	}
-	return 0
-}
-func (this *UserID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*UserID)
-	if !ok {
-		that2, ok := that.(UserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if that1.ID == nil {
-		if this.ID != nil {
-			return 1
-		}
-	} else if this.ID == nil {
-		return -1
-	} else {
-		thisType := -1
-		switch this.ID.(type) {
-		case *UserID_SpecialUserID:
-			thisType = 0
-		case *UserID_RegularUserID:
-			thisType = 1
-		default:
-			panic(fmt.Sprintf("compare: unexpected type %T in oneof", this.ID))
-		}
-		that1Type := -1
-		switch that1.ID.(type) {
-		case *UserID_SpecialUserID:
-			that1Type = 0
-		case *UserID_RegularUserID:
-			that1Type = 1
-		default:
-			panic(fmt.Sprintf("compare: unexpected type %T in oneof", that1.ID))
-		}
-		if thisType == that1Type {
-			if c := this.ID.Compare(that1.ID); c != 0 {
-				return c
-			}
-		} else if thisType < that1Type {
-			return -1
-		} else if thisType > that1Type {
-			return 1
-		}
-	}
-	return 0
-}
-func (this *UserID_SpecialUserID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*UserID_SpecialUserID)
-	if !ok {
-		that2, ok := that.(UserID_SpecialUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if this.SpecialUserID != that1.SpecialUserID {
-		if this.SpecialUserID < that1.SpecialUserID {
-			return -1
-		}
-		return 1
-	}
-	return 0
-}
-func (this *UserID_RegularUserID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*UserID_RegularUserID)
-	if !ok {
-		that2, ok := that.(UserID_RegularUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.RegularUserID.Compare(that1.RegularUserID); c != 0 {
-		return c
-	}
-	return 0
-}
-func (this *RegularUser) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*RegularUser)
-	if !ok {
-		that2, ok := that.(RegularUser)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.Id.Compare(that1.Id); c != 0 {
-		return c
-	}
-	if this.Name != that1.Name {
-		if this.Name < that1.Name {
-			return -1
-		}
-		return 1
-	}
-	if len(this.Authorizations) != len(that1.Authorizations) {
-		if len(this.Authorizations) < len(that1.Authorizations) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.Authorizations {
-		if this.Authorizations[i] != that1.Authorizations[i] {
-			if this.Authorizations[i] < that1.Authorizations[i] {
-				return -1
-			}
-			return 1
-		}
-	}
-	if len(this.HistoryID) != len(that1.HistoryID) {
-		if len(this.HistoryID) < len(that1.HistoryID) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.HistoryID {
-		if c := this.HistoryID[i].Compare(that1.HistoryID[i]); c != 0 {
-			return c
-		}
-	}
-	if c := this.Created.Compare(that1.Created); c != 0 {
-		return c
-	}
-	return 0
-}
-func (this *SpecialUser) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*SpecialUser)
-	if !ok {
-		that2, ok := that.(SpecialUser)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if this.Id != that1.Id {
-		if this.Id < that1.Id {
-			return -1
-		}
-		return 1
-	}
-	if len(this.Authorizations) != len(that1.Authorizations) {
-		if len(this.Authorizations) < len(that1.Authorizations) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.Authorizations {
-		if this.Authorizations[i] != that1.Authorizations[i] {
-			if this.Authorizations[i] < that1.Authorizations[i] {
-				return -1
-			}
-			return 1
-		}
-	}
-	if len(this.HistoryID) != len(that1.HistoryID) {
-		if len(this.HistoryID) < len(that1.HistoryID) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.HistoryID {
-		if c := this.HistoryID[i].Compare(that1.HistoryID[i]); c != 0 {
-			return c
-		}
-	}
-	return 0
-}
-func (this *ItemID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*ItemID)
-	if !ok {
-		that2, ok := that.(ItemID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.ID.Compare(&that1.ID); c != 0 {
-		return c
-	}
-	return 0
-}
-func (this *Item) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*Item)
-	if !ok {
-		that2, ok := that.(Item)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.Id.Compare(that1.Id); c != 0 {
-		return c
-	}
-	if this.Name != that1.Name {
-		if this.Name < that1.Name {
-			return -1
-		}
-		return 1
-	}
-	if this.Location != that1.Location {
-		if this.Location < that1.Location {
-			return -1
-		}
-		return 1
-	}
-	if c := this.Parent.Compare(that1.Parent); c != 0 {
-		return c
-	}
-	if len(this.Children) != len(that1.Children) {
-		if len(this.Children) < len(that1.Children) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.Children {
-		if c := this.Children[i].Compare(that1.Children[i]); c != 0 {
-			return c
-		}
-	}
-	return 0
-}
-func (this *OIDCProviderID) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*OIDCProviderID)
-	if !ok {
-		that2, ok := that.(OIDCProviderID)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.ID.Compare(&that1.ID); c != 0 {
-		return c
-	}
-	return 0
-}
-func (this *OIDCProvider) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*OIDCProvider)
-	if !ok {
-		that2, ok := that.(OIDCProvider)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if c := this.Id.Compare(that1.Id); c != 0 {
-		return c
-	}
-	if this.Name != that1.Name {
-		if this.Name < that1.Name {
-			return -1
-		}
-		return 1
-	}
-	if this.Callback != that1.Callback {
-		if this.Callback < that1.Callback {
-			return -1
-		}
-		return 1
-	}
-	if this.AuthorizationEndpoint != that1.AuthorizationEndpoint {
-		if this.AuthorizationEndpoint < that1.AuthorizationEndpoint {
-			return -1
-		}
-		return 1
-	}
-	if this.ClientID != that1.ClientID {
-		if this.ClientID < that1.ClientID {
-			return -1
-		}
-		return 1
-	}
-	return 0
-}
-func (this *IDToken) Compare(that interface{}) int {
-	if that == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	}
-
-	that1, ok := that.(*IDToken)
-	if !ok {
-		that2, ok := that.(IDToken)
-		if ok {
-			that1 = &that2
-		} else {
-			return 1
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return 0
-		}
-		return 1
-	} else if this == nil {
-		return -1
-	}
-	if this.Issuer != that1.Issuer {
-		if this.Issuer < that1.Issuer {
-			return -1
-		}
-		return 1
-	}
-	if this.Subject != that1.Subject {
-		if this.Subject < that1.Subject {
-			return -1
-		}
-		return 1
-	}
-	if this.Audience != that1.Audience {
-		if this.Audience < that1.Audience {
-			return -1
-		}
-		return 1
-	}
-	if c := this.Expiration.Compare(that1.Expiration); c != 0 {
-		return c
-	}
-	if c := this.Issued.Compare(that1.Issued); c != 0 {
-		return c
-	}
-	if this.Nonce != that1.Nonce {
-		if this.Nonce < that1.Nonce {
-			return -1
-		}
-		return 1
-	}
-	if this.AuthenticationContextClassReference != that1.AuthenticationContextClassReference {
-		if this.AuthenticationContextClassReference < that1.AuthenticationContextClassReference {
-			return -1
-		}
-		return 1
-	}
-	if len(this.AuthenticationMethodsReference) != len(that1.AuthenticationMethodsReference) {
-		if len(this.AuthenticationMethodsReference) < len(that1.AuthenticationMethodsReference) {
-			return -1
-		}
-		return 1
-	}
-	for i := range this.AuthenticationMethodsReference {
-		if this.AuthenticationMethodsReference[i] != that1.AuthenticationMethodsReference[i] {
-			if this.AuthenticationMethodsReference[i] < that1.AuthenticationMethodsReference[i] {
-				return -1
-			}
-			return 1
-		}
-	}
-	if this.AuthorizedParty != that1.AuthorizedParty {
-		if this.AuthorizedParty < that1.AuthorizedParty {
-			return -1
-		}
-		return 1
-	}
-	return 0
-}
 func (x Authorization) String() string {
 	s, ok := Authorization_name[int32(x)]
 	if ok {
@@ -1660,36 +973,6 @@ func (x SpecialUserID) String() string {
 		return s
 	}
 	return strconv.Itoa(int(x))
-}
-func (this *ID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*ID)
-	if !ok {
-		that2, ok := that.(ID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *ID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *ID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *ID but is not nil && this == nil")
-	}
-	if this.Id != that1.Id {
-		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
-	}
-	return nil
 }
 func (this *ID) Equal(that interface{}) bool {
 	if that == nil {
@@ -1714,44 +997,6 @@ func (this *ID) Equal(that interface{}) bool {
 		return false
 	}
 	return true
-}
-func (this *AuthorizationGrant) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*AuthorizationGrant)
-	if !ok {
-		that2, ok := that.(AuthorizationGrant)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *AuthorizationGrant")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *AuthorizationGrant but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *AuthorizationGrant but is not nil && this == nil")
-	}
-	if !this.From.Equal(that1.From) {
-		return fmt.Errorf("From this(%v) Not Equal that(%v)", this.From, that1.From)
-	}
-	if len(this.Of) != len(that1.Of) {
-		return fmt.Errorf("Of this(%v) Not Equal that(%v)", len(this.Of), len(that1.Of))
-	}
-	for i := range this.Of {
-		if this.Of[i] != that1.Of[i] {
-			return fmt.Errorf("Of this[%v](%v) Not Equal that[%v](%v)", i, this.Of[i], i, that1.Of[i])
-		}
-	}
-	return nil
 }
 func (this *AuthorizationGrant) Equal(that interface{}) bool {
 	if that == nil {
@@ -1785,36 +1030,6 @@ func (this *AuthorizationGrant) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *HistoryID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*HistoryID)
-	if !ok {
-		that2, ok := that.(HistoryID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *HistoryID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *HistoryID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *HistoryID but is not nil && this == nil")
-	}
-	if !this.ID.Equal(&that1.ID) {
-		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
-	}
-	return nil
-}
 func (this *HistoryID) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -1838,45 +1053,6 @@ func (this *HistoryID) Equal(that interface{}) bool {
 		return false
 	}
 	return true
-}
-func (this *HistoryItem) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*HistoryItem)
-	if !ok {
-		that2, ok := that.(HistoryItem)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *HistoryItem")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *HistoryItem but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *HistoryItem but is not nil && this == nil")
-	}
-	if this.Action != that1.Action {
-		return fmt.Errorf("Action this(%v) Not Equal that(%v)", this.Action, that1.Action)
-	}
-	if !this.By.Equal(that1.By) {
-		return fmt.Errorf("By this(%v) Not Equal that(%v)", this.By, that1.By)
-	}
-	if this.RequestData != that1.RequestData {
-		return fmt.Errorf("RequestData this(%v) Not Equal that(%v)", this.RequestData, that1.RequestData)
-	}
-	if this.IPAddress != that1.IPAddress {
-		return fmt.Errorf("IPAddress this(%v) Not Equal that(%v)", this.IPAddress, that1.IPAddress)
-	}
-	return nil
 }
 func (this *HistoryItem) Equal(that interface{}) bool {
 	if that == nil {
@@ -1911,36 +1087,6 @@ func (this *HistoryItem) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *RegularUserID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*RegularUserID)
-	if !ok {
-		that2, ok := that.(RegularUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *RegularUserID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *RegularUserID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *RegularUserID but is not nil && this == nil")
-	}
-	if !this.ID.Equal(&that1.ID) {
-		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
-	}
-	return nil
-}
 func (this *RegularUserID) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -1964,102 +1110,6 @@ func (this *RegularUserID) Equal(that interface{}) bool {
 		return false
 	}
 	return true
-}
-func (this *UserID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*UserID)
-	if !ok {
-		that2, ok := that.(UserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *UserID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *UserID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *UserID but is not nil && this == nil")
-	}
-	if that1.ID == nil {
-		if this.ID != nil {
-			return fmt.Errorf("this.ID != nil && that1.ID == nil")
-		}
-	} else if this.ID == nil {
-		return fmt.Errorf("this.ID == nil && that1.ID != nil")
-	} else if err := this.ID.VerboseEqual(that1.ID); err != nil {
-		return err
-	}
-	return nil
-}
-func (this *UserID_SpecialUserID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*UserID_SpecialUserID)
-	if !ok {
-		that2, ok := that.(UserID_SpecialUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *UserID_SpecialUserID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *UserID_SpecialUserID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *UserID_SpecialUserID but is not nil && this == nil")
-	}
-	if this.SpecialUserID != that1.SpecialUserID {
-		return fmt.Errorf("SpecialUserID this(%v) Not Equal that(%v)", this.SpecialUserID, that1.SpecialUserID)
-	}
-	return nil
-}
-func (this *UserID_RegularUserID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*UserID_RegularUserID)
-	if !ok {
-		that2, ok := that.(UserID_RegularUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *UserID_RegularUserID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *UserID_RegularUserID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *UserID_RegularUserID but is not nil && this == nil")
-	}
-	if !this.RegularUserID.Equal(that1.RegularUserID) {
-		return fmt.Errorf("RegularUserID this(%v) Not Equal that(%v)", this.RegularUserID, that1.RegularUserID)
-	}
-	return nil
 }
 func (this *UserID) Equal(that interface{}) bool {
 	if that == nil {
@@ -2139,62 +1189,6 @@ func (this *UserID_RegularUserID) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *RegularUser) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*RegularUser)
-	if !ok {
-		that2, ok := that.(RegularUser)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *RegularUser")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *RegularUser but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *RegularUser but is not nil && this == nil")
-	}
-	if !this.Id.Equal(that1.Id) {
-		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
-	}
-	if this.Name != that1.Name {
-		return fmt.Errorf("Name this(%v) Not Equal that(%v)", this.Name, that1.Name)
-	}
-	if len(this.Authorizations) != len(that1.Authorizations) {
-		return fmt.Errorf("Authorizations this(%v) Not Equal that(%v)", len(this.Authorizations), len(that1.Authorizations))
-	}
-	for i := range this.Authorizations {
-		if this.Authorizations[i] != that1.Authorizations[i] {
-			return fmt.Errorf("Authorizations this[%v](%v) Not Equal that[%v](%v)", i, this.Authorizations[i], i, that1.Authorizations[i])
-		}
-	}
-	if len(this.HistoryID) != len(that1.HistoryID) {
-		return fmt.Errorf("HistoryID this(%v) Not Equal that(%v)", len(this.HistoryID), len(that1.HistoryID))
-	}
-	for i := range this.HistoryID {
-		if !this.HistoryID[i].Equal(that1.HistoryID[i]) {
-			return fmt.Errorf("HistoryID this[%v](%v) Not Equal that[%v](%v)", i, this.HistoryID[i], i, that1.HistoryID[i])
-		}
-	}
-	if that1.Created == nil {
-		if this.Created != nil {
-			return fmt.Errorf("this.Created != nil && that1.Created == nil")
-		}
-	} else if !this.Created.Equal(*that1.Created) {
-		return fmt.Errorf("Created this(%v) Not Equal that(%v)", this.Created, that1.Created)
-	}
-	return nil
-}
 func (this *RegularUser) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2245,52 +1239,6 @@ func (this *RegularUser) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *SpecialUser) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*SpecialUser)
-	if !ok {
-		that2, ok := that.(SpecialUser)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *SpecialUser")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *SpecialUser but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *SpecialUser but is not nil && this == nil")
-	}
-	if this.Id != that1.Id {
-		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
-	}
-	if len(this.Authorizations) != len(that1.Authorizations) {
-		return fmt.Errorf("Authorizations this(%v) Not Equal that(%v)", len(this.Authorizations), len(that1.Authorizations))
-	}
-	for i := range this.Authorizations {
-		if this.Authorizations[i] != that1.Authorizations[i] {
-			return fmt.Errorf("Authorizations this[%v](%v) Not Equal that[%v](%v)", i, this.Authorizations[i], i, that1.Authorizations[i])
-		}
-	}
-	if len(this.HistoryID) != len(that1.HistoryID) {
-		return fmt.Errorf("HistoryID this(%v) Not Equal that(%v)", len(this.HistoryID), len(that1.HistoryID))
-	}
-	for i := range this.HistoryID {
-		if !this.HistoryID[i].Equal(that1.HistoryID[i]) {
-			return fmt.Errorf("HistoryID this[%v](%v) Not Equal that[%v](%v)", i, this.HistoryID[i], i, that1.HistoryID[i])
-		}
-	}
-	return nil
-}
 func (this *SpecialUser) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2331,36 +1279,6 @@ func (this *SpecialUser) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *ItemID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*ItemID)
-	if !ok {
-		that2, ok := that.(ItemID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *ItemID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *ItemID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *ItemID but is not nil && this == nil")
-	}
-	if !this.ID.Equal(&that1.ID) {
-		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
-	}
-	return nil
-}
 func (this *ItemID) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2384,53 +1302,6 @@ func (this *ItemID) Equal(that interface{}) bool {
 		return false
 	}
 	return true
-}
-func (this *Item) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*Item)
-	if !ok {
-		that2, ok := that.(Item)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *Item")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *Item but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *Item but is not nil && this == nil")
-	}
-	if !this.Id.Equal(that1.Id) {
-		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
-	}
-	if this.Name != that1.Name {
-		return fmt.Errorf("Name this(%v) Not Equal that(%v)", this.Name, that1.Name)
-	}
-	if this.Location != that1.Location {
-		return fmt.Errorf("Location this(%v) Not Equal that(%v)", this.Location, that1.Location)
-	}
-	if !this.Parent.Equal(that1.Parent) {
-		return fmt.Errorf("Parent this(%v) Not Equal that(%v)", this.Parent, that1.Parent)
-	}
-	if len(this.Children) != len(that1.Children) {
-		return fmt.Errorf("Children this(%v) Not Equal that(%v)", len(this.Children), len(that1.Children))
-	}
-	for i := range this.Children {
-		if !this.Children[i].Equal(that1.Children[i]) {
-			return fmt.Errorf("Children this[%v](%v) Not Equal that[%v](%v)", i, this.Children[i], i, that1.Children[i])
-		}
-	}
-	return nil
 }
 func (this *Item) Equal(that interface{}) bool {
 	if that == nil {
@@ -2473,36 +1344,6 @@ func (this *Item) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *OIDCProviderID) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*OIDCProviderID)
-	if !ok {
-		that2, ok := that.(OIDCProviderID)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *OIDCProviderID")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *OIDCProviderID but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *OIDCProviderID but is not nil && this == nil")
-	}
-	if !this.ID.Equal(&that1.ID) {
-		return fmt.Errorf("ID this(%v) Not Equal that(%v)", this.ID, that1.ID)
-	}
-	return nil
-}
 func (this *OIDCProviderID) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2526,48 +1367,6 @@ func (this *OIDCProviderID) Equal(that interface{}) bool {
 		return false
 	}
 	return true
-}
-func (this *OIDCProvider) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*OIDCProvider)
-	if !ok {
-		that2, ok := that.(OIDCProvider)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *OIDCProvider")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *OIDCProvider but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *OIDCProvider but is not nil && this == nil")
-	}
-	if !this.Id.Equal(that1.Id) {
-		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
-	}
-	if this.Name != that1.Name {
-		return fmt.Errorf("Name this(%v) Not Equal that(%v)", this.Name, that1.Name)
-	}
-	if this.Callback != that1.Callback {
-		return fmt.Errorf("Callback this(%v) Not Equal that(%v)", this.Callback, that1.Callback)
-	}
-	if this.AuthorizationEndpoint != that1.AuthorizationEndpoint {
-		return fmt.Errorf("AuthorizationEndpoint this(%v) Not Equal that(%v)", this.AuthorizationEndpoint, that1.AuthorizationEndpoint)
-	}
-	if this.ClientID != that1.ClientID {
-		return fmt.Errorf("ClientID this(%v) Not Equal that(%v)", this.ClientID, that1.ClientID)
-	}
-	return nil
 }
 func (this *OIDCProvider) Equal(that interface{}) bool {
 	if that == nil {
@@ -2604,73 +1403,6 @@ func (this *OIDCProvider) Equal(that interface{}) bool {
 		return false
 	}
 	return true
-}
-func (this *IDToken) VerboseEqual(that interface{}) error {
-	if that == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that == nil && this != nil")
-	}
-
-	that1, ok := that.(*IDToken)
-	if !ok {
-		that2, ok := that.(IDToken)
-		if ok {
-			that1 = &that2
-		} else {
-			return fmt.Errorf("that is not of type *IDToken")
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return nil
-		}
-		return fmt.Errorf("that is type *IDToken but is nil && this != nil")
-	} else if this == nil {
-		return fmt.Errorf("that is type *IDToken but is not nil && this == nil")
-	}
-	if this.Issuer != that1.Issuer {
-		return fmt.Errorf("Issuer this(%v) Not Equal that(%v)", this.Issuer, that1.Issuer)
-	}
-	if this.Subject != that1.Subject {
-		return fmt.Errorf("Subject this(%v) Not Equal that(%v)", this.Subject, that1.Subject)
-	}
-	if this.Audience != that1.Audience {
-		return fmt.Errorf("Audience this(%v) Not Equal that(%v)", this.Audience, that1.Audience)
-	}
-	if that1.Expiration == nil {
-		if this.Expiration != nil {
-			return fmt.Errorf("this.Expiration != nil && that1.Expiration == nil")
-		}
-	} else if !this.Expiration.Equal(*that1.Expiration) {
-		return fmt.Errorf("Expiration this(%v) Not Equal that(%v)", this.Expiration, that1.Expiration)
-	}
-	if that1.Issued == nil {
-		if this.Issued != nil {
-			return fmt.Errorf("this.Issued != nil && that1.Issued == nil")
-		}
-	} else if !this.Issued.Equal(*that1.Issued) {
-		return fmt.Errorf("Issued this(%v) Not Equal that(%v)", this.Issued, that1.Issued)
-	}
-	if this.Nonce != that1.Nonce {
-		return fmt.Errorf("Nonce this(%v) Not Equal that(%v)", this.Nonce, that1.Nonce)
-	}
-	if this.AuthenticationContextClassReference != that1.AuthenticationContextClassReference {
-		return fmt.Errorf("AuthenticationContextClassReference this(%v) Not Equal that(%v)", this.AuthenticationContextClassReference, that1.AuthenticationContextClassReference)
-	}
-	if len(this.AuthenticationMethodsReference) != len(that1.AuthenticationMethodsReference) {
-		return fmt.Errorf("AuthenticationMethodsReference this(%v) Not Equal that(%v)", len(this.AuthenticationMethodsReference), len(that1.AuthenticationMethodsReference))
-	}
-	for i := range this.AuthenticationMethodsReference {
-		if this.AuthenticationMethodsReference[i] != that1.AuthenticationMethodsReference[i] {
-			return fmt.Errorf("AuthenticationMethodsReference this[%v](%v) Not Equal that[%v](%v)", i, this.AuthenticationMethodsReference[i], i, that1.AuthenticationMethodsReference[i])
-		}
-	}
-	if this.AuthorizedParty != that1.AuthorizedParty {
-		return fmt.Errorf("AuthorizedParty this(%v) Not Equal that(%v)", this.AuthorizedParty, that1.AuthorizedParty)
-	}
-	return nil
 }
 func (this *IDToken) Equal(that interface{}) bool {
 	if that == nil {

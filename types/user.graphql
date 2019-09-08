@@ -2,8 +2,7 @@
 # This module deals with users existing!
 
 # RegularUserID represents the ID of a regular user i.e. a user that is not ANONYMOUS or ROOT.
-scalar RegularUserID
-    @goModel(model: "github.com/zemnmez/tab/types.RegularUserID")
+scalar RegularUserID @goModel(model: "github.com/zemnmez/tab/types.RegularUserID")
 
 # Special users are singleton users with special functionality
 enum SpecialUserID {
@@ -14,7 +13,7 @@ enum SpecialUserID {
     ANONYMOUS
 }
 
-interface User {
+interface User @goModel(model: "github.com/zemnmez/tab/gql/resolvers.User") {
     Name: String!
 }
 
@@ -61,7 +60,7 @@ extend type Query {
     User: UserQuery
 }
 
-type UserQuery {
+type UserQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.UserQuery") {
     # Self returns the currently logged in user
     Self: Self!
 

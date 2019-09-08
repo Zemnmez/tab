@@ -8,10 +8,6 @@ import (
 	"github.com/zemnmez/tab/types"
 )
 
-type User interface {
-	IsUser()
-}
-
 type AnonymousUser struct {
 	ID   types.SpecialUserID `json:"ID"`
 	Name string              `json:"Name"`
@@ -66,11 +62,4 @@ func (Self) IsUser() {}
 
 type UserInput struct {
 	Name string `json:"Name"`
-}
-
-type UserQuery struct {
-	Self    *Self              `json:"Self"`
-	Special *types.SpecialUser `json:"Special"`
-	Regular *types.RegularUser `json:"Regular"`
-	WhoCan  []User             `json:"WhoCan"`
 }
