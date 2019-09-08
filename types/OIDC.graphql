@@ -5,7 +5,7 @@ extend enum Authorization {
 scalar Time
 scalar OIDCProviderID
 
-type IDToken @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.IDToken") {
+type IDToken {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -17,7 +17,7 @@ type IDToken @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.IDToken") {
     AuthorizedParty: String
 }
 
-input IDTokenInput @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.IDToken") {
+input IDTokenInput {
     Issuer: String!
     Subject: String!
     Audience: String!
@@ -29,7 +29,7 @@ input IDTokenInput @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.IDTok
     AuthorizedParty: String
 }
 
-type OIDCProvider @goModel(model: "github.com/zemnmez/tab/user/authn/oidc.Provider") {
+type OIDCProvider {
     ID: OIDCProviderID
     Name: String!
     Callback: String!

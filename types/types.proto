@@ -1,0 +1,85 @@
+syntax = "proto3";
+package types;
+
+option go_package = "github.com/zemnmez/tab/types";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.verbose_equal_all) = true;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.compare_all) = true;
+option (gogoproto.testgen_all) = true;
+
+// tab
+
+message ID { string id = 1; }
+
+// authn
+
+
+
+// Authz
+
+message AuthorizationGrant {
+    types.UserID from = 1;
+    repeated Authorization of = 2;
+}
+
+enum Authorization {
+    VIEW_USERS = 0;
+    MODIFY_VALID_AUTH = 1;
+    ADD_ITEMS = 2;
+    MODIFY_OTHER_USERS = 3;
+    MODIFY_SPECIAL_USERS = 4;
+    MODIFY_SELF = 5;
+    VIEW_OTHER_USERS_HISTORY = 6;
+    VIEW_OWN_HISTORY = 7;
+}
+
+// HISTORY
+
+message HistoryID { types.ID id = 1 [(gogoproto.embed) = true]; }
+
+// USERS
+
+enum SpecialUserID {
+    ROOT = 0;
+    ANONYMOUS = 1;
+}
+
+message RegularUserID { types.ID id = 1 [(gogoproto.embed) = true]; }
+
+message UserID {
+    oneof ID {
+        SpecialUserID specialUserID = 1;
+        RegularUserID regularUserID = 2;
+    }
+}
+
+message RegularUser {
+    UserID id = 1;
+    string name = 2;
+    repeated types.Authorization authorizations = 3;
+    repeated types.HistoryID historyID = 4;
+    google.protobuf.Timestamp created = 5;
+}
+
+message SpecialUser {
+    SpecialUserID id = 1;
+    repeated types.Authorization authorizations = 2;
+    repeated types.HistoryID historyID = 3;
+}
+
+// item
+
+message ItemID { types.ID id = 1 [(gogoproto.embed) = true]; }
+
+message Item {
+    ItemID id = 1;
+    string name = 2;
+    string location = 3;
+    ItemID parent = 4;
+    repeated ItemID children = 5;
+}

@@ -4,11 +4,11 @@ directive @authorized(to: [Authorization!]!) on FIELD_DEFINITION
 Authorization is a list of all the possible permissions
 a User can have.
 """
-enum Authorization @goModel(model: "github.com/zemnmez/tab/user/authz.Authorization") {
+enum Authorization {
     VIEW_USERS
 }
 
-type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/user/authz.Grant") {
+type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/types.AuthorizationGrant") {
     """
     From is the user which has granted permissions
     to the grantee

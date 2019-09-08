@@ -44,8 +44,7 @@ func goList(params ...string) (output string, err error) {
 
 func do() (err error) {
 	var goPath = string(os.Args[1])
-	var target = string(os.Args[2])
-	var remainingArgs = os.Args[3:]
+	var remainingArgs = os.Args[2:]
 
 	modRoot := filepath.Join(goPath, "pkg/mod")
 
@@ -172,10 +171,23 @@ func do() (err error) {
 			filepath.Join(goPath, "bin", binaryName),
 		),
 		fmt.Sprintf("--%s_out=M%s:.", strings.TrimPrefix(binaryName, "protoc-gen-"), remaps),
-		filepath.Join(protocPath, ourPkg, target),
 	}
 
-	args = append(args, remainingArgs...)
+	var files []string
+	for _, arg := range remainingArgs {
+		var extraFiles []string
+		if extraFiles, err = filepath.Glob(arg); err != nil {
+			return
+		}
+
+		files = append(files, extraFiles...)
+	}
+
+	for i, fileName := range files {
+		files[i] = filepath.Join(protocPath, ourPkg, fileName)
+	}
+
+	args = append(args, files...)
 
 	cmd := Command(args[0], args[1:]...)
 
