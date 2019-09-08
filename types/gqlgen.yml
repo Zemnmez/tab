@@ -8,7 +8,7 @@ schema:
 exec:
   filename: ../gql/graphql_gen.go
 model:
-  filename: ../gql/resolvers/models_gen.go
+  filename: ../gql/resolver/models_gen.go
 autobind: []
 models:
   Authorization:

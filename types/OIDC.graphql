@@ -43,12 +43,12 @@ extend type UserAuthentication {
 
 extend type AuthenticationQuery { OIDC: OIDCQuery } 
 
-type OIDCQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.OIDCQuery") {
+type OIDCQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCQuery") {
     Provider: OIDCProviderQuery
     IsValid(token: IDTokenInput): Boolean
 }
 
-type OIDCProviderQuery @goModel(model: "github.com/zemnmez/tab/gql/resolvers.OIDCProviderQuery") {
+type OIDCProviderQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCProviderQuery") {
     All: [OIDCProvider!]!
     ByID(id: OIDCProviderID): OIDCProvider
 }
@@ -60,7 +60,7 @@ input OIDCProviderInput {
 
 extend type AuthenticationMutation { OIDC: OIDCMutation }
 
-type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolvers.OIDCMutation") {
+type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCMutation") {
     # Authenticates by OIDC ID Token and returns the corresponding User, if any.
     Authenticate(token: IDTokenInput): User
 

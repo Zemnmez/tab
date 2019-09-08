@@ -8,10 +8,10 @@ directive @goModel(model: String, models: [String!]) on OBJECT
 directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION 
     | FIELD_DEFINITION
 
-type Query @goModel(model: "github.com/zemnmez/tab/gql/resolvers.Query") {
+type Query @goModel(model: "github.com/zemnmez/tab/gql/resolver.Query") {
   ok: Boolean
 }
 
-type Mutation @goModel(model: "github.com/zemnmez/tab/gql/resolvers.Mutation") {
+type Mutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.Mutation") {
   ok: Boolean
 }
