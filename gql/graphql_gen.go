@@ -7174,11 +7174,12 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 // region    ***************************** type.gotpl *****************************
 
 func (ec *executionContext) unmarshalNAuthorization2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx context.Context, v interface{}) (types.Authorization, error) {
-	return ec.unmarshalInputAuthorization(ctx, v)
+	var res types.Authorization
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalNAuthorization2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx context.Context, sel ast.SelectionSet, v types.Authorization) graphql.Marshaler {
-	return ec._Authorization(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx context.Context, v interface{}) ([]types.Authorization, error) {
