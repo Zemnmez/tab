@@ -20,9 +20,9 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
-func (this *ID) MarshalJSON() (json []byte, err error) {
+func (this ID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -44,9 +44,9 @@ func (this *ID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *AuthorizationGrant) MarshalJSON() (json []byte, err error) {
+func (this AuthorizationGrant) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -68,9 +68,9 @@ func (this *AuthorizationGrant) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *HistoryID) MarshalJSON() (json []byte, err error) {
+func (this HistoryID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -92,9 +92,9 @@ func (this *HistoryID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *HistoryItem) MarshalJSON() (json []byte, err error) {
+func (this HistoryItem) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -116,9 +116,9 @@ func (this *HistoryItem) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *RegularUserID) MarshalJSON() (json []byte, err error) {
+func (this RegularUserID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -140,9 +140,9 @@ func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *UserID) MarshalJSON() (json []byte, err error) {
+func (this UserID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -164,9 +164,9 @@ func (this *UserID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *RegularUser) MarshalJSON() (json []byte, err error) {
+func (this RegularUser) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -188,9 +188,9 @@ func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *SpecialUser) MarshalJSON() (json []byte, err error) {
+func (this SpecialUser) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -212,9 +212,9 @@ func (this *SpecialUser) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *ItemID) MarshalJSON() (json []byte, err error) {
+func (this ItemID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -236,9 +236,9 @@ func (this *ItemID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *Item) MarshalJSON() (json []byte, err error) {
+func (this Item) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -260,9 +260,9 @@ func (this *Item) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *OIDCProviderID) MarshalJSON() (json []byte, err error) {
+func (this OIDCProviderID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -284,9 +284,9 @@ func (this *OIDCProviderID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *OIDCProvider) MarshalJSON() (json []byte, err error) {
+func (this OIDCProvider) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -308,9 +308,9 @@ func (this *OIDCProvider) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *IDToken) MarshalJSON() (json []byte, err error) {
+func (this IDToken) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
 	}
 	json = b.Bytes()
@@ -332,20 +332,31 @@ func (this *IDToken) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *Authorization) MarshalJSON() (json []byte, err error) {
-	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
-		return
+func (this Authorization) MarshalJSON() (json []byte, err error) {
+	if _, ok := Authorization_name[int32(this)]; !ok {
+		return nil, ErrInvalidEnum{EnumName: "Authorization", Value: this}
 	}
-	json = b.Bytes()
-	return
+	return encoding_json.Marshal(this.String())
 }
 func (this *Authorization) UnmarshalJSON(json []byte) (err error) {
-	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
+	var text string
+	if err = encoding_json.Unmarshal(json, &text); err != nil {
+		return
+	}
+	var ok bool
+	this32 := (*int32)(this)
+	if *this32, ok = Authorization_value[text]; !ok {
+		return ErrInvalidEnum{EnumName: "Authorization", Value: this}
+	}
+	return
 }
 func (this Authorization) MarshalGQL(w io.Writer) {
 	var err error
-	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
+	b, err := this.MarshalJSON()
+	if err != nil {
+		panic(err)
+	}
+	if _, err = w.Write(b); err != nil {
 		panic(err)
 	}
 }
@@ -356,20 +367,31 @@ func (this *Authorization) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
-func (this *SpecialUserID) MarshalJSON() (json []byte, err error) {
-	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, this); err != nil {
-		return
+func (this SpecialUserID) MarshalJSON() (json []byte, err error) {
+	if _, ok := SpecialUserID_name[int32(this)]; !ok {
+		return nil, ErrInvalidEnum{EnumName: "SpecialUserID", Value: this}
 	}
-	json = b.Bytes()
-	return
+	return encoding_json.Marshal(this.String())
 }
 func (this *SpecialUserID) UnmarshalJSON(json []byte) (err error) {
-	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
+	var text string
+	if err = encoding_json.Unmarshal(json, &text); err != nil {
+		return
+	}
+	var ok bool
+	this32 := (*int32)(this)
+	if *this32, ok = SpecialUserID_value[text]; !ok {
+		return ErrInvalidEnum{EnumName: "SpecialUserID", Value: this}
+	}
+	return
 }
 func (this SpecialUserID) MarshalGQL(w io.Writer) {
 	var err error
-	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
+	b, err := this.MarshalJSON()
+	if err != nil {
+		panic(err)
+	}
+	if _, err = w.Write(b); err != nil {
 		panic(err)
 	}
 }
@@ -386,3 +408,10 @@ var (
 	_jsonMarshaler   github_com_gogo_protobuf_jsonpb.Marshaler
 	_jsonUnmarshaler github_com_gogo_protobuf_jsonpb.Unmarshaler
 )
+
+type ErrInvalidEnum struct {
+	EnumName string
+	Value    interface{}
+}
+
+func (i ErrInvalidEnum) Error() string { return fmt.Sprintf("invalid %s(%s)", i.EnumName, i.Value) }

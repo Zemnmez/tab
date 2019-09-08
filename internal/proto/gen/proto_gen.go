@@ -153,7 +153,7 @@ func do() (err error) {
 		"google/protobuf/duration.proto":  "github.com/gogo/protobuf/types",
 		"google/protobuf/struct.proto":    "github.com/gogo/protobuf/types",
 		"google/protobuf/wrappers.proto":  "github.com/gogo/protobuf/types",
-		"google/protobuf/any.proto":       "github.com/gogo/googleapis/google/api",
+		"google/protobuf/any.proto":       "github.com/gogo/protobuf/types",
 	}
 
 	var remapsFlat []string
