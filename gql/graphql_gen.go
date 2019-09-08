@@ -7240,7 +7240,7 @@ func (ec *executionContext) marshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋta
 }
 
 func (ec *executionContext) marshalNAuthorizationGrant2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v types.AuthorizationGrant) graphql.Marshaler {
-	return ec._AuthorizationGrant(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v []*types.AuthorizationGrant) graphql.Marshaler {
@@ -7287,7 +7287,7 @@ func (ec *executionContext) marshalNAuthorizationGrant2ᚖgithubᚗcomᚋzemnmez
 		}
 		return graphql.Null
 	}
-	return ec._AuthorizationGrant(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
@@ -7305,7 +7305,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 }
 
 func (ec *executionContext) marshalNHistoryItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v types.HistoryItem) graphql.Marshaler {
-	return ec._HistoryItem(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v []*types.HistoryItem) graphql.Marshaler {
@@ -7352,11 +7352,11 @@ func (ec *executionContext) marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtab�
 		}
 		return graphql.Null
 	}
-	return ec._HistoryItem(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) marshalNIDToken2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, sel ast.SelectionSet, v types.IDToken) graphql.Marshaler {
-	return ec._IDToken(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalNIDToken2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, sel ast.SelectionSet, v []types.IDToken) graphql.Marshaler {
@@ -7397,7 +7397,7 @@ func (ec *executionContext) marshalNIDToken2ᚕgithubᚗcomᚋzemnmezᚋtabᚋty
 }
 
 func (ec *executionContext) marshalNItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v types.Item) graphql.Marshaler {
-	return ec._Item(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v []*types.Item) graphql.Marshaler {
@@ -7444,15 +7444,16 @@ func (ec *executionContext) marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypes
 		}
 		return graphql.Null
 	}
-	return ec._Item(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNItemID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, v interface{}) (types.ItemID, error) {
-	return ec.unmarshalInputItemID(ctx, v)
+	var res types.ItemID
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalNItemID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, sel ast.SelectionSet, v types.ItemID) graphql.Marshaler {
-	return ec._ItemID(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNItemID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, v interface{}) (*types.ItemID, error) {
@@ -7470,7 +7471,7 @@ func (ec *executionContext) marshalNItemID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtyp
 		}
 		return graphql.Null
 	}
-	return ec._ItemID(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNItemInput2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItemInput(ctx context.Context, v interface{}) (resolver.ItemInput, error) {
@@ -7506,7 +7507,7 @@ func (ec *executionContext) unmarshalNItemInput2ᚖgithubᚗcomᚋzemnmezᚋtab�
 }
 
 func (ec *executionContext) marshalNOIDCProvider2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx context.Context, sel ast.SelectionSet, v types.OIDCProvider) graphql.Marshaler {
-	return ec._OIDCProvider(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalNOIDCProvider2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx context.Context, sel ast.SelectionSet, v []types.OIDCProvider) graphql.Marshaler {
@@ -7547,11 +7548,12 @@ func (ec *executionContext) marshalNOIDCProvider2ᚕgithubᚗcomᚋzemnmezᚋtab
 }
 
 func (ec *executionContext) unmarshalNRegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, v interface{}) (types.RegularUserID, error) {
-	return ec.unmarshalInputRegularUserID(ctx, v)
+	var res types.RegularUserID
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalNRegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, sel ast.SelectionSet, v types.RegularUserID) graphql.Marshaler {
-	return ec._RegularUserID(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNRegularUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, v interface{}) (*types.RegularUserID, error) {
@@ -7569,7 +7571,7 @@ func (ec *executionContext) marshalNRegularUserID2ᚖgithubᚗcomᚋzemnmezᚋta
 		}
 		return graphql.Null
 	}
-	return ec._RegularUserID(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) marshalNSelf2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐSelf(ctx context.Context, sel ast.SelectionSet, v resolver.Self) graphql.Marshaler {
@@ -7577,11 +7579,12 @@ func (ec *executionContext) marshalNSelf2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋre
 }
 
 func (ec *executionContext) unmarshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (types.SpecialUserID, error) {
-	return ec.unmarshalInputSpecialUserID(ctx, v)
+	var res types.SpecialUserID
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v types.SpecialUserID) graphql.Marshaler {
-	return ec._SpecialUserID(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -8031,22 +8034,23 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 }
 
 func (ec *executionContext) marshalOItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v types.Item) graphql.Marshaler {
-	return ec._Item(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v *types.Item) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._Item(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOItemID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, v interface{}) (types.ItemID, error) {
-	return ec.unmarshalInputItemID(ctx, v)
+	var res types.ItemID
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalOItemID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, sel ast.SelectionSet, v types.ItemID) graphql.Marshaler {
-	return ec._ItemID(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOItemID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, v interface{}) (*types.ItemID, error) {
@@ -8061,7 +8065,7 @@ func (ec *executionContext) marshalOItemID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtyp
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._ItemID(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOItemInput2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItemInput(ctx context.Context, v interface{}) (resolver.ItemInput, error) {
@@ -8081,14 +8085,14 @@ func (ec *executionContext) marshalOOIDCMutation2githubᚗcomᚋzemnmezᚋtabᚋ
 }
 
 func (ec *executionContext) marshalOOIDCProvider2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx context.Context, sel ast.SelectionSet, v types.OIDCProvider) graphql.Marshaler {
-	return ec._OIDCProvider(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalOOIDCProvider2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx context.Context, sel ast.SelectionSet, v *types.OIDCProvider) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._OIDCProvider(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOOIDCProviderID2string(ctx context.Context, v interface{}) (string, error) {
@@ -8142,15 +8146,16 @@ func (ec *executionContext) marshalOOIDCQuery2ᚖgithubᚗcomᚋzemnmezᚋtabᚋ
 }
 
 func (ec *executionContext) marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx context.Context, sel ast.SelectionSet, v types.RegularUser) graphql.Marshaler {
-	return ec._RegularUser(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalORegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, v interface{}) (types.RegularUserID, error) {
-	return ec.unmarshalInputRegularUserID(ctx, v)
+	var res types.RegularUserID
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalORegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, sel ast.SelectionSet, v types.RegularUserID) graphql.Marshaler {
-	return ec._RegularUserID(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalORegularUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, v interface{}) (*types.RegularUserID, error) {
@@ -8165,26 +8170,27 @@ func (ec *executionContext) marshalORegularUserID2ᚖgithubᚗcomᚋzemnmezᚋta
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._RegularUserID(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) marshalOSpecialUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx context.Context, sel ast.SelectionSet, v types.SpecialUser) graphql.Marshaler {
-	return ec._SpecialUser(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx context.Context, sel ast.SelectionSet, v *types.SpecialUser) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._SpecialUser(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (types.SpecialUserID, error) {
-	return ec.unmarshalInputSpecialUserID(ctx, v)
+	var res types.SpecialUserID
+	return res, res.UnmarshalGQL(v)
 }
 
 func (ec *executionContext) marshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, sel ast.SelectionSet, v types.SpecialUserID) graphql.Marshaler {
-	return ec._SpecialUserID(ctx, sel, &v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (*types.SpecialUserID, error) {
@@ -8199,7 +8205,7 @@ func (ec *executionContext) marshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋta
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._SpecialUserID(ctx, sel, v)
+	return v
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

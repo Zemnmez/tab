@@ -48,7 +48,8 @@ func do() (err error) {
 
 	modRoot := filepath.Join(goPath, "pkg/mod")
 
-	const binary = "github.com/gogo/protobuf/protoc-gen-gogoslick"
+	const gogoslick = "github.com/gogo/protobuf/protoc-gen-gogoslick"
+	const binary = "github.com/zemnmez/tab/internal/proto/gen/protoc-gen-something"
 
 	// detect our root module path
 	ourPkg, err := goList(".")
@@ -96,9 +97,9 @@ func do() (err error) {
 	}
 
 	// get the version used
-	binPath, err := goList(
+	gogoSlickPath, err := goList(
 		"-f", "{{.Dir}}",
-		binary,
+		gogoslick,
 	)
 
 	if err != nil {
@@ -111,7 +112,7 @@ func do() (err error) {
 
 	//binaryLoc := filepath.Join(modRoot, binary)
 
-	pbBase := filepath.Join(binPath, "../protobuf/google")
+	pbBase := filepath.Join(gogoSlickPath, "../protobuf/google")
 
 	if err = os.Symlink(pbBase, filepath.Join(protocPath, "google")); err != nil {
 		return
