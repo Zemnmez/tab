@@ -6,11 +6,11 @@
 schema:
 - "./**/*.graphql"
 exec:
-  filename: gql_gen.go
+  filename: ../graphql/graphql_gen.go
 model:
-  filename: models_gen.go
+  filename: ../graphql/models_gen.go
 resolver:
-  filename: resolver.go
+  filename: ../graphql/resolver.go
   type: Resolver
 autobind: []
 models:
