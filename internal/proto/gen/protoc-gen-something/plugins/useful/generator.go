@@ -1,4 +1,3 @@
-
 package useful
 
 import (
@@ -22,12 +21,13 @@ func (p *useful) Init(g *generator.Generator) {
 	p.Generator = g
 }
 
-
 func (p *useful) Generate(file *generator.FileDescriptor) {
 	p.PluginImports = generator.NewPluginImports(p.Generator)
 
 	bytesPkg := p.NewImport("bytes")
 	ioPkg := p.NewImport("io")
+	graphqlPkg := p.NewImport("github.com/99designs/gqlgen/graphql")
+	encodingPkg := p.NewImport("encoding")
 	jsonPkg := p.NewImport("encoding/json")
 
 	type NamedType interface {
@@ -46,8 +46,6 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 	jsonpbPkg := p.NewImport("github.com/gogo/protobuf/jsonpb")
 	for _, message := range toExtend {
 
-
-
 		ccTypeName := generator.CamelCaseSlice(message.TypeName())
 
 		p.P(`// MarshalJSON implements json.Marshaler`)
@@ -55,42 +53,40 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 		p.In()
 
 		switch message.(type) {
-			case *generator.Descriptor:
+		case *generator.Descriptor:
 			p.P(`var b `, bytesPkg.Use(), ".Buffer")
 			p.P(`if err=_jsonMarshaler.Marshal(&b,&this);err!=nil{return}`)
 			p.P(`json = b.Bytes()`)
 			p.P(`return`)
 
-			case *generator.EnumDescriptor:
-			p.P(`if _, ok := `, ccTypeName, `_name[int32(this)];!ok{return nil, ErrInvalidEnum{ EnumName: "`,ccTypeName,`", Value: this }}`)
+		case *generator.EnumDescriptor:
+			p.P(`if _, ok := `, ccTypeName, `_name[int32(this)];!ok{return nil, ErrInvalidEnum{ EnumName: "`, ccTypeName, `", Value: this }}`)
 			p.P(`return `, jsonPkg.Use(), `.Marshal(this.String())`)
 
-			default:
-				panic("i am confused!")
+		default:
+			panic("i am confused!")
 		}
 
-			p.Out()
+		p.Out()
 		p.P(`}`)
-
-		
 
 		p.P(`// UnmarshalJSON implements json.Unmarshaler`)
 		p.P(`func (this *`, ccTypeName, `) UnmarshalJSON(json []byte) (err error) {`)
 		p.In()
 		switch message.(type) {
-			case *generator.Descriptor:
+		case *generator.Descriptor:
 			p.P(`return _jsonUnmarshaler.Unmarshal(`, bytesPkg.Use(), `.NewReader(json), this)`)
 
-			case *generator.EnumDescriptor:
+		case *generator.EnumDescriptor:
 			p.P(`var text string`)
 			p.P(`if err = `, jsonPkg.Use(), `.Unmarshal(json, &text); err != nil {return}`)
 
 			p.P(`var ok bool`)
 			p.P(`this32 := (*int32)(this)`)
-			p.P(`if *this32, ok = `, ccTypeName, `_value[text];!ok{return ErrInvalidEnum{ EnumName: "`,ccTypeName,`", Value: this }}`)
+			p.P(`if *this32, ok = `, ccTypeName, `_value[text];!ok{return ErrInvalidEnum{ EnumName: "`, ccTypeName, `", Value: this }}`)
 			p.P(`return`)
 
-			default:
+		default:
 			panic("this shouldnt happen!")
 		}
 
@@ -101,16 +97,16 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 		p.P(`func (this `, ccTypeName, `) MarshalGQL(w `, ioPkg.Use(), `.Writer) {var err error;`)
 		switch message.(type) {
 
-			case *generator.Descriptor:
+		case *generator.Descriptor:
 			p.P(`if err=_jsonMarshaler.Marshal(w,&this);err!=nil{panic(err)}`)
 
-			case *generator.EnumDescriptor:
-				p.P("b, err := this.MarshalJSON()")
-				p.P("if err != nil { panic(err)}")
-				p.P("if _, err = w.Write(b); err != nil { panic(err) }")
+		case *generator.EnumDescriptor:
+			p.P("b, err := this.MarshalJSON()")
+			p.P("if err != nil { panic(err)}")
+			p.P("if _, err = w.Write(b); err != nil { panic(err) }")
 
-
-			default: panic("huh?")
+		default:
+			panic("huh?")
 		}
 		p.P(`}`)
 
@@ -119,9 +115,42 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 
 		p.P(`// UnmarshalGQL implements graphql.Unmarshaler`)
 		p.P(`func (this *`, ccTypeName, `) UnmarshalGQL(v interface{}) (err error) {`+
-		`var newJSON []byte;if newJSON, err = `, jsonPkg.Use(), `.Marshal(v);err!=nil{return};`+
-		`;return this.UnmarshalJSON(newJSON);`+
-		`}`)
+			`var newJSON []byte;if newJSON, err = `, jsonPkg.Use(), `.Marshal(v);err!=nil{return};`+
+			`;return this.UnmarshalJSON(newJSON);`+
+			`}`)
+
+		switch message.(type) {
+		case *generator.Descriptor:
+
+			p.P(`// MarshalBinary implements encoding.BinaryMarshaler`)
+			p.P(`func (this *`, ccTypeName, `) MarshalBinary() ([]byte, error) {`)
+			p.In()
+			p.P(`return this.Marshal()`)
+			p.Out()
+			p.P(`}`)
+
+			p.P(`// UnmarshalBinary implements encoding.BinaryUnmarshaler`)
+			p.P(`func (this *`, ccTypeName, `) UnmarshalBinary(b []byte) error {`)
+			p.In()
+			p.P(`return this.Unmarshal(b)`)
+			p.Out()
+			p.P(`}`)
+		}
+
+		p.P(`var _ interface {`)
+		p.In()
+		switch message.(type) {
+		case *generator.Descriptor:
+			p.P(encodingPkg.Use(), `.BinaryMarshaler`)
+			p.P(encodingPkg.Use(), `.BinaryUnmarshaler`)
+		}
+		p.P(jsonPkg.Use(), `.Marshaler`)
+		p.P(jsonPkg.Use(), `.Unmarshaler`)
+		p.P(graphqlPkg.Use(), `.Unmarshaler`)
+		p.P(graphqlPkg.Use(), `.Marshaler`)
+		p.Out()
+		p.P(`} = new(`, ccTypeName, `)`)
+
 	}
 
 	p.P(`//these can be set via init() to customise the (un)marshaling`)

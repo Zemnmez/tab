@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gogo/protobuf/vanity"
 	"github.com/gogo/protobuf/vanity/command"
-	"github.com/zemnmez/tab/internal/proto/gen/protoc-gen-gqlgen/plugins/useful"
+	"github.com/zemnmez/tab/internal/proto/gen/protoc-gen-something/plugins/useful"
 )
 
 func main() {

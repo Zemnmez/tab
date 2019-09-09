@@ -5,8 +5,10 @@ package types
 
 import (
 	bytes "bytes"
+	encoding "encoding"
 	encoding_json "encoding/json"
 	fmt "fmt"
+	github_com_99designs_gqlgen_graphql "github.com/99designs/gqlgen/graphql"
 	_ "github.com/gogo/protobuf/gogoproto"
 	github_com_gogo_protobuf_jsonpb "github.com/gogo/protobuf/jsonpb"
 	proto "github.com/gogo/protobuf/proto"
@@ -52,6 +54,25 @@ func (this *ID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *ID) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *ID) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(ID)
+
 // MarshalJSON implements json.Marshaler
 func (this AuthorizationGrant) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -83,6 +104,25 @@ func (this *AuthorizationGrant) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *AuthorizationGrant) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *AuthorizationGrant) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(AuthorizationGrant)
 
 // MarshalJSON implements json.Marshaler
 func (this HistoryID) MarshalJSON() (json []byte, err error) {
@@ -116,6 +156,25 @@ func (this *HistoryID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *HistoryID) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *HistoryID) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(HistoryID)
+
 // MarshalJSON implements json.Marshaler
 func (this HistoryItem) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -147,6 +206,25 @@ func (this *HistoryItem) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *HistoryItem) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *HistoryItem) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(HistoryItem)
 
 // MarshalJSON implements json.Marshaler
 func (this RegularUserID) MarshalJSON() (json []byte, err error) {
@@ -180,6 +258,25 @@ func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *RegularUserID) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *RegularUserID) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(RegularUserID)
+
 // MarshalJSON implements json.Marshaler
 func (this UserID) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -211,6 +308,25 @@ func (this *UserID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *UserID) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *UserID) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(UserID)
 
 // MarshalJSON implements json.Marshaler
 func (this RegularUser) MarshalJSON() (json []byte, err error) {
@@ -244,6 +360,25 @@ func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *RegularUser) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *RegularUser) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(RegularUser)
+
 // MarshalJSON implements json.Marshaler
 func (this SpecialUser) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -275,6 +410,25 @@ func (this *SpecialUser) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *SpecialUser) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *SpecialUser) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(SpecialUser)
 
 // MarshalJSON implements json.Marshaler
 func (this ItemID) MarshalJSON() (json []byte, err error) {
@@ -308,6 +462,25 @@ func (this *ItemID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *ItemID) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *ItemID) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(ItemID)
+
 // MarshalJSON implements json.Marshaler
 func (this Item) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -339,6 +512,25 @@ func (this *Item) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *Item) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *Item) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(Item)
 
 // MarshalJSON implements json.Marshaler
 func (this OIDCProviderID) MarshalJSON() (json []byte, err error) {
@@ -372,6 +564,25 @@ func (this *OIDCProviderID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *OIDCProviderID) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *OIDCProviderID) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(OIDCProviderID)
+
 // MarshalJSON implements json.Marshaler
 func (this OIDCProvider) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -404,6 +615,25 @@ func (this *OIDCProvider) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *OIDCProvider) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *OIDCProvider) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(OIDCProvider)
+
 // MarshalJSON implements json.Marshaler
 func (this IDToken) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
@@ -435,6 +665,25 @@ func (this *IDToken) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *IDToken) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *IDToken) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(IDToken)
 
 // MarshalJSON implements json.Marshaler
 func (this Authorization) MarshalJSON() (json []byte, err error) {
@@ -479,6 +728,13 @@ func (this *Authorization) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+var _ interface {
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(Authorization)
+
 // MarshalJSON implements json.Marshaler
 func (this SpecialUserID) MarshalJSON() (json []byte, err error) {
 	if _, ok := SpecialUserID_name[int32(this)]; !ok {
@@ -521,6 +777,13 @@ func (this *SpecialUserID) UnmarshalGQL(v interface{}) (err error) {
 	}
 	return this.UnmarshalJSON(newJSON)
 }
+
+var _ interface {
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(SpecialUserID)
 
 //these can be set via init() to customise the (un)marshaling
 var (
