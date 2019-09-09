@@ -27,7 +27,7 @@ type Storage struct{ *badger.DB }
 type Tx struct{ *badger.Txn }
 
 func NewStorage(db *badger.DB) (storage storage.Storage, err error) { return Storage{db}, nil }
-func (s Storage) Tx() (txn storage.Tx, err error)                   { return Tx{s.NewTransaction(true)}, nil }
+func (s Storage) Txn() (txn storage.Tx, err error)                  { return Tx{s.NewTransaction(true)}, nil }
 func (t Tx) Close() (err error)                                     { t.Txn.Discard(); return nil }
 func (t Tx) Flush() (err error)                                     { return t.Txn.Commit() }
 func (t Tx) Remove(key []byte) (err error)                          { return t.Txn.Delete(key) }
