@@ -38,21 +38,13 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	AuthenticationMutation() AuthenticationMutationResolver
-	AuthenticationQuery() AuthenticationQueryResolver
 	AuthorizationGrant() AuthorizationGrantResolver
 	HistoryItem() HistoryItemResolver
 	Item() ItemResolver
 	Mutation() MutationResolver
-	OIDCMutation() OIDCMutationResolver
-	OIDCProvider() OIDCProviderResolver
-	OIDCProviderQuery() OIDCProviderQueryResolver
 	Query() QueryResolver
 	RegularUser() RegularUserResolver
 	SpecialUser() SpecialUserResolver
-	UserAuthentication() UserAuthenticationResolver
-	UserMutation() UserMutationResolver
-	UserQuery() UserQueryResolver
 }
 
 type DirectiveRoot struct {
@@ -67,7 +59,7 @@ type ComplexityRoot struct {
 
 	AuthenticationQuery struct {
 		Etc  func(childComplexity int) int
-		Oidc func(childComplexity int) int
+		OIDC func(childComplexity int) int
 	}
 
 	AuthorizationGrant struct {
@@ -112,20 +104,20 @@ type ComplexityRoot struct {
 
 	OIDCMutation struct {
 		Authenticate func(childComplexity int, token resolver.IDTokenInput) int
-		Provider     func(childComplexity int, id *string, provider *resolver.OIDCProviderInput) int
+		Provider     func(childComplexity int, id types.OIDCProviderID, provider resolver.OIDCProviderInput) int
 	}
 
 	OIDCProvider struct {
 		AuthorizationEndpoint func(childComplexity int) int
 		Callback              func(childComplexity int) int
 		ClientID              func(childComplexity int) int
-		ID                    func(childComplexity int) int
+		Id                    func(childComplexity int) int
 		Name                  func(childComplexity int) int
 	}
 
 	OIDCProviderQuery struct {
 		All  func(childComplexity int) int
-		ByID func(childComplexity int, id *string) int
+		ByID func(childComplexity int, id types.OIDCProviderID) int
 	}
 
 	OIDCQuery struct {
@@ -146,7 +138,7 @@ type ComplexityRoot struct {
 		Created        func(childComplexity int) int
 		Grants         func(childComplexity int) int
 		History        func(childComplexity int) int
-		ID             func(childComplexity int) int
+		Id             func(childComplexity int) int
 		Name           func(childComplexity int) int
 	}
 
@@ -175,9 +167,9 @@ type ComplexityRoot struct {
 	}
 
 	UserMutation struct {
-		Regular func(childComplexity int, id *types.RegularUserID) int
+		Regular func(childComplexity int) int
 		Self    func(childComplexity int) int
-		Special func(childComplexity int, id *types.SpecialUserID) int
+		Special func(childComplexity int) int
 	}
 
 	UserQuery struct {
@@ -188,13 +180,6 @@ type ComplexityRoot struct {
 	}
 }
 
-type AuthenticationMutationResolver interface {
-	Etc(ctx context.Context, obj *resolver.AuthenticationMutation) (*string, error)
-}
-type AuthenticationQueryResolver interface {
-	Etc(ctx context.Context, obj *resolver.AuthenticationQuery) (*string, error)
-	Oidc(ctx context.Context, obj *resolver.AuthenticationQuery) (*resolver.OIDCQuery, error)
-}
 type AuthorizationGrantResolver interface {
 	From(ctx context.Context, obj *types.AuthorizationGrant) (resolver.User, error)
 
@@ -208,50 +193,28 @@ type ItemResolver interface {
 	Children(ctx context.Context, obj *types.Item) ([]*types.Item, error)
 }
 type MutationResolver interface {
-	Ok(ctx context.Context) (*bool, error)
+	Ok(ctx context.Context) (bool, error)
 	Authentication(ctx context.Context) (*resolver.AuthenticationMutation, error)
 	Item(ctx context.Context, id types.ItemID, new *resolver.ItemInput) (*types.Item, error)
 	User(ctx context.Context) (*resolver.UserMutation, error)
 }
-type OIDCMutationResolver interface {
-	Provider(ctx context.Context, obj *resolver.OIDCMutation, id *string, provider *resolver.OIDCProviderInput) (*types.OIDCProvider, error)
-}
-type OIDCProviderResolver interface {
-	ID(ctx context.Context, obj *types.OIDCProvider) (*string, error)
-}
-type OIDCProviderQueryResolver interface {
-	ByID(ctx context.Context, obj *resolver.OIDCProviderQuery, id *string) (*types.OIDCProvider, error)
-}
 type QueryResolver interface {
-	Ok(ctx context.Context) (*bool, error)
+	Ok(ctx context.Context) (bool, error)
 	Authentication(ctx context.Context) (*resolver.AuthenticationQuery, error)
 	Item(ctx context.Context, id types.ItemID) (*types.Item, error)
 	User(ctx context.Context) (*resolver.UserQuery, error)
 }
 type RegularUserResolver interface {
-	ID(ctx context.Context, obj *types.RegularUser) (*types.RegularUserID, error)
-
 	Authentication(ctx context.Context, obj *types.RegularUser) (*resolver.UserAuthentication, error)
 	Grants(ctx context.Context, obj *types.RegularUser) ([]*types.AuthorizationGrant, error)
 
 	History(ctx context.Context, obj *types.RegularUser) ([]*types.HistoryItem, error)
 }
 type SpecialUserResolver interface {
-	Name(ctx context.Context, obj *types.SpecialUser) (string, error)
 	Authentication(ctx context.Context, obj *types.SpecialUser) (*resolver.UserAuthentication, error)
 	Grants(ctx context.Context, obj *types.SpecialUser) ([]*types.AuthorizationGrant, error)
 
 	History(ctx context.Context, obj *types.SpecialUser) ([]*types.HistoryItem, error)
-}
-type UserAuthenticationResolver interface {
-	Etc(ctx context.Context, obj *resolver.UserAuthentication) (*string, error)
-}
-type UserMutationResolver interface {
-	Special(ctx context.Context, obj *resolver.UserMutation, id *types.SpecialUserID) (resolver.UserMutator, error)
-	Regular(ctx context.Context, obj *resolver.UserMutation, id *types.RegularUserID) (resolver.UserMutator, error)
-}
-type UserQueryResolver interface {
-	WhoCan(ctx context.Context, obj *resolver.UserQuery, do []types.Authorization) ([]resolver.User, error)
 }
 
 type executableSchema struct {
@@ -291,11 +254,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.AuthenticationQuery.Etc(childComplexity), true
 
 	case "AuthenticationQuery.OIDC":
-		if e.complexity.AuthenticationQuery.Oidc == nil {
+		if e.complexity.AuthenticationQuery.OIDC == nil {
 			break
 		}
 
-		return e.complexity.AuthenticationQuery.Oidc(childComplexity), true
+		return e.complexity.AuthenticationQuery.OIDC(childComplexity), true
 
 	case "AuthorizationGrant.From":
 		if e.complexity.AuthorizationGrant.From == nil {
@@ -499,7 +462,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OIDCMutation.Provider(childComplexity, args["id"].(*string), args["provider"].(*resolver.OIDCProviderInput)), true
+		return e.complexity.OIDCMutation.Provider(childComplexity, args["id"].(types.OIDCProviderID), args["provider"].(resolver.OIDCProviderInput)), true
 
 	case "OIDCProvider.AuthorizationEndpoint":
 		if e.complexity.OIDCProvider.AuthorizationEndpoint == nil {
@@ -523,11 +486,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.OIDCProvider.ClientID(childComplexity), true
 
 	case "OIDCProvider.ID":
-		if e.complexity.OIDCProvider.ID == nil {
+		if e.complexity.OIDCProvider.Id == nil {
 			break
 		}
 
-		return e.complexity.OIDCProvider.ID(childComplexity), true
+		return e.complexity.OIDCProvider.Id(childComplexity), true
 
 	case "OIDCProvider.Name":
 		if e.complexity.OIDCProvider.Name == nil {
@@ -553,7 +516,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OIDCProviderQuery.ByID(childComplexity, args["id"].(*string)), true
+		return e.complexity.OIDCProviderQuery.ByID(childComplexity, args["id"].(types.OIDCProviderID)), true
 
 	case "OIDCQuery.IsValid":
 		if e.complexity.OIDCQuery.IsValid == nil {
@@ -643,11 +606,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.RegularUser.History(childComplexity), true
 
 	case "RegularUser.ID":
-		if e.complexity.RegularUser.ID == nil {
+		if e.complexity.RegularUser.Id == nil {
 			break
 		}
 
-		return e.complexity.RegularUser.ID(childComplexity), true
+		return e.complexity.RegularUser.Id(childComplexity), true
 
 	case "RegularUser.Name":
 		if e.complexity.RegularUser.Name == nil {
@@ -776,12 +739,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_UserMutation_Regular_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.UserMutation.Regular(childComplexity, args["id"].(*types.RegularUserID)), true
+		return e.complexity.UserMutation.Regular(childComplexity), true
 
 	case "UserMutation.Self":
 		if e.complexity.UserMutation.Self == nil {
@@ -795,12 +753,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_UserMutation_Special_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.UserMutation.Special(childComplexity, args["id"].(*types.SpecialUserID)), true
+		return e.complexity.UserMutation.Special(childComplexity), true
 
 	case "UserQuery.Regular":
 		if e.complexity.UserQuery.Regular == nil {
@@ -912,7 +865,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 }
 
 scalar Time
-scalar OIDCProviderID
+scalar OIDCProviderID @goModel(model: "github.com/zemnmez/tab/types.OIDCProviderID")
 
 type IDToken @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
     Issuer: String!
@@ -978,8 +931,7 @@ type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCMutat
     Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH]) }
 
 `},
-	&ast.Source{Name: "authn.graphql", Input: `scalar etc
-
+	&ast.Source{Name: "authn.graphql", Input: `
 type UserAuthentication @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserAuthentication") {
     etc: etc
 }
@@ -1192,12 +1144,14 @@ directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITI
     | FIELD_DEFINITION
 
 type Query @goModel(model: "github.com/zemnmez/tab/gql/resolver.Query") {
-  ok: Boolean
+  ok: Boolean!
 }
 
 type Mutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.Mutation") {
-  ok: Boolean
-}`},
+  ok: Boolean!
+}
+
+scalar etc @goModel(model: "github.com/zemnmez/tab/gql/resolver.Etc")`},
 	&ast.Source{Name: "user.graphql", Input: `# USERS
 # This module deals with users existing!
 
@@ -1353,17 +1307,17 @@ func (ec *executionContext) field_OIDCMutation_Authenticate_args(ctx context.Con
 func (ec *executionContext) field_OIDCMutation_Provider_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 types.OIDCProviderID
 	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalOOIDCProviderID2ᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalOOIDCProviderID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["id"] = arg0
-	var arg1 *resolver.OIDCProviderInput
+	var arg1 resolver.OIDCProviderInput
 	if tmp, ok := rawArgs["provider"]; ok {
-		arg1, err = ec.unmarshalOOIDCProviderInput2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCProviderInput(ctx, tmp)
+		arg1, err = ec.unmarshalOOIDCProviderInput2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCProviderInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1375,9 +1329,9 @@ func (ec *executionContext) field_OIDCMutation_Provider_args(ctx context.Context
 func (ec *executionContext) field_OIDCProviderQuery_ByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 types.OIDCProviderID
 	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalOOIDCProviderID2ᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalOOIDCProviderID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1469,34 +1423,6 @@ func (ec *executionContext) field_Self_Grant_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["abilities"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_UserMutation_Regular_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *types.RegularUserID
-	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalORegularUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_UserMutation_Special_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *types.SpecialUserID
-	if tmp, ok := rawArgs["id"]; ok {
-		arg0, err = ec.unmarshalOSpecialUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -1597,7 +1523,7 @@ func (ec *executionContext) _AuthenticationMutation_etc(ctx context.Context, fie
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthenticationMutation().Etc(rctx, obj)
+		return obj.Etc(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1606,10 +1532,10 @@ func (ec *executionContext) _AuthenticationMutation_etc(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(resolver.Etc)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOetc2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOetc2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐEtc(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthenticationMutation_OIDC(ctx context.Context, field graphql.CollectedField, obj *resolver.AuthenticationMutation) (ret graphql.Marshaler) {
@@ -1665,7 +1591,7 @@ func (ec *executionContext) _AuthenticationQuery_etc(ctx context.Context, field 
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthenticationQuery().Etc(rctx, obj)
+		return obj.Etc(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1674,10 +1600,10 @@ func (ec *executionContext) _AuthenticationQuery_etc(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(resolver.Etc)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOetc2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOetc2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐEtc(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthenticationQuery_OIDC(ctx context.Context, field graphql.CollectedField, obj *resolver.AuthenticationQuery) (ret graphql.Marshaler) {
@@ -1699,7 +1625,7 @@ func (ec *executionContext) _AuthenticationQuery_OIDC(ctx context.Context, field
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthenticationQuery().Oidc(rctx, obj)
+		return obj.OIDC(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1708,10 +1634,10 @@ func (ec *executionContext) _AuthenticationQuery_OIDC(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*resolver.OIDCQuery)
+	res := resTmp.(resolver.OIDCQuery)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOOIDCQuery2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCQuery(ctx, field.Selections, res)
+	return ec.marshalOOIDCQuery2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthorizationGrant_From(ctx context.Context, field graphql.CollectedField, obj *types.AuthorizationGrant) (ret graphql.Marshaler) {
@@ -2505,12 +2431,15 @@ func (ec *executionContext) _Mutation_ok(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_Authentication(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2713,7 +2642,7 @@ func (ec *executionContext) _OIDCMutation_Provider(ctx context.Context, field gr
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.OIDCMutation().Provider(rctx, obj, args["id"].(*string), args["provider"].(*resolver.OIDCProviderInput))
+			return obj.Provider(args["id"].(types.OIDCProviderID), args["provider"].(resolver.OIDCProviderInput)), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"MODIFY_VALID_AUTH"})
@@ -2727,12 +2656,10 @@ func (ec *executionContext) _OIDCMutation_Provider(ctx context.Context, field gr
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(*types.OIDCProvider); ok {
+		if data, ok := tmp.(types.OIDCProvider); ok {
 			return data, nil
-		} else if tmp == nil {
-			return nil, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/types.OIDCProvider`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/types.OIDCProvider`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2741,10 +2668,10 @@ func (ec *executionContext) _OIDCMutation_Provider(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.OIDCProvider)
+	res := resTmp.(types.OIDCProvider)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOOIDCProvider2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx, field.Selections, res)
+	return ec.marshalOOIDCProvider2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _OIDCProvider_ID(ctx context.Context, field graphql.CollectedField, obj *types.OIDCProvider) (ret graphql.Marshaler) {
@@ -2760,13 +2687,13 @@ func (ec *executionContext) _OIDCProvider_ID(ctx context.Context, field graphql.
 		Object:   "OIDCProvider",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OIDCProvider().ID(rctx, obj)
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2775,10 +2702,10 @@ func (ec *executionContext) _OIDCProvider_ID(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*types.OIDCProviderID)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOOIDCProviderID2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOOIDCProviderID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _OIDCProvider_Name(ctx context.Context, field graphql.CollectedField, obj *types.OIDCProvider) (ret graphql.Marshaler) {
@@ -2992,7 +2919,7 @@ func (ec *executionContext) _OIDCProviderQuery_ByID(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OIDCProviderQuery().ByID(rctx, obj, args["id"].(*string))
+		return obj.ByID(args["id"].(types.OIDCProviderID)), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3001,10 +2928,10 @@ func (ec *executionContext) _OIDCProviderQuery_ByID(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.OIDCProvider)
+	res := resTmp.(types.OIDCProvider)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOOIDCProvider2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx, field.Selections, res)
+	return ec.marshalOOIDCProvider2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _OIDCQuery_Provider(ctx context.Context, field graphql.CollectedField, obj *resolver.OIDCQuery) (ret graphql.Marshaler) {
@@ -3108,12 +3035,15 @@ func (ec *executionContext) _Query_ok(ctx context.Context, field graphql.Collect
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_Authentication(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3333,13 +3263,13 @@ func (ec *executionContext) _RegularUser_ID(ctx context.Context, field graphql.C
 		Object:   "RegularUser",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.RegularUser().ID(rctx, obj)
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3952,7 +3882,7 @@ func (ec *executionContext) _SpecialUser_Name(ctx context.Context, field graphql
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.SpecialUser().Name(rctx, obj)
+		return obj.Name(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4152,7 +4082,7 @@ func (ec *executionContext) _UserAuthentication_etc(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserAuthentication().Etc(rctx, obj)
+		return obj.Etc(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4161,10 +4091,10 @@ func (ec *executionContext) _UserAuthentication_etc(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(resolver.Etc)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOetc2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOetc2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐEtc(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserAuthentication_OIDC(ctx context.Context, field graphql.CollectedField, obj *resolver.UserAuthentication) (ret graphql.Marshaler) {
@@ -4275,18 +4205,11 @@ func (ec *executionContext) _UserMutation_Special(ctx context.Context, field gra
 		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_UserMutation_Special_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.UserMutation().Special(rctx, obj, args["id"].(*types.SpecialUserID))
+			return obj.Special(), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"MODIFY_SPECIAL_USERS"})
@@ -4334,18 +4257,11 @@ func (ec *executionContext) _UserMutation_Regular(ctx context.Context, field gra
 		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_UserMutation_Regular_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.UserMutation().Regular(rctx, obj, args["id"].(*types.RegularUserID))
+			return obj.Regular(), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"MODIFY_OTHER_USERS"})
@@ -4396,7 +4312,7 @@ func (ec *executionContext) _UserQuery_Self(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Self(), nil
+		return obj.Self(ctx), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4559,7 +4475,7 @@ func (ec *executionContext) _UserQuery_WhoCan(ctx context.Context, field graphql
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.UserQuery().WhoCan(rctx, obj, args["do"].([]types.Authorization))
+			return obj.WhoCan(args["do"].([]types.Authorization))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"VIEW_USERS"})
@@ -6017,16 +5933,7 @@ func (ec *executionContext) _AuthenticationMutation(ctx context.Context, sel ast
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("AuthenticationMutation")
 		case "etc":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AuthenticationMutation_etc(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._AuthenticationMutation_etc(ctx, field, obj)
 		case "OIDC":
 			out.Values[i] = ec._AuthenticationMutation_OIDC(ctx, field, obj)
 		default:
@@ -6052,27 +5959,9 @@ func (ec *executionContext) _AuthenticationQuery(ctx context.Context, sel ast.Se
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("AuthenticationQuery")
 		case "etc":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AuthenticationQuery_etc(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._AuthenticationQuery_etc(ctx, field, obj)
 		case "OIDC":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AuthenticationQuery_OIDC(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._AuthenticationQuery_OIDC(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6327,6 +6216,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "ok":
 			out.Values[i] = ec._Mutation_ok(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Authentication":
 			out.Values[i] = ec._Mutation_Authentication(ctx, field)
 		case "Item":
@@ -6361,16 +6253,7 @@ func (ec *executionContext) _OIDCMutation(ctx context.Context, sel ast.Selection
 		case "Authenticate":
 			out.Values[i] = ec._OIDCMutation_Authenticate(ctx, field, obj)
 		case "Provider":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OIDCMutation_Provider(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._OIDCMutation_Provider(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6394,35 +6277,26 @@ func (ec *executionContext) _OIDCProvider(ctx context.Context, sel ast.Selection
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("OIDCProvider")
 		case "ID":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OIDCProvider_ID(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._OIDCProvider_ID(ctx, field, obj)
 		case "Name":
 			out.Values[i] = ec._OIDCProvider_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Callback":
 			out.Values[i] = ec._OIDCProvider_Callback(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "AuthorizationEndpoint":
 			out.Values[i] = ec._OIDCProvider_AuthorizationEndpoint(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "ClientID":
 			out.Values[i] = ec._OIDCProvider_ClientID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -6449,19 +6323,10 @@ func (ec *executionContext) _OIDCProviderQuery(ctx context.Context, sel ast.Sele
 		case "All":
 			out.Values[i] = ec._OIDCProviderQuery_All(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "ByID":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OIDCProviderQuery_ByID(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._OIDCProviderQuery_ByID(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6523,6 +6388,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_ok(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "Authentication":
@@ -6585,19 +6453,10 @@ func (ec *executionContext) _RegularUser(ctx context.Context, sel ast.SelectionS
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("RegularUser")
 		case "ID":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._RegularUser_ID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._RegularUser_ID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "Name":
 			out.Values[i] = ec._RegularUser_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -6728,19 +6587,10 @@ func (ec *executionContext) _SpecialUser(ctx context.Context, sel ast.SelectionS
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "Name":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._SpecialUser_Name(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._SpecialUser_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "Authentication":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -6808,20 +6658,11 @@ func (ec *executionContext) _UserAuthentication(ctx context.Context, sel ast.Sel
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("UserAuthentication")
 		case "etc":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._UserAuthentication_etc(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._UserAuthentication_etc(ctx, field, obj)
 		case "OIDC":
 			out.Values[i] = ec._UserAuthentication_OIDC(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -6848,30 +6689,12 @@ func (ec *executionContext) _UserMutation(ctx context.Context, sel ast.Selection
 		case "Self":
 			out.Values[i] = ec._UserMutation_Self(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Special":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._UserMutation_Special(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._UserMutation_Special(ctx, field, obj)
 		case "Regular":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._UserMutation_Regular(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._UserMutation_Regular(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6895,15 +6718,6 @@ func (ec *executionContext) _UserQuery(ctx context.Context, sel ast.SelectionSet
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("UserQuery")
 		case "Self":
-			out.Values[i] = ec._UserQuery_Self(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
-		case "Special":
-			out.Values[i] = ec._UserQuery_Special(ctx, field, obj)
-		case "Regular":
-			out.Values[i] = ec._UserQuery_Regular(ctx, field, obj)
-		case "WhoCan":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -6911,12 +6725,21 @@ func (ec *executionContext) _UserQuery(ctx context.Context, sel ast.SelectionSet
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._UserQuery_WhoCan(ctx, field, obj)
+				res = ec._UserQuery_Self(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
 				return res
 			})
+		case "Special":
+			out.Values[i] = ec._UserQuery_Special(ctx, field, obj)
+		case "Regular":
+			out.Values[i] = ec._UserQuery_Regular(ctx, field, obj)
+		case "WhoCan":
+			out.Values[i] = ec._UserQuery_WhoCan(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8088,34 +7911,28 @@ func (ec *executionContext) marshalOOIDCProvider2githubᚗcomᚋzemnmezᚋtabᚋ
 	return v
 }
 
-func (ec *executionContext) marshalOOIDCProvider2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProvider(ctx context.Context, sel ast.SelectionSet, v *types.OIDCProvider) graphql.Marshaler {
+func (ec *executionContext) unmarshalOOIDCProviderID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx context.Context, v interface{}) (types.OIDCProviderID, error) {
+	var res types.OIDCProviderID
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalOOIDCProviderID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx context.Context, sel ast.SelectionSet, v types.OIDCProviderID) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOOIDCProviderID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx context.Context, v interface{}) (*types.OIDCProviderID, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOOIDCProviderID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOOIDCProviderID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐOIDCProviderID(ctx context.Context, sel ast.SelectionSet, v *types.OIDCProviderID) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
-}
-
-func (ec *executionContext) unmarshalOOIDCProviderID2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
-}
-
-func (ec *executionContext) marshalOOIDCProviderID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalString(v)
-}
-
-func (ec *executionContext) unmarshalOOIDCProviderID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalOOIDCProviderID2string(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOOIDCProviderID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec.marshalOOIDCProviderID2string(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOOIDCProviderInput2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCProviderInput(ctx context.Context, v interface{}) (resolver.OIDCProviderInput, error) {
@@ -8136,13 +7953,6 @@ func (ec *executionContext) marshalOOIDCProviderQuery2githubᚗcomᚋzemnmezᚋt
 
 func (ec *executionContext) marshalOOIDCQuery2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCQuery(ctx context.Context, sel ast.SelectionSet, v resolver.OIDCQuery) graphql.Marshaler {
 	return ec._OIDCQuery(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOOIDCQuery2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCQuery(ctx context.Context, sel ast.SelectionSet, v *resolver.OIDCQuery) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._OIDCQuery(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx context.Context, sel ast.SelectionSet, v types.RegularUser) graphql.Marshaler {
@@ -8486,27 +8296,12 @@ func (ec *executionContext) marshalO__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 	return ec.___Type(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOetc2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalString(v)
+func (ec *executionContext) unmarshalOetc2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐEtc(ctx context.Context, v interface{}) (resolver.Etc, error) {
+	return ec.unmarshalInputetc(ctx, v)
 }
 
-func (ec *executionContext) marshalOetc2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalString(v)
-}
-
-func (ec *executionContext) unmarshalOetc2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalOetc2string(ctx, v)
-	return &res, err
-}
-
-func (ec *executionContext) marshalOetc2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec.marshalOetc2string(ctx, sel, *v)
+func (ec *executionContext) marshalOetc2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐEtc(ctx context.Context, sel ast.SelectionSet, v resolver.Etc) graphql.Marshaler {
+	return ec._etc(ctx, sel, &v)
 }
 
 // endregion ***************************** type.gotpl *****************************

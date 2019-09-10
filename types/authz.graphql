@@ -27,7 +27,7 @@ type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/types.Authorizat
     have the appropriate permissions anymore,
     the grant is no longer valid.
     """
-    Valid: Boolean
+    Valid: Boolean!
 }
 
 extend interface User {

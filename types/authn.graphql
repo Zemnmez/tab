@@ -1,4 +1,3 @@
-scalar etc
 
 type UserAuthentication @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserAuthentication") {
     etc: etc

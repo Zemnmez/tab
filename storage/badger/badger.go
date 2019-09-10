@@ -19,24 +19,24 @@ const (
 	O_TRUNC  int = storage.O_TRUNC
 )
 
-var _ storage.Storage = Storage{}
-var _ storage.Tx = Tx{}
-var _ storage.Record = &Record{}
+var _ storage.IStorage = Storage{}
+var _ storage.ITxn = Tx{}
+var _ storage.IRecord = &Record{}
 
 type Storage struct{ *badger.DB }
 type Tx struct{ *badger.Txn }
 
-func NewStorage(db *badger.DB) (storage storage.Storage, err error) { return Storage{db}, nil }
-func (s Storage) Txn() (txn storage.Tx, err error)                  { return Tx{s.NewTransaction(true)}, nil }
-func (t Tx) Close() (err error)                                     { t.Txn.Discard(); return nil }
-func (t Tx) Flush() (err error)                                     { return t.Txn.Commit() }
-func (t Tx) Remove(key []byte) (err error)                          { return t.Txn.Delete(key) }
-func (s Storage) Flush() (err error)                                { return s.DB.Sync() }
-func (s Storage) Close() (err error)                                { return s.Flush() }
+func NewStorage(db *badger.DB) (storage storage.IStorage, err error) { return Storage{db}, nil }
+func (s Storage) Txn() (txn storage.ITxn, err error)                 { return Tx{s.NewTransaction(true)}, nil }
+func (t Tx) Close() (err error)                                      { t.Txn.Discard(); return nil }
+func (t Tx) Flush() (err error)                                      { return t.Txn.Commit() }
+func (t Tx) Remove(key []byte) (err error)                           { return t.Txn.Delete(key) }
+func (s Storage) Flush() (err error)                                 { return s.DB.Sync() }
+func (s Storage) Close() (err error)                                 { return s.Flush() }
 
 var ErrO_EXCL = errors.New("key already exists and O_EXCL was requested")
 
-func (t Tx) Open(name []byte, flag int) (fresh storage.Record, err error) {
+func (t Tx) Open(name []byte, flag int) (fresh storage.IRecord, err error) {
 	var r = Record{tx: t, key: name, flag: flag}
 	fresh = &r
 	if err = r.Validate(); err != nil {
@@ -80,6 +80,7 @@ type Record struct {
 	flag int
 	item *badger.Item
 	bytes.Buffer
+	flushed bool
 }
 
 func (r *Record) Item() (item *badger.Item, err error) {
@@ -126,10 +127,13 @@ func (r Record) Validate() (err error) {
 }
 
 func (r Record) Close() error { return r.Flush() }
+
 func (r Record) Flush() (err error) {
-	if r.flag|O_RDWR != 0 || r.flag|O_WRONLY != 0 {
-		if err = r.tx.Set(r.key, r.Buffer.Bytes()); err != nil {
-			return
+	if !r.flushed {
+		if r.flag|O_RDWR != 0 || r.flag|O_WRONLY != 0 {
+			if err = r.tx.Set(r.key, r.Buffer.Bytes()); err != nil {
+				return
+			}
 		}
 	}
 

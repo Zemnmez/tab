@@ -16,6 +16,6 @@ func (OIDCProviderQuery) All() []types.OIDCProvider                 { panic("tod
 func (OIDCProviderQuery) ByID(id types.OIDCProviderID) types.OIDCProvider { panic("todo") }
 
 func (AuthenticationMutation) OIDC() OIDCMutation { return OIDCMutation{} }
-func (AuthenticationQuery) OIDCQuery() OIDCQuery            { return OIDCQuery{} }
+func (AuthenticationQuery) OIDC() OIDCQuery            { return OIDCQuery{} }
 func (OIDCQuery) Provider() OIDCProviderQuery     { return OIDCProviderQuery{} }
 func (UserAuthentication) OIDC() []types.IDToken  { panic("todo") }

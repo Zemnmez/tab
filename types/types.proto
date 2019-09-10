@@ -8,6 +8,7 @@ import "google/protobuf/timestamp.proto";
 option (gogoproto.gostring_all) = true;
 option (gogoproto.equal_all) = true;
 option (gogoproto.stringer_all) = true;
+option (gogoproto.sizer_all) = true;
 option (gogoproto.testgen_all) = true;
 option (gogoproto.enum_stringer_all) = true;
 
@@ -65,7 +66,7 @@ message UserID {
 }
 
 message RegularUser {
-    UserID id = 1;
+    RegularUserID id = 1;
     string name = 2;
     repeated types.Authorization authorizations = 3;
     repeated types.HistoryID historyID = 4;

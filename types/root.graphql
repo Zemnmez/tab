@@ -9,9 +9,11 @@ directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITI
     | FIELD_DEFINITION
 
 type Query @goModel(model: "github.com/zemnmez/tab/gql/resolver.Query") {
-  ok: Boolean
+  ok: Boolean!
 }
 
 type Mutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.Mutation") {
-  ok: Boolean
+  ok: Boolean!
 }
+
+scalar etc @goModel(model: "github.com/zemnmez/tab/gql/resolver.Etc")

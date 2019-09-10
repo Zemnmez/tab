@@ -3,7 +3,7 @@ extend enum Authorization {
 }
 
 scalar Time
-scalar OIDCProviderID
+scalar OIDCProviderID @goModel(model: "github.com/zemnmez/tab/types.OIDCProviderID")
 
 type IDToken @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
     Issuer: String!

@@ -28,6 +28,7 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 	ioPkg := p.NewImport("io")
 	graphqlPkg := p.NewImport("github.com/99designs/gqlgen/graphql")
 	encodingPkg := p.NewImport("encoding")
+	ioutilPkg := p.NewImport("io/ioutil")
 	jsonPkg := p.NewImport("encoding/json")
 
 	type NamedType interface {
@@ -95,6 +96,7 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 
 		p.P(`// MarshalGQL implements graphql.Marshaler`)
 		p.P(`func (this `, ccTypeName, `) MarshalGQL(w `, ioPkg.Use(), `.Writer) {var err error;`)
+
 		switch message.(type) {
 
 		case *generator.Descriptor:
@@ -122,6 +124,27 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 		switch message.(type) {
 		case *generator.Descriptor:
 
+			p.P(`// WriteTo implements io.WriterTo.`)
+			p.P(`// WriteTo writes this structure as protobufs`)
+			p.P(`func (this `, ccTypeName, `) WriteTo(w `, ioPkg.Use(), `.Writer) (n int64, err error) {`)
+			p.P(`bt, err := this.MarshalBinary()`)
+			p.P(`if err != nil { return }`)
+			p.P(`nint, err := w.Write(bt)`)
+			p.P(`n = int64(nint);return`)
+			p.P(`}`)
+
+			p.P(`// ReadFrom implements io.ReaderFrom.`)
+			p.P(`// ReadFrom expects the structure as protobufs,`)
+			p.P(`// and assumes the protobuf message should consume`)
+			p.P(`// the entire reader.`)
+			p.P(`func (this `, ccTypeName, `) ReadFrom(r `, ioPkg.Use(), `.Reader) (n int64, err error) {`)
+			p.P(`bt, err := `, ioutilPkg.Use(), `.ReadAll(r)`)
+			p.P(`n = int64(len(bt))`)
+			p.P(`if err != nil { return }`)
+			p.P(`err = this.UnmarshalBinary(bt)`)
+			p.P(`return`)
+			p.P(`}`)
+
 			p.P(`// MarshalBinary implements encoding.BinaryMarshaler`)
 			p.P(`func (this *`, ccTypeName, `) MarshalBinary() ([]byte, error) {`)
 			p.In()
@@ -143,6 +166,8 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 		case *generator.Descriptor:
 			p.P(encodingPkg.Use(), `.BinaryMarshaler`)
 			p.P(encodingPkg.Use(), `.BinaryUnmarshaler`)
+			p.P(ioPkg.Use(), `.WriterTo`)
+			p.P(ioPkg.Use(), `.ReaderFrom`)
 		}
 		p.P(jsonPkg.Use(), `.Marshaler`)
 		p.P(jsonPkg.Use(), `.Unmarshaler`)
@@ -163,5 +188,4 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 
 	p.P(`type ErrInvalidEnum struct { EnumName string; Value interface{} }`)
 	p.P(`func (i ErrInvalidEnum) Error() string { return fmt.Sprintf("invalid %s(%s)", i.EnumName, i.Value) }`)
-
 }

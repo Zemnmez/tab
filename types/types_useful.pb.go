@@ -14,6 +14,7 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	_ "github.com/gogo/protobuf/types"
 	io "io"
+	io_ioutil "io/ioutil"
 	math "math"
 )
 
@@ -54,6 +55,32 @@ func (this *ID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this ID) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this ID) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *ID) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -67,6 +94,8 @@ func (this *ID) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -105,6 +134,32 @@ func (this *AuthorizationGrant) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this AuthorizationGrant) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this AuthorizationGrant) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *AuthorizationGrant) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -118,6 +173,8 @@ func (this *AuthorizationGrant) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -156,6 +213,32 @@ func (this *HistoryID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this HistoryID) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this HistoryID) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *HistoryID) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -169,6 +252,8 @@ func (this *HistoryID) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -207,6 +292,32 @@ func (this *HistoryItem) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this HistoryItem) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this HistoryItem) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *HistoryItem) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -220,6 +331,8 @@ func (this *HistoryItem) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -258,6 +371,32 @@ func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this RegularUserID) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this RegularUserID) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *RegularUserID) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -271,6 +410,8 @@ func (this *RegularUserID) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -309,6 +450,32 @@ func (this *UserID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this UserID) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this UserID) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *UserID) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -322,6 +489,8 @@ func (this *UserID) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -360,6 +529,32 @@ func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this RegularUser) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this RegularUser) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *RegularUser) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -373,6 +568,8 @@ func (this *RegularUser) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -411,6 +608,32 @@ func (this *SpecialUser) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this SpecialUser) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this SpecialUser) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *SpecialUser) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -424,6 +647,8 @@ func (this *SpecialUser) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -462,6 +687,32 @@ func (this *ItemID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this ItemID) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this ItemID) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *ItemID) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -475,6 +726,8 @@ func (this *ItemID) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -513,6 +766,32 @@ func (this *Item) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this Item) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this Item) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *Item) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -526,6 +805,8 @@ func (this *Item) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -564,6 +845,32 @@ func (this *OIDCProviderID) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this OIDCProviderID) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this OIDCProviderID) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *OIDCProviderID) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -577,6 +884,8 @@ func (this *OIDCProviderID) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -615,6 +924,32 @@ func (this *OIDCProvider) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this OIDCProvider) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this OIDCProvider) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *OIDCProvider) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -628,6 +963,8 @@ func (this *OIDCProvider) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
@@ -666,6 +1003,32 @@ func (this *IDToken) UnmarshalGQL(v interface{}) (err error) {
 	return this.UnmarshalJSON(newJSON)
 }
 
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this IDToken) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this IDToken) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
 // MarshalBinary implements encoding.BinaryMarshaler
 func (this *IDToken) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
@@ -679,6 +1042,8 @@ func (this *IDToken) UnmarshalBinary(b []byte) error {
 var _ interface {
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
 	encoding_json.Marshaler
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
