@@ -1,14 +1,35 @@
+extend enum Authorization {
+    # modify root / anonymous
+    MODIFY_SINGLETON_USERS
+}
+
+type SingletonUserMutator implements UserMutator {
+    Modify(with: UserInput!): User! @authorized(to: [MODIFY_SINGLETON_USERS])
+}
+
 type Self implements User {
     UserID: UserID!
     Name: String!
 }
 
-type RootUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.RootUser") {
-    ID: SpecialUserID!
-    Name: String!
+enum SingletonUserType {
+    NIL
+    ROOT
+    ANONYMOUS
 }
 
-type AnonymousUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.AnonymousUser") {
-    ID: SpecialUserID!
+interface SingletonUser {
+    SingletonUserType: SingletonUserType!
+}
+
+type RootUser implements User & SingletonUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.RootUser") {
+    ID: UserID!
     Name: String!
+    SingletonUserType: SingletonUserType!
+}
+
+type AnonymousUser implements User & SingletonUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.AnonymousUser") {
+    ID: UserID!
+    Name: String!
+    SingletonUserType: SingletonUserType!
 }

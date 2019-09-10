@@ -52,9 +52,6 @@ extend enum Authorization {
     # modify other users profiles
     MODIFY_OTHER_USERS
 
-    # modify root / anonymous
-    MODIFY_SPECIAL_USERS
-
     # edit the details of my own user (anonymous user cannot do this)
     MODIFY_SELF
 }
@@ -67,11 +64,7 @@ extend type Mutation {
 
 type UserMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutation") {
     Self: SelfMutator! @authorized(to: [MODIFY_SELF])
-    ById(id: UserID) SpecialUserMutator | RegularUserMutator
-}
-
-type SpecialUserMutator implements UserMutator {
-    Modify(with: UserInput!): User! @authorized(to: [MODIFY_SPECIAL_USERS])
+    ById(id: UserID) UserMutator
 }
 
 type RegularUserMutator implements UserMutator {
