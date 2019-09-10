@@ -38,13 +38,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	AuthorizationGrant() AuthorizationGrantResolver
-	HistoryItem() HistoryItemResolver
-	Item() ItemResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
-	RegularUser() RegularUserResolver
-	SpecialUser() SpecialUserResolver
 }
 
 type DirectiveRoot struct {
@@ -180,41 +175,17 @@ type ComplexityRoot struct {
 	}
 }
 
-type AuthorizationGrantResolver interface {
-	From(ctx context.Context, obj *types.AuthorizationGrant) (resolver.User, error)
-
-	Valid(ctx context.Context, obj *types.AuthorizationGrant) (*bool, error)
-}
-type HistoryItemResolver interface {
-	By(ctx context.Context, obj *types.HistoryItem) (resolver.User, error)
-}
-type ItemResolver interface {
-	Parent(ctx context.Context, obj *types.Item) (*types.Item, error)
-	Children(ctx context.Context, obj *types.Item) ([]*types.Item, error)
-}
 type MutationResolver interface {
 	Ok(ctx context.Context) (bool, error)
 	Authentication(ctx context.Context) (*resolver.AuthenticationMutation, error)
-	Item(ctx context.Context, id types.ItemID, new *resolver.ItemInput) (*types.Item, error)
+	Item(ctx context.Context, id types.ItemID, new *resolver.ItemInput) (*resolver.Item, error)
 	User(ctx context.Context) (*resolver.UserMutation, error)
 }
 type QueryResolver interface {
 	Ok(ctx context.Context) (bool, error)
 	Authentication(ctx context.Context) (*resolver.AuthenticationQuery, error)
-	Item(ctx context.Context, id types.ItemID) (*types.Item, error)
+	Item(ctx context.Context, id types.ItemID) (*resolver.Item, error)
 	User(ctx context.Context) (*resolver.UserQuery, error)
-}
-type RegularUserResolver interface {
-	Authentication(ctx context.Context, obj *types.RegularUser) (*resolver.UserAuthentication, error)
-	Grants(ctx context.Context, obj *types.RegularUser) ([]*types.AuthorizationGrant, error)
-
-	History(ctx context.Context, obj *types.RegularUser) ([]*types.HistoryItem, error)
-}
-type SpecialUserResolver interface {
-	Authentication(ctx context.Context, obj *types.SpecialUser) (*resolver.UserAuthentication, error)
-	Grants(ctx context.Context, obj *types.SpecialUser) ([]*types.AuthorizationGrant, error)
-
-	History(ctx context.Context, obj *types.SpecialUser) ([]*types.HistoryItem, error)
 }
 
 type executableSchema struct {
@@ -970,7 +941,7 @@ enum Authorization {
     VIEW_USERS
 }
 
-type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/types.AuthorizationGrant") {
+type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/gql/resolver.AuthorizationGrant") {
     """
     From is the user which has granted permissions
     to the grantee
@@ -989,7 +960,7 @@ type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/types.Authorizat
     have the appropriate permissions anymore,
     the grant is no longer valid.
     """
-    Valid: Boolean
+    Valid: Boolean!
 }
 
 extend interface User {
@@ -1078,7 +1049,7 @@ extend type SpecialUser {
 }
 
 # A HistoryItem represents a single thing that happened in this user's history
-type HistoryItem  @goModel(model: "github.com/zemnmez/tab/types.HistoryItem") {
+type HistoryItem  @goModel(model: "github.com/zemnmez/tab/gql/resolver.HistoryItem") {
     Action: String!
     By: User!
     RequestData: String!
@@ -1093,7 +1064,7 @@ extend enum Authorization {
     MODIFY_ITEMS
 }
 
-type Item @goModel(model: "github.com/zemnmez/tab/types.Item") {
+type Item @goModel(model: "github.com/zemnmez/tab/gql/resolver.Item") {
   # A unique identifier for this Item
   Id: ItemID!
 
@@ -1176,7 +1147,7 @@ type Self implements User {
 }
 
 # RegularUsers are the normal rank and file users!
-type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/types.RegularUser") {
+type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.RegularUser") {
     # ID is the unique identifier of this user. It may be a SpecialUserID
     # if this is a special user, like root.
     ID: RegularUserID!
@@ -1188,7 +1159,7 @@ type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/types.R
 }
 
 # SpecialUsers are special singleton accounts like ANONYMOUS and ROOT
-type SpecialUser implements User @goModel(model: "github.com/zemnmez/tab/types.SpecialUser") {
+type SpecialUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.SpecialUser") {
     ID: SpecialUserID!
     Name: String!
 }
@@ -1640,7 +1611,7 @@ func (ec *executionContext) _AuthenticationQuery_OIDC(ctx context.Context, field
 	return ec.marshalOOIDCQuery2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐOIDCQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthorizationGrant_From(ctx context.Context, field graphql.CollectedField, obj *types.AuthorizationGrant) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthorizationGrant_From(ctx context.Context, field graphql.CollectedField, obj *resolver.AuthorizationGrant) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1659,7 +1630,7 @@ func (ec *executionContext) _AuthorizationGrant_From(ctx context.Context, field 
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthorizationGrant().From(rctx, obj)
+		return obj.From(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1677,7 +1648,7 @@ func (ec *executionContext) _AuthorizationGrant_From(ctx context.Context, field 
 	return ec.marshalNUser2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthorizationGrant_Of(ctx context.Context, field graphql.CollectedField, obj *types.AuthorizationGrant) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthorizationGrant_Of(ctx context.Context, field graphql.CollectedField, obj *resolver.AuthorizationGrant) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1714,7 +1685,7 @@ func (ec *executionContext) _AuthorizationGrant_Of(ctx context.Context, field gr
 	return ec.marshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AuthorizationGrant_Valid(ctx context.Context, field graphql.CollectedField, obj *types.AuthorizationGrant) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthorizationGrant_Valid(ctx context.Context, field graphql.CollectedField, obj *resolver.AuthorizationGrant) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1733,22 +1704,25 @@ func (ec *executionContext) _AuthorizationGrant_Valid(ctx context.Context, field
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthorizationGrant().Valid(rctx, obj)
+		return obj.Valid(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_Action(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_Action(ctx context.Context, field graphql.CollectedField, obj *resolver.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1785,7 +1759,7 @@ func (ec *executionContext) _HistoryItem_Action(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.CollectedField, obj *resolver.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1804,7 +1778,7 @@ func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.HistoryItem().By(rctx, obj)
+		return obj.By(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1822,7 +1796,7 @@ func (ec *executionContext) _HistoryItem_By(ctx context.Context, field graphql.C
 	return ec.marshalNUser2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_RequestData(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_RequestData(ctx context.Context, field graphql.CollectedField, obj *resolver.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1859,7 +1833,7 @@ func (ec *executionContext) _HistoryItem_RequestData(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HistoryItem_IPAddress(ctx context.Context, field graphql.CollectedField, obj *types.HistoryItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _HistoryItem_IPAddress(ctx context.Context, field graphql.CollectedField, obj *resolver.HistoryItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2223,7 +2197,7 @@ func (ec *executionContext) _IDToken_AuthorizedParty(ctx context.Context, field 
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Item_Id(ctx context.Context, field graphql.CollectedField, obj *types.Item) (ret graphql.Marshaler) {
+func (ec *executionContext) _Item_Id(ctx context.Context, field graphql.CollectedField, obj *resolver.Item) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2260,7 +2234,7 @@ func (ec *executionContext) _Item_Id(ctx context.Context, field graphql.Collecte
 	return ec.marshalNItemID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Item_Name(ctx context.Context, field graphql.CollectedField, obj *types.Item) (ret graphql.Marshaler) {
+func (ec *executionContext) _Item_Name(ctx context.Context, field graphql.CollectedField, obj *resolver.Item) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2297,7 +2271,7 @@ func (ec *executionContext) _Item_Name(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Item_Location(ctx context.Context, field graphql.CollectedField, obj *types.Item) (ret graphql.Marshaler) {
+func (ec *executionContext) _Item_Location(ctx context.Context, field graphql.CollectedField, obj *resolver.Item) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2334,7 +2308,7 @@ func (ec *executionContext) _Item_Location(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Item_Parent(ctx context.Context, field graphql.CollectedField, obj *types.Item) (ret graphql.Marshaler) {
+func (ec *executionContext) _Item_Parent(ctx context.Context, field graphql.CollectedField, obj *resolver.Item) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2353,7 +2327,7 @@ func (ec *executionContext) _Item_Parent(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Item().Parent(rctx, obj)
+		return obj.Parent(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2362,13 +2336,13 @@ func (ec *executionContext) _Item_Parent(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.Item)
+	res := resTmp.(*resolver.Item)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx, field.Selections, res)
+	return ec.marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Item_Children(ctx context.Context, field graphql.CollectedField, obj *types.Item) (ret graphql.Marshaler) {
+func (ec *executionContext) _Item_Children(ctx context.Context, field graphql.CollectedField, obj *resolver.Item) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2387,7 +2361,7 @@ func (ec *executionContext) _Item_Children(ctx context.Context, field graphql.Co
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Item().Children(rctx, obj)
+		return obj.Children(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2399,10 +2373,10 @@ func (ec *executionContext) _Item_Children(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.Item)
+	res := resTmp.([]*resolver.Item)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx, field.Selections, res)
+	return ec.marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ok(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2517,12 +2491,12 @@ func (ec *executionContext) _Mutation_Item(ctx context.Context, field graphql.Co
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(*types.Item); ok {
+		if data, ok := tmp.(*resolver.Item); ok {
 			return data, nil
 		} else if tmp == nil {
 			return nil, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/types.Item`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/gql/resolver.Item`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2534,10 +2508,10 @@ func (ec *executionContext) _Mutation_Item(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*types.Item)
+	res := resTmp.(*resolver.Item)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx, field.Selections, res)
+	return ec.marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_User(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3121,12 +3095,12 @@ func (ec *executionContext) _Query_Item(ctx context.Context, field graphql.Colle
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(*types.Item); ok {
+		if data, ok := tmp.(*resolver.Item); ok {
 			return data, nil
 		} else if tmp == nil {
 			return nil, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/types.Item`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/gql/resolver.Item`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3135,10 +3109,10 @@ func (ec *executionContext) _Query_Item(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.Item)
+	res := resTmp.(*resolver.Item)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx, field.Selections, res)
+	return ec.marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_User(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3250,7 +3224,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_ID(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_ID(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3287,7 +3261,7 @@ func (ec *executionContext) _RegularUser_ID(ctx context.Context, field graphql.C
 	return ec.marshalNRegularUserID2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_Name(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_Name(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3324,7 +3298,7 @@ func (ec *executionContext) _RegularUser_Name(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_Created(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_Created(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3361,7 +3335,7 @@ func (ec *executionContext) _RegularUser_Created(ctx context.Context, field grap
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_Authentication(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_Authentication(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3380,7 +3354,7 @@ func (ec *executionContext) _RegularUser_Authentication(ctx context.Context, fie
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.RegularUser().Authentication(rctx, obj)
+		return obj.Authentication(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3389,13 +3363,13 @@ func (ec *executionContext) _RegularUser_Authentication(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*resolver.UserAuthentication)
+	res := resTmp.(resolver.UserAuthentication)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOUserAuthentication2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐUserAuthentication(ctx, field.Selections, res)
+	return ec.marshalOUserAuthentication2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐUserAuthentication(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_Grants(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_Grants(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3414,7 +3388,7 @@ func (ec *executionContext) _RegularUser_Grants(ctx context.Context, field graph
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.RegularUser().Grants(rctx, obj)
+		return obj.Grants(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3426,13 +3400,13 @@ func (ec *executionContext) _RegularUser_Grants(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.AuthorizationGrant)
+	res := resTmp.([]resolver.AuthorizationGrant)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx, field.Selections, res)
+	return ec.marshalNAuthorizationGrant2ᚕgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_Authorizations(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_Authorizations(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3469,7 +3443,7 @@ func (ec *executionContext) _RegularUser_Authorizations(ctx context.Context, fie
 	return ec.marshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RegularUser_History(ctx context.Context, field graphql.CollectedField, obj *types.RegularUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _RegularUser_History(ctx context.Context, field graphql.CollectedField, obj *resolver.RegularUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3489,7 +3463,7 @@ func (ec *executionContext) _RegularUser_History(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.RegularUser().History(rctx, obj)
+			return obj.History(), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"VIEW_OTHER_USERS_HISTORY"})
@@ -3503,10 +3477,10 @@ func (ec *executionContext) _RegularUser_History(ctx context.Context, field grap
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.([]*types.HistoryItem); ok {
+		if data, ok := tmp.([]resolver.HistoryItem); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/types.HistoryItem`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []github.com/zemnmez/tab/gql/resolver.HistoryItem`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3518,10 +3492,10 @@ func (ec *executionContext) _RegularUser_History(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.HistoryItem)
+	res := resTmp.([]resolver.HistoryItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, field.Selections, res)
+	return ec.marshalNHistoryItem2ᚕgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Self_Name(ctx context.Context, field graphql.CollectedField, obj *resolver.Self) (ret graphql.Marshaler) {
@@ -3626,10 +3600,10 @@ func (ec *executionContext) _Self_Grants(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.AuthorizationGrant)
+	res := resTmp.([]*resolver.AuthorizationGrant)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx, field.Selections, res)
+	return ec.marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Self_Authorizatons(ctx context.Context, field graphql.CollectedField, obj *resolver.Self) (ret graphql.Marshaler) {
@@ -3751,12 +3725,12 @@ func (ec *executionContext) _Self_GrantSpecial(ctx context.Context, field graphq
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(*types.SpecialUser); ok {
+		if data, ok := tmp.(*resolver.SpecialUser); ok {
 			return data, nil
 		} else if tmp == nil {
 			return nil, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/types.SpecialUser`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/zemnmez/tab/gql/resolver.SpecialUser`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3765,10 +3739,10 @@ func (ec *executionContext) _Self_GrantSpecial(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.SpecialUser)
+	res := resTmp.(*resolver.SpecialUser)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx, field.Selections, res)
+	return ec.marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐSpecialUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Self_History(ctx context.Context, field graphql.CollectedField, obj *resolver.Self) (ret graphql.Marshaler) {
@@ -3805,10 +3779,10 @@ func (ec *executionContext) _Self_History(ctx context.Context, field graphql.Col
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.([]*types.HistoryItem); ok {
+		if data, ok := tmp.([]*resolver.HistoryItem); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/types.HistoryItem`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/gql/resolver.HistoryItem`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3820,13 +3794,13 @@ func (ec *executionContext) _Self_History(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.HistoryItem)
+	res := resTmp.([]*resolver.HistoryItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, field.Selections, res)
+	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SpecialUser_ID(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _SpecialUser_ID(ctx context.Context, field graphql.CollectedField, obj *resolver.SpecialUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3863,7 +3837,7 @@ func (ec *executionContext) _SpecialUser_ID(ctx context.Context, field graphql.C
 	return ec.marshalNSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SpecialUser_Name(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _SpecialUser_Name(ctx context.Context, field graphql.CollectedField, obj *resolver.SpecialUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3900,7 +3874,7 @@ func (ec *executionContext) _SpecialUser_Name(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SpecialUser_Authentication(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _SpecialUser_Authentication(ctx context.Context, field graphql.CollectedField, obj *resolver.SpecialUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3919,7 +3893,7 @@ func (ec *executionContext) _SpecialUser_Authentication(ctx context.Context, fie
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.SpecialUser().Authentication(rctx, obj)
+		return obj.Authentication(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3928,13 +3902,13 @@ func (ec *executionContext) _SpecialUser_Authentication(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*resolver.UserAuthentication)
+	res := resTmp.(resolver.UserAuthentication)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOUserAuthentication2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐUserAuthentication(ctx, field.Selections, res)
+	return ec.marshalOUserAuthentication2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐUserAuthentication(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SpecialUser_Grants(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _SpecialUser_Grants(ctx context.Context, field graphql.CollectedField, obj *resolver.SpecialUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -3953,7 +3927,7 @@ func (ec *executionContext) _SpecialUser_Grants(ctx context.Context, field graph
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.SpecialUser().Grants(rctx, obj)
+		return obj.Grants(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3965,13 +3939,13 @@ func (ec *executionContext) _SpecialUser_Grants(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.AuthorizationGrant)
+	res := resTmp.([]resolver.AuthorizationGrant)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx, field.Selections, res)
+	return ec.marshalNAuthorizationGrant2ᚕgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SpecialUser_Authorizations(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _SpecialUser_Authorizations(ctx context.Context, field graphql.CollectedField, obj *resolver.SpecialUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -4008,7 +3982,7 @@ func (ec *executionContext) _SpecialUser_Authorizations(ctx context.Context, fie
 	return ec.marshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SpecialUser_History(ctx context.Context, field graphql.CollectedField, obj *types.SpecialUser) (ret graphql.Marshaler) {
+func (ec *executionContext) _SpecialUser_History(ctx context.Context, field graphql.CollectedField, obj *resolver.SpecialUser) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -4028,7 +4002,7 @@ func (ec *executionContext) _SpecialUser_History(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.SpecialUser().History(rctx, obj)
+			return obj.History(), nil
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			to, err := ec.unmarshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorization(ctx, []interface{}{"VIEW_OTHER_USERS_HISTORY"})
@@ -4042,10 +4016,10 @@ func (ec *executionContext) _SpecialUser_History(ctx context.Context, field grap
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.([]*types.HistoryItem); ok {
+		if data, ok := tmp.([]resolver.HistoryItem); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/zemnmez/tab/types.HistoryItem`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []github.com/zemnmez/tab/gql/resolver.HistoryItem`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4057,10 +4031,10 @@ func (ec *executionContext) _SpecialUser_History(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*types.HistoryItem)
+	res := resTmp.([]resolver.HistoryItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, field.Selections, res)
+	return ec.marshalNHistoryItem2ᚕgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserAuthentication_etc(ctx context.Context, field graphql.CollectedField, obj *resolver.UserAuthentication) (ret graphql.Marshaler) {
@@ -4371,10 +4345,10 @@ func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphq
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(types.SpecialUser); ok {
+		if data, ok := tmp.(resolver.SpecialUser); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/types.SpecialUser`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/gql/resolver.SpecialUser`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4383,10 +4357,10 @@ func (ec *executionContext) _UserQuery_Special(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.SpecialUser)
+	res := resTmp.(resolver.SpecialUser)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOSpecialUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx, field.Selections, res)
+	return ec.marshalOSpecialUser2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐSpecialUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphql.CollectedField, obj *resolver.UserQuery) (ret graphql.Marshaler) {
@@ -4430,10 +4404,10 @@ func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphq
 		if err != nil {
 			return nil, err
 		}
-		if data, ok := tmp.(types.RegularUser); ok {
+		if data, ok := tmp.(resolver.RegularUser); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/types.RegularUser`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be github.com/zemnmez/tab/gql/resolver.RegularUser`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4442,10 +4416,10 @@ func (ec *executionContext) _UserQuery_Regular(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.RegularUser)
+	res := resTmp.(resolver.RegularUser)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx, field.Selections, res)
+	return ec.marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐRegularUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserQuery_WhoCan(ctx context.Context, field graphql.CollectedField, obj *resolver.UserQuery) (ret graphql.Marshaler) {
@@ -5897,11 +5871,11 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		return ec._Self(ctx, sel, &obj)
 	case *resolver.Self:
 		return ec._Self(ctx, sel, obj)
-	case *types.RegularUser:
+	case *resolver.RegularUser:
 		return ec._RegularUser(ctx, sel, obj)
-	case types.SpecialUser:
+	case resolver.SpecialUser:
 		return ec._SpecialUser(ctx, sel, &obj)
-	case *types.SpecialUser:
+	case *resolver.SpecialUser:
 		return ec._SpecialUser(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
@@ -5975,7 +5949,7 @@ func (ec *executionContext) _AuthenticationQuery(ctx context.Context, sel ast.Se
 
 var authorizationGrantImplementors = []string{"AuthorizationGrant"}
 
-func (ec *executionContext) _AuthorizationGrant(ctx context.Context, sel ast.SelectionSet, obj *types.AuthorizationGrant) graphql.Marshaler {
+func (ec *executionContext) _AuthorizationGrant(ctx context.Context, sel ast.SelectionSet, obj *resolver.AuthorizationGrant) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, authorizationGrantImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -5985,35 +5959,20 @@ func (ec *executionContext) _AuthorizationGrant(ctx context.Context, sel ast.Sel
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("AuthorizationGrant")
 		case "From":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AuthorizationGrant_From(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._AuthorizationGrant_From(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Of":
 			out.Values[i] = ec._AuthorizationGrant_Of(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Valid":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AuthorizationGrant_Valid(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._AuthorizationGrant_Valid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6027,7 +5986,7 @@ func (ec *executionContext) _AuthorizationGrant(ctx context.Context, sel ast.Sel
 
 var historyItemImplementors = []string{"HistoryItem"}
 
-func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionSet, obj *types.HistoryItem) graphql.Marshaler {
+func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionSet, obj *resolver.HistoryItem) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, historyItemImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -6039,31 +5998,22 @@ func (ec *executionContext) _HistoryItem(ctx context.Context, sel ast.SelectionS
 		case "Action":
 			out.Values[i] = ec._HistoryItem_Action(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "By":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._HistoryItem_By(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._HistoryItem_By(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "RequestData":
 			out.Values[i] = ec._HistoryItem_RequestData(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "IPAddress":
 			out.Values[i] = ec._HistoryItem_IPAddress(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -6139,7 +6089,7 @@ func (ec *executionContext) _IDToken(ctx context.Context, sel ast.SelectionSet, 
 
 var itemImplementors = []string{"Item"}
 
-func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj *types.Item) graphql.Marshaler {
+func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj *resolver.Item) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, itemImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -6151,43 +6101,25 @@ func (ec *executionContext) _Item(ctx context.Context, sel ast.SelectionSet, obj
 		case "Id":
 			out.Values[i] = ec._Item_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Name":
 			out.Values[i] = ec._Item_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Location":
 			out.Values[i] = ec._Item_Location(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Parent":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Item_Parent(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._Item_Parent(ctx, field, obj)
 		case "Children":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Item_Children(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._Item_Children(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6443,7 +6375,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var regularUserImplementors = []string{"RegularUser", "User"}
 
-func (ec *executionContext) _RegularUser(ctx context.Context, sel ast.SelectionSet, obj *types.RegularUser) graphql.Marshaler {
+func (ec *executionContext) _RegularUser(ctx context.Context, sel ast.SelectionSet, obj *resolver.RegularUser) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, regularUserImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -6455,62 +6387,35 @@ func (ec *executionContext) _RegularUser(ctx context.Context, sel ast.SelectionS
 		case "ID":
 			out.Values[i] = ec._RegularUser_ID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Name":
 			out.Values[i] = ec._RegularUser_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Created":
 			out.Values[i] = ec._RegularUser_Created(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Authentication":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._RegularUser_Authentication(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._RegularUser_Authentication(ctx, field, obj)
 		case "Grants":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._RegularUser_Grants(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._RegularUser_Grants(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Authorizations":
 			out.Values[i] = ec._RegularUser_Authorizations(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "History":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._RegularUser_History(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._RegularUser_History(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6572,7 +6477,7 @@ func (ec *executionContext) _Self(ctx context.Context, sel ast.SelectionSet, obj
 
 var specialUserImplementors = []string{"SpecialUser", "User"}
 
-func (ec *executionContext) _SpecialUser(ctx context.Context, sel ast.SelectionSet, obj *types.SpecialUser) graphql.Marshaler {
+func (ec *executionContext) _SpecialUser(ctx context.Context, sel ast.SelectionSet, obj *resolver.SpecialUser) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, specialUserImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -6584,57 +6489,30 @@ func (ec *executionContext) _SpecialUser(ctx context.Context, sel ast.SelectionS
 		case "ID":
 			out.Values[i] = ec._SpecialUser_ID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Name":
 			out.Values[i] = ec._SpecialUser_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "Authentication":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._SpecialUser_Authentication(ctx, field, obj)
-				return res
-			})
+			out.Values[i] = ec._SpecialUser_Authentication(ctx, field, obj)
 		case "Grants":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._SpecialUser_Grants(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._SpecialUser_Grants(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Authorizations":
 			out.Values[i] = ec._SpecialUser_Authorizations(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "History":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._SpecialUser_History(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._SpecialUser_History(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -7062,11 +6940,11 @@ func (ec *executionContext) marshalNAuthorization2ᚕgithubᚗcomᚋzemnmezᚋta
 	return ret
 }
 
-func (ec *executionContext) marshalNAuthorizationGrant2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v types.AuthorizationGrant) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNAuthorizationGrant2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v resolver.AuthorizationGrant) graphql.Marshaler {
+	return ec._AuthorizationGrant(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v []*types.AuthorizationGrant) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthorizationGrant2ᚕgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v []resolver.AuthorizationGrant) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7090,7 +6968,7 @@ func (ec *executionContext) marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemn
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNAuthorizationGrant2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx, sel, v[i])
+			ret[i] = ec.marshalNAuthorizationGrant2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7103,14 +6981,51 @@ func (ec *executionContext) marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemn
 	return ret
 }
 
-func (ec *executionContext) marshalNAuthorizationGrant2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v *types.AuthorizationGrant) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthorizationGrant2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v []*resolver.AuthorizationGrant) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAuthorizationGrant2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNAuthorizationGrant2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐAuthorizationGrant(ctx context.Context, sel ast.SelectionSet, v *resolver.AuthorizationGrant) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return v
+	return ec._AuthorizationGrant(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
@@ -7127,11 +7042,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNHistoryItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v types.HistoryItem) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNHistoryItem2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v resolver.HistoryItem) graphql.Marshaler {
+	return ec._HistoryItem(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v []*types.HistoryItem) graphql.Marshaler {
+func (ec *executionContext) marshalNHistoryItem2ᚕgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v []resolver.HistoryItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7155,7 +7070,7 @@ func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋt
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNHistoryItem2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7168,14 +7083,51 @@ func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋt
 	return ret
 }
 
-func (ec *executionContext) marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v *types.HistoryItem) graphql.Marshaler {
+func (ec *executionContext) marshalNHistoryItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v []*resolver.HistoryItem) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNHistoryItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐHistoryItem(ctx context.Context, sel ast.SelectionSet, v *resolver.HistoryItem) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return v
+	return ec._HistoryItem(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNIDToken2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐIDToken(ctx context.Context, sel ast.SelectionSet, v types.IDToken) graphql.Marshaler {
@@ -7219,11 +7171,11 @@ func (ec *executionContext) marshalNIDToken2ᚕgithubᚗcomᚋzemnmezᚋtabᚋty
 	return ret
 }
 
-func (ec *executionContext) marshalNItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v types.Item) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNItem2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx context.Context, sel ast.SelectionSet, v resolver.Item) graphql.Marshaler {
+	return ec._Item(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v []*types.Item) graphql.Marshaler {
+func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx context.Context, sel ast.SelectionSet, v []*resolver.Item) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -7247,7 +7199,7 @@ func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋty
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -7260,14 +7212,14 @@ func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋzemnmezᚋtabᚋty
 	return ret
 }
 
-func (ec *executionContext) marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v *types.Item) graphql.Marshaler {
+func (ec *executionContext) marshalNItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx context.Context, sel ast.SelectionSet, v *resolver.Item) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return v
+	return ec._Item(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNItemID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, v interface{}) (types.ItemID, error) {
@@ -7856,15 +7808,15 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return ec.marshalOInt2int(ctx, sel, *v)
 }
 
-func (ec *executionContext) marshalOItem2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v types.Item) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalOItem2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx context.Context, sel ast.SelectionSet, v resolver.Item) graphql.Marshaler {
+	return ec._Item(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐItem(ctx context.Context, sel ast.SelectionSet, v *types.Item) graphql.Marshaler {
+func (ec *executionContext) marshalOItem2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐItem(ctx context.Context, sel ast.SelectionSet, v *resolver.Item) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._Item(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOItemID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐItemID(ctx context.Context, v interface{}) (types.ItemID, error) {
@@ -7955,8 +7907,8 @@ func (ec *executionContext) marshalOOIDCQuery2githubᚗcomᚋzemnmezᚋtabᚋgql
 	return ec._OIDCQuery(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUser(ctx context.Context, sel ast.SelectionSet, v types.RegularUser) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalORegularUser2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐRegularUser(ctx context.Context, sel ast.SelectionSet, v resolver.RegularUser) graphql.Marshaler {
+	return ec._RegularUser(ctx, sel, &v)
 }
 
 func (ec *executionContext) unmarshalORegularUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐRegularUserID(ctx context.Context, v interface{}) (types.RegularUserID, error) {
@@ -7983,15 +7935,15 @@ func (ec *executionContext) marshalORegularUserID2ᚖgithubᚗcomᚋzemnmezᚋta
 	return v
 }
 
-func (ec *executionContext) marshalOSpecialUser2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx context.Context, sel ast.SelectionSet, v types.SpecialUser) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalOSpecialUser2githubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐSpecialUser(ctx context.Context, sel ast.SelectionSet, v resolver.SpecialUser) graphql.Marshaler {
+	return ec._SpecialUser(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUser(ctx context.Context, sel ast.SelectionSet, v *types.SpecialUser) graphql.Marshaler {
+func (ec *executionContext) marshalOSpecialUser2ᚖgithubᚗcomᚋzemnmezᚋtabᚋgqlᚋresolverᚐSpecialUser(ctx context.Context, sel ast.SelectionSet, v *resolver.SpecialUser) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._SpecialUser(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOSpecialUserID2githubᚗcomᚋzemnmezᚋtabᚋtypesᚐSpecialUserID(ctx context.Context, v interface{}) (types.SpecialUserID, error) {

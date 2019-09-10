@@ -7,7 +7,7 @@ extend enum Authorization {
     MODIFY_ITEMS
 }
 
-type Item @goModel(model: "github.com/zemnmez/tab/types.Item") {
+type Item @goModel(model: "github.com/zemnmez/tab/gql/resolver.Item") {
   # A unique identifier for this Item
   Id: ItemID!
 

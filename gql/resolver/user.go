@@ -9,9 +9,15 @@ import (
 type UserQuery struct{}
 type UserMutation struct{}
 
-func (UserQuery) Self(ctx context.Context) Self                             { panic("todo") }
-func (UserQuery) Special(id types.SpecialUserID) types.SpecialUser          { panic("todo") }
-func (UserQuery) Regular(id types.RegularUserID) types.RegularUser          { panic("todo") }
+func (UserQuery) Self(ctx context.Context) Self                             {
+	auth := ExecutionContext.Get(nil, ctx).Authentication
+	if auth == "" {
+
+	}
+
+}
+func (UserQuery) Special(id types.SpecialUserID) SpecialUser          { panic("todo") }
+func (UserQuery) Regular(id types.RegularUserID) RegularUser          { panic("todo") }
 func (UserQuery) WhoCan(do []types.Authorization) (users []User, err error) { panic("todo") }
 
 func (UserMutation) Self() UserMutator { panic("todo") }
@@ -24,8 +30,41 @@ type UserMutator interface {
 	Modify(with UserInput) User
 }
 
-type User interface {
-	GetName() string
+type UserID interface {
+	io.WriterTo
+	io.ReaderFrom
 }
 
-func (s Self) GetName() string { return s.Name }
+type User interface {
+	Name() string
+	Authentication() *UserAuthentication
+	Grants() []AuthorizationGrant
+	Grant(u User)
+	GrantSpecial(s SpecialUser)
+	History() []HistoryItem
+}
+
+// Self can be any User.
+type Self struct {
+	User
+}
+
+type SpecialUser struct { types.SpecialUser }
+
+var AnonymousUserDefault = SpecialUser {
+	types.User {
+		Id: types.ANONYMOUS,
+		Authorizations: []Authorization { },
+	}
+}
+
+func (s SpecialUser) Authentication() UserAuthentication { return UserAuthentication{} }
+func (s SpecialUser) Grants() []AuthorizationGrant { panic("todo") }
+func (s SpecialUser) History() []HistoryItem { panic("todo") }
+func (s SpecialUser) GetName() string { return s.Name() }
+func (s SpecialUser) Name() string { return s.Id.String() }
+
+type RegularUser struct { types.RegularUser }
+func (r RegularUser) Authentication() UserAuthentication { panic("todo") }
+func (s RegularUser) History() []HistoryItem { panic("todo") }
+func (r RegularUser) Grants() []AuthorizationGrant { panic("todo") }

@@ -9,7 +9,8 @@ extend interface User {
 
 extend type Self { Authentication: UserAuthentication }
 extend type RegularUser { Authentication: UserAuthentication }
-extend type SpecialUser { Authentication: UserAuthentication }
+extend type RootUser { Authentication: UserAuthentication }
+extend type AnonymousUser { Authentication: UserAuthentication }
 
 extend type Query {
     Authentication: AuthenticationQuery

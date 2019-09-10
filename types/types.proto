@@ -28,14 +28,15 @@ message AuthorizationGrant {
 }
 
 enum Authorization {
-    VIEW_USERS = 0;
-    MODIFY_VALID_AUTH = 1;
-    ADD_ITEMS = 2;
-    MODIFY_OTHER_USERS = 3;
-    MODIFY_SPECIAL_USERS = 4;
-    MODIFY_SELF = 5;
-    VIEW_OTHER_USERS_HISTORY = 6;
-    VIEW_OWN_HISTORY = 7;
+    NIL = 0;
+    VIEW_USERS = 1;
+    MODIFY_VALID_AUTH = 2;
+    ADD_ITEMS = 3;
+    MODIFY_OTHER_USERS = 4;
+    MODIFY_SPECIAL_USERS = 5;
+    MODIFY_SELF = 6;
+    VIEW_OTHER_USERS_HISTORY = 7;
+    VIEW_OWN_HISTORY = 8;
 }
 
 // HISTORY
@@ -52,8 +53,9 @@ message HistoryItem {
 // USERS
 
 enum SpecialUserID {
-    ROOT = 0;
-    ANONYMOUS = 1;
+    NIL = 0;
+    ROOT = 1;
+    ANONYMOUS = 2;
 }
 
 message RegularUserID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }

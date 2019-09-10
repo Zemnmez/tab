@@ -46,18 +46,6 @@ type RootUser struct {
 	Name string              `json:"Name"`
 }
 
-type Self struct {
-	Name           string                      `json:"Name"`
-	Authentication *UserAuthentication         `json:"Authentication"`
-	Grants         []*types.AuthorizationGrant `json:"Grants"`
-	Authorizatons  []types.Authorization       `json:"Authorizatons"`
-	// Grant a user some ability the current user has
-	Grant User `json:"Grant"`
-	// Grant a special user some ability the current user has
-	GrantSpecial *types.SpecialUser   `json:"GrantSpecial"`
-	History      []*types.HistoryItem `json:"History"`
-}
-
 func (Self) IsUser() {}
 
 type UserInput struct {

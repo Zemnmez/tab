@@ -6,6 +6,7 @@ scalar RegularUserID @goModel(model: "github.com/zemnmez/tab/types.RegularUserID
 
 # Special users are singleton users with special functionality
 enum SpecialUserID {
+    NIL 
     # The root user is the ultimate source of all authorization grants.
     ROOT
 
@@ -22,7 +23,7 @@ type Self implements User {
 }
 
 # RegularUsers are the normal rank and file users!
-type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/types.RegularUser") {
+type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.RegularUser") {
     # ID is the unique identifier of this user. It may be a SpecialUserID
     # if this is a special user, like root.
     ID: RegularUserID!
@@ -34,7 +35,16 @@ type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/types.R
 }
 
 # SpecialUsers are special singleton accounts like ANONYMOUS and ROOT
-type SpecialUser implements User @goModel(model: "github.com/zemnmez/tab/types.SpecialUser") {
+interface SpecialUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.SpecialUser") {
+    ID: SpecialUserID!
+}
+
+type RootUser implements User & SpecialUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.RootUser") {
+    ID: SpecialUserID!
+    Name: String!
+}
+
+type AnonymousUser implements User & SpecialUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.AnonymousUser") {
     ID: SpecialUserID!
     Name: String!
 }
@@ -44,17 +54,6 @@ input UserInput {
     Name: String!
 }
 
-# The root user is the ultimate source of all authorization grants.
-input RootUser {
-    ID: SpecialUserID! = ADMIN
-    Name: String! = "Root"
-}
-
-# The anonymous user is the user unauthenticated users are said to be logged into.
-input AnonymousUser {
-    ID: SpecialUserID! = ANONYMOUS
-    Name: String! = "Anonymous"
-}
 
 extend type Query {
     User: UserQuery

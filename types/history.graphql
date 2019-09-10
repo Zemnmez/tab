@@ -23,12 +23,17 @@ extend type RegularUser {
     History: [HistoryItem!]! @authorized(to: [VIEW_OTHER_USERS_HISTORY])
 }
 
-extend type SpecialUser {
+extend type RootUser {
+    History: [HistoryItem!]! @authorized(to: [VIEW_OTHER_USERS_HISTORY])
+}
+
+
+extend type AnonymousUser {
     History: [HistoryItem!]! @authorized(to: [VIEW_OTHER_USERS_HISTORY])
 }
 
 # A HistoryItem represents a single thing that happened in this user's history
-type HistoryItem  @goModel(model: "github.com/zemnmez/tab/types.HistoryItem") {
+type HistoryItem  @goModel(model: "github.com/zemnmez/tab/gql/resolver.HistoryItem") {
     Action: String!
     By: User!
     RequestData: String!

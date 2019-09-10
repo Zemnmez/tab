@@ -5,10 +5,12 @@ Authorization is a list of all the possible permissions
 a User can have.
 """
 enum Authorization {
+    " a blank authorization that does nothing "
+    NIL
     VIEW_USERS
 }
 
-type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/types.AuthorizationGrant") {
+type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/gql/resolver.AuthorizationGrant") {
     """
     From is the user which has granted permissions
     to the grantee
@@ -31,7 +33,6 @@ type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/types.Authorizat
 }
 
 extend interface User {
-
     "The abilities granted to this user."
     Grants: [AuthorizationGrant!]!
 }
@@ -47,20 +48,13 @@ extend type Self {
     GrantSpecial(who: SpecialUserID, abilities: [Authorization!]!): SpecialUser @authorized(to: [MODIFY_SPECIAL_USERS])
 }
 
-extend type SpecialUser {
-    """
-    Authorizations represents the things a user can do,
-    and who granted them the ability to do these things.
-    
-    If the user was granted an ability by a user, and the granting user
-    user lost the ability to grant it, it is no longer valid.
-    """
+extend type RootUser {
     Grants: [AuthorizationGrant!]!
+    Authorizations: [Authorization!]!
+}
 
-    """
-    Authorizations represents the set of authorization grants
-    given to this user which are still valid.
-    """
+extend type AnonymousUser {
+    Grants: [AuthorizationGrant!]!
     Authorizations: [Authorization!]!
 }
 
