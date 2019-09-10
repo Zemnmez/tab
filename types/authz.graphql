@@ -41,6 +41,9 @@ extend type Self {
     Grants: [AuthorizationGrant!]!
     Authorizatons: [Authorization!]!
 
+}
+
+extend type SelfMutation {
     "Grant a user some ability the current user has"
     Grant(who: RegularUserID, abilities: [Authorization!]!): User
 

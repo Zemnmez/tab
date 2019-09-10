@@ -2,51 +2,20 @@
 # This module deals with users existing!
 
 # RegularUserID represents the ID of a regular user i.e. a user that is not ANONYMOUS or ROOT.
-scalar RegularUserID @goModel(model: "github.com/zemnmez/tab/types.RegularUserID")
-
-# Special users are singleton users with special functionality
-enum SpecialUserID {
-    NIL 
-    # The root user is the ultimate source of all authorization grants.
-    ROOT
-
-    # The Anonymous user is the user unauthenticated users are said to be 'logged into'.
-    ANONYMOUS
-}
+scalar UserID @goModel(model: "github.com/zemnmez/tab/types.UserID")
 
 interface User @goModel(model: "github.com/zemnmez/tab/gql/resolver.User") {
-    Name: String!
-}
-
-type Self implements User {
+    UserID: UserID!
     Name: String!
 }
 
 # RegularUsers are the normal rank and file users!
 type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.RegularUser") {
-    # ID is the unique identifier of this user. It may be a SpecialUserID
-    # if this is a special user, like root.
     ID: RegularUserID!
 
-    # Name is the name of this user.
     Name: String!
 
     Created: Time!
-}
-
-# SpecialUsers are special singleton accounts like ANONYMOUS and ROOT
-interface SpecialUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.SpecialUser") {
-    ID: SpecialUserID!
-}
-
-type RootUser implements User & SpecialUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.RootUser") {
-    ID: SpecialUserID!
-    Name: String!
-}
-
-type AnonymousUser implements User & SpecialUser @goModel(model: "github.com/zemnmez/tab/gql/resolver.AnonymousUser") {
-    ID: SpecialUserID!
-    Name: String!
 }
 
 # UserInput is the values a User can be created with
@@ -59,12 +28,24 @@ extend type Query {
     User: UserQuery
 }
 
+extend type Mutation {
+    User: UserMutation
+}
+
 type UserQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserQuery") {
     # Self returns the currently logged in user
     Self: Self!
 
     Special(id: SpecialUserID): SpecialUser @authorized(to: [VIEW_USERS])
     Regular(id: RegularUserID): RegularUser @authorized(to: [VIEW_USERS])
+}
+
+type UserMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutation") {
+    Self: SelfMutation!
+}
+
+type SelfMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.SelfMutation") {
+    _: Boolean!
 }
 
 extend enum Authorization {

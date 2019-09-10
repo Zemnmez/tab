@@ -52,33 +52,25 @@ message HistoryItem {
 
 // USERS
 
-enum SpecialUserID {
+enum SingletonUserType {
     NIL = 0;
     ROOT = 1;
     ANONYMOUS = 2;
 }
 
-message RegularUserID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
-
-message UserID {
-    oneof ID {
-        SpecialUserID specialUserID = 1;
-        RegularUserID regularUserID = 2;
-    }
+message SingletonUser {
+    UserID id = 1;
+    SingletonUserType type = 2;
 }
 
-message RegularUser {
-    RegularUserID id = 1;
+message UserID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+
+message User {
+    UserID id = 1;
     string name = 2;
     repeated types.Authorization authorizations = 3;
     repeated types.HistoryID historyID = 4;
     google.protobuf.Timestamp created = 5 [(gogoproto.stdtime) = true];
-}
-
-message SpecialUser {
-    SpecialUserID id = 1;
-    repeated types.Authorization authorizations = 2;
-    repeated types.HistoryID historyID = 3;
 }
 
 // item

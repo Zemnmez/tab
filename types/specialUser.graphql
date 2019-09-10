@@ -1,0 +1,14 @@
+type Self implements User {
+    UserID: UserID!
+    Name: String!
+}
+
+type RootUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.RootUser") {
+    ID: SpecialUserID!
+    Name: String!
+}
+
+type AnonymousUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.AnonymousUser") {
+    ID: SpecialUserID!
+    Name: String!
+}
