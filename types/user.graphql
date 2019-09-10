@@ -66,9 +66,16 @@ extend type Mutation {
 }
 
 type UserMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutation") {
-    Self: UserMutator! @authorized(to: [MODIFY_SELF])
-    Special(id: SpecialUserID): UserMutator @authorized(to: [MODIFY_SPECIAL_USERS])
-    Regular(id: RegularUserID): UserMutator @authorized(to: [MODIFY_OTHER_USERS])
+    Self: SelfMutator! @authorized(to: [MODIFY_SELF])
+    ById(id: UserID) SpecialUserMutator | RegularUserMutator
+}
+
+type SpecialUserMutator implements UserMutator {
+    Modify(with: UserInput!): User! @authorized(to: [MODIFY_SPECIAL_USERS])
+}
+
+type RegularUserMutator implements UserMutator {
+    Modify(with: UserInput!): User! @authorized(to: [MODIFY_OTHER_USERS])
 }
 
 interface UserMutator @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutator") {
