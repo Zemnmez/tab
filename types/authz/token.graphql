@@ -3,6 +3,8 @@
 scalar AuthorizationToken
 scalar AuthorizationTokenID
 
+
+
 """
 An OAuth2Token is a concept within OAuth 2.0 which is a short-lived
 bearer token encapsulating some permissions. The short lived nature
@@ -16,16 +18,18 @@ type AuthorizationTokenInfo {
     Token: AuthorizationToken!
     AuthorizationGrant: AuthorizationGrant!
     Expires: Time!
+    Created: Time!
 }
 
 type AuthzQuery {
     TokenInfo(tok: AuthorizationToken!): AuthorizationTokenInfo!
-    TokenInfoByID(id: AuthorizationTokenID!): AuthorizatonTokenInfo!
+    TokenInfoByID(id: AuthorizationTokenID!): AuthorizationTokenInfo!
 }
 
 
 "A cryptographic digest of a RefreshTokenID. That is to say, a RefreshToken maps to a RefreshTokenID but not vice-versa."
 scalar AuthorizationRefreshToken
+
 scalar AuthorizationRefreshTokenID
 
 """
@@ -37,14 +41,15 @@ lessening its chance of exposure.
 """
 type AuthorizationRefreshTokenInfo {
     ID: AuthorizationRefreshTokenID!
-    Token: RefreshToken!
+    Token: AuthorizationRefreshToken!
     AuthorizationGrant: AuthorizationGrant!
     Expires: Time
+    Created: Time!
 }
 
-extend type AuthQuery {
+type AuthQuery {
     RefreshToken(tok: AuthorizationRefreshToken!): AuthorizationRefreshTokenInfo!
-    RefreshTokenByID(id: RefreshTokenID); AuthorizationRefreshTokenInfo!
+    RefreshTokenByID(id: AuthorizationRefreshTokenID): AuthorizationRefreshTokenInfo!
 }
 
 extend type Query {

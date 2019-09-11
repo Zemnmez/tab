@@ -8,12 +8,12 @@ type SingletonUserMutator implements UserMutator {
 }
 
 type Self implements User {
-    UserID: UserID!
+    ID: UserID!
     Name: String!
 }
 
 enum SingletonUserType {
-    NIL
+    SINGLETONUSERTYPE_NIL
     ROOT
     ANONYMOUS
 }

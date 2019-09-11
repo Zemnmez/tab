@@ -5,13 +5,13 @@
 scalar UserID @goModel(model: "github.com/zemnmez/tab/types.UserID")
 
 interface User @goModel(model: "github.com/zemnmez/tab/gql/resolver.User") {
-    UserID: UserID!
+    ID: UserID!
     Name: String!
 }
 
 # RegularUsers are the normal rank and file users!
 type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/gql/resolver.RegularUser") {
-    ID: RegularUserID!
+    ID: UserID!
 
     Name: String!
 
@@ -26,16 +26,11 @@ extend type Query {
     User: UserQuery
 }
 
-extend type Mutation {
-    User: UserMutation
-}
-
 type UserQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserQuery") {
     # Self returns the currently logged in user
     Self: Self!
 
-    Special(id: SpecialUserID): SpecialUser @authorized(to: [VIEW_USERS])
-    Regular(id: RegularUserID): RegularUser @authorized(to: [VIEW_USERS])
+    ByID(id: UserID): User @authorized(to: [VIEW_USERS])
 }
 
 type UserMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutation") {
@@ -58,11 +53,6 @@ extend type Mutation {
     # User returns a UserMutator which can be used to modify
     # a given user id
     User: UserMutation
-}
-
-type UserMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutation") {
-    Self: SelfMutator! @authorized(to: [MODIFY_SELF])
-    ById(id: UserID) UserMutator
 }
 
 type RegularUserMutator implements UserMutator {

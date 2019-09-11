@@ -6,7 +6,7 @@ a User can have.
 """
 enum Authorization {
     " a blank authorization that does nothing "
-    NIL
+    AUTHORIZATION_NIL
     VIEW_USERS
 }
 

@@ -17,3 +17,7 @@ type Mutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.Mutation") {
 }
 
 scalar etc @goModel(model: "github.com/zemnmez/tab/gql/resolver.Etc")
+
+scalar time
+
+scalar URL @goModel(model: "net/url.URL")

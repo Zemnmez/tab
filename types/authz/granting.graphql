@@ -33,13 +33,10 @@ type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/gql/resolver.Aut
 
 extend type SelfMutation {
     "Grant a user some ability the current user has"
-    Grant(who: RegularUserID, abilities: [Authorization!]!): User
+    Grant(who: UserID, abilities: [Authorization!]!): UserMutation
 
     "Remove a pre-existing grant"
-    UnGrant(id: UserAuthzGrantID!)
-
-    "Grant a special user some ability the current user has"
-    GrantSpecial(who: SpecialUserID, abilities: [Authorization!]!): SpecialUser @authorized(to: [MODIFY_SPECIAL_USERS])
+    UnGrant(id: AuthorizationGrantID!): Boolean!
 }
 
 extend type Self implements AuthorizationGranter & AuthorizationGrantee {
@@ -47,24 +44,21 @@ extend type Self implements AuthorizationGranter & AuthorizationGrantee {
     GrantsGiven: [AuthorizationGrant!]!
 
     "The abilities granted to this entity."
-    GrantsReceived: [AuthorizationGrant!]
+    GrantsReceived: [AuthorizationGrant!]!
 }
 
 # (the root user cannot be a Grantee because it already has every permission)
 
 extend type RootUser implements AuthorizationGranter {
-    Grants: [AuthorizationGrant!]!
-    Authorizations: [Authorization!]!
-
     "The abilities granted by this entity."
-    GrantsGiven: [AuthorizationGrant!]
+    GrantsGiven: [AuthorizationGrant!]!
 }
 
 # (the anonymous user cannot be a granter because that would be annoying)
 
 extend type AnonymousUser implements AuthorizationGrantee {
     "The abilities granted to this entity."
-    GrantsReceived: [AuthorizationGrant!]
+    GrantsReceived: [AuthorizationGrant!]!
 }
 
 extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee {
@@ -72,5 +66,5 @@ extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee {
     GrantsGiven: [AuthorizationGrant!]!
 
     "The abilities granted by this entity."
-    GrantsReceived: [AuthorizationGrant!]
+    GrantsReceived: [AuthorizationGrant!]!
 }

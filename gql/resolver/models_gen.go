@@ -3,14 +3,70 @@
 package resolver
 
 import (
+	"fmt"
+	"io"
+	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/zemnmez/tab/types"
 )
 
-type AnonymousUser struct {
-	ID   types.SpecialUserID `json:"ID"`
-	Name string              `json:"Name"`
+type AuthClient interface {
+	IsAuthClient()
+}
+
+type AuthorizationGrantee interface {
+	IsAuthorizationGrantee()
+}
+
+type AuthorizationGranter interface {
+	IsAuthorizationGranter()
+}
+
+type SingletonUser interface {
+	IsSingletonUser()
+}
+
+type Timestamped interface {
+	IsTimestamped()
+}
+
+type AuthQuery struct {
+	RefreshToken     *AuthorizationRefreshTokenInfo `json:"RefreshToken"`
+	RefreshTokenByID *AuthorizationRefreshTokenInfo `json:"RefreshTokenByID"`
+}
+
+// An OAuth2RefreshToken within the OAuth2.0 concept is a long-lived
+// bearer token that can be exchanged for an OAuth 2.0 token.
+//
+// Its purpose is to be long lived but infrequently transmitted,
+// lessening its chance of exposure.
+type AuthorizationRefreshTokenInfo struct {
+	ID                 string              `json:"ID"`
+	Token              string              `json:"Token"`
+	AuthorizationGrant *AuthorizationGrant `json:"AuthorizationGrant"`
+	Expires            *time.Time          `json:"Expires"`
+	Created            time.Time           `json:"Created"`
+}
+
+// An OAuth2Token is a concept within OAuth 2.0 which is a short-lived
+// bearer token encapsulating some permissions. The short lived nature
+// of the token reduces its exposure.
+//
+// An OAuth2Token can be retreieved by going through an OAuth grant flow
+// or using a refresh token.
+type AuthorizationTokenInfo struct {
+	ID                 string              `json:"ID"`
+	Token              string              `json:"Token"`
+	AuthorizationGrant *AuthorizationGrant `json:"AuthorizationGrant"`
+	Expires            time.Time           `json:"Expires"`
+	Created            time.Time           `json:"Created"`
+}
+
+type AuthzQuery struct {
+	TokenInfo     *AuthorizationTokenInfo `json:"TokenInfo"`
+	TokenInfoByID *AuthorizationTokenInfo `json:"TokenInfoByID"`
 }
 
 type DefinedItemInput struct {
@@ -19,6 +75,20 @@ type DefinedItemInput struct {
 	Parent   *ItemInput   `json:"Parent"`
 	Children []*ItemInput `json:"Children"`
 }
+
+// The FirstParty client represents the website itself. It naturally has all authorizations at all times.
+type FirstParty struct {
+	ID string `json:"ID"`
+	// The FirstParty OAuth client is owned by the ROOT user.
+	Owner            types.UserID          `json:"Owner"`
+	RedirectURI      url.URL               `json:"RedirectURI"`
+	AuthorizationFor []*AuthorizationGrant `json:"AuthorizationFor"`
+	// Abilities granted to this client by some entity.
+	GrantsReceived []*AuthorizationGrant `json:"GrantsReceived"`
+}
+
+func (FirstParty) IsAuthClient()           {}
+func (FirstParty) IsAuthorizationGrantee() {}
 
 type IDTokenInput struct {
 	Issuer                              string    `json:"Issuer"`
@@ -41,13 +111,92 @@ type OIDCProviderInput struct {
 	Name string `json:"Name"`
 }
 
-type RootUser struct {
-	ID   types.SpecialUserID `json:"ID"`
-	Name string              `json:"Name"`
+type RegularUserMutator struct {
+	Modify User `json:"Modify"`
 }
 
-func (Self) IsUser() {}
+func (RegularUserMutator) IsUserMutator() {}
+
+type Self struct {
+	ID             types.UserID        `json:"ID"`
+	Name           string              `json:"Name"`
+	Authentication *UserAuthentication `json:"Authentication"`
+	// The abilities granted by this entity.
+	GrantsGiven []*AuthorizationGrant `json:"GrantsGiven"`
+	// The abilities granted to this entity.
+	GrantsReceived []*AuthorizationGrant `json:"GrantsReceived"`
+	History        []*HistoryItem        `json:"History"`
+	Created        time.Time             `json:"Created"`
+	Modified       time.Time             `json:"Modified"`
+}
+
+func (Self) IsUser()                 {}
+func (Self) IsAuthorizationGranter() {}
+func (Self) IsAuthorizationGrantee() {}
+func (Self) IsTimestamped()          {}
+
+type SingletonUserMutator struct {
+	Modify User `json:"Modify"`
+}
+
+func (SingletonUserMutator) IsUserMutator() {}
+
+type ThirdParty struct {
+	ID string `json:"ID"`
+	// The creator of this AuthClient.
+	Owner            types.UserID          `json:"Owner"`
+	RedirectURI      url.URL               `json:"RedirectURI"`
+	AuthorizationFor []*AuthorizationGrant `json:"AuthorizationFor"`
+	// Abilities granted to this client by some entity.
+	GrantsReceived []*AuthorizationGrant `json:"GrantsReceived"`
+}
+
+func (ThirdParty) IsAuthClient()           {}
+func (ThirdParty) IsAuthorizationGrantee() {}
 
 type UserInput struct {
 	Name string `json:"Name"`
+}
+
+type SingletonUserType string
+
+const (
+	SingletonUserTypeSingletonusertypeNil SingletonUserType = "SINGLETONUSERTYPE_NIL"
+	SingletonUserTypeRoot                 SingletonUserType = "ROOT"
+	SingletonUserTypeAnonymous            SingletonUserType = "ANONYMOUS"
+)
+
+var AllSingletonUserType = []SingletonUserType{
+	SingletonUserTypeSingletonusertypeNil,
+	SingletonUserTypeRoot,
+	SingletonUserTypeAnonymous,
+}
+
+func (e SingletonUserType) IsValid() bool {
+	switch e {
+	case SingletonUserTypeSingletonusertypeNil, SingletonUserTypeRoot, SingletonUserTypeAnonymous:
+		return true
+	}
+	return false
+}
+
+func (e SingletonUserType) String() string {
+	return string(e)
+}
+
+func (e *SingletonUserType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = SingletonUserType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid SingletonUserType", str)
+	}
+	return nil
+}
+
+func (e SingletonUserType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

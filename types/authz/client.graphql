@@ -1,5 +1,5 @@
 
-extend enum Authorizations {
+extend enum Authorization {
     VIEW_AUTH_CLIENTS
     CREATE_AUTH_CLIENT
 }
@@ -14,7 +14,7 @@ interface AuthClient {
     Owner: UserID!
 
     "The OAuth 2.0 redirect_uri of this client"
-    RedirectURI: OAuth2RedirectURI!
+    RedirectURI: URL!
 
     "AuthorizationFor returns the authorizations specific to a particular user."
     AuthorizationFor(userid: UserID!): [AuthorizationGrant!]!
@@ -27,9 +27,9 @@ type FirstParty implements AuthClient & AuthorizationGrantee {
     "The FirstParty OAuth client is owned by the ROOT user."
     Owner: UserID!
 
-    RedirectURI: RedirectURI!
+    RedirectURI: URL!
 
-    AuthorizationFor(userid: UserID!) [Authorization!]!
+    AuthorizationFor(userid: UserID!): [AuthorizationGrant!]!
 
     "Abilities granted to this client by some entity."
     GrantsReceived: [AuthorizationGrant!]!
@@ -41,9 +41,9 @@ type ThirdParty implements AuthClient & AuthorizationGrantee {
     "The creator of this AuthClient."
     Owner: UserID!
 
-    RedirectURI: RedirectURI!
+    RedirectURI: URL!
 
-    AuthorizationFor(userid: UserID!): [Authorization!]!
+    AuthorizationFor(userid: UserID!): [AuthorizationGrant!]!
 
     "Abilities granted to this client by some entity."
     GrantsReceived: [AuthorizationGrant!]!

@@ -340,7 +340,7 @@ var _ interface {
 } = new(HistoryItem)
 
 // MarshalJSON implements json.Marshaler
-func (this RegularUserID) MarshalJSON() (json []byte, err error) {
+func (this SingletonUser) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
@@ -350,12 +350,12 @@ func (this RegularUserID) MarshalJSON() (json []byte, err error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (this *RegularUserID) UnmarshalJSON(json []byte) (err error) {
+func (this *SingletonUser) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
 
 // MarshalGQL implements graphql.Marshaler
-func (this RegularUserID) MarshalGQL(w io.Writer) {
+func (this SingletonUser) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
@@ -363,7 +363,7 @@ func (this RegularUserID) MarshalGQL(w io.Writer) {
 }
 
 // UnmarshalGQL implements graphql.Unmarshaler
-func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
+func (this *SingletonUser) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
 		return
@@ -373,7 +373,7 @@ func (this *RegularUserID) UnmarshalGQL(v interface{}) (err error) {
 
 // WriteTo implements io.WriterTo.
 // WriteTo writes this structure as protobufs
-func (this RegularUserID) WriteTo(w io.Writer) (n int64, err error) {
+func (this SingletonUser) WriteTo(w io.Writer) (n int64, err error) {
 	bt, err := this.MarshalBinary()
 	if err != nil {
 		return
@@ -387,7 +387,7 @@ func (this RegularUserID) WriteTo(w io.Writer) (n int64, err error) {
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
 // the entire reader.
-func (this RegularUserID) ReadFrom(r io.Reader) (n int64, err error) {
+func (this SingletonUser) ReadFrom(r io.Reader) (n int64, err error) {
 	bt, err := io_ioutil.ReadAll(r)
 	n = int64(len(bt))
 	if err != nil {
@@ -398,12 +398,12 @@ func (this RegularUserID) ReadFrom(r io.Reader) (n int64, err error) {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler
-func (this *RegularUserID) MarshalBinary() ([]byte, error) {
+func (this *SingletonUser) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler
-func (this *RegularUserID) UnmarshalBinary(b []byte) error {
+func (this *SingletonUser) UnmarshalBinary(b []byte) error {
 	return this.Unmarshal(b)
 }
 
@@ -416,7 +416,7 @@ var _ interface {
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Marshaler
-} = new(RegularUserID)
+} = new(SingletonUser)
 
 // MarshalJSON implements json.Marshaler
 func (this UserID) MarshalJSON() (json []byte, err error) {
@@ -498,7 +498,7 @@ var _ interface {
 } = new(UserID)
 
 // MarshalJSON implements json.Marshaler
-func (this RegularUser) MarshalJSON() (json []byte, err error) {
+func (this User) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
@@ -508,12 +508,12 @@ func (this RegularUser) MarshalJSON() (json []byte, err error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (this *RegularUser) UnmarshalJSON(json []byte) (err error) {
+func (this *User) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
 
 // MarshalGQL implements graphql.Marshaler
-func (this RegularUser) MarshalGQL(w io.Writer) {
+func (this User) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
@@ -521,7 +521,7 @@ func (this RegularUser) MarshalGQL(w io.Writer) {
 }
 
 // UnmarshalGQL implements graphql.Unmarshaler
-func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
+func (this *User) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
 		return
@@ -531,7 +531,7 @@ func (this *RegularUser) UnmarshalGQL(v interface{}) (err error) {
 
 // WriteTo implements io.WriterTo.
 // WriteTo writes this structure as protobufs
-func (this RegularUser) WriteTo(w io.Writer) (n int64, err error) {
+func (this User) WriteTo(w io.Writer) (n int64, err error) {
 	bt, err := this.MarshalBinary()
 	if err != nil {
 		return
@@ -545,7 +545,7 @@ func (this RegularUser) WriteTo(w io.Writer) (n int64, err error) {
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
 // the entire reader.
-func (this RegularUser) ReadFrom(r io.Reader) (n int64, err error) {
+func (this User) ReadFrom(r io.Reader) (n int64, err error) {
 	bt, err := io_ioutil.ReadAll(r)
 	n = int64(len(bt))
 	if err != nil {
@@ -556,12 +556,12 @@ func (this RegularUser) ReadFrom(r io.Reader) (n int64, err error) {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler
-func (this *RegularUser) MarshalBinary() ([]byte, error) {
+func (this *User) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler
-func (this *RegularUser) UnmarshalBinary(b []byte) error {
+func (this *User) UnmarshalBinary(b []byte) error {
 	return this.Unmarshal(b)
 }
 
@@ -574,86 +574,7 @@ var _ interface {
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Marshaler
-} = new(RegularUser)
-
-// MarshalJSON implements json.Marshaler
-func (this SpecialUser) MarshalJSON() (json []byte, err error) {
-	var b bytes.Buffer
-	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
-		return
-	}
-	json = b.Bytes()
-	return
-}
-
-// UnmarshalJSON implements json.Unmarshaler
-func (this *SpecialUser) UnmarshalJSON(json []byte) (err error) {
-	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
-}
-
-// MarshalGQL implements graphql.Marshaler
-func (this SpecialUser) MarshalGQL(w io.Writer) {
-	var err error
-	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
-		panic(err)
-	}
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler
-func (this *SpecialUser) UnmarshalGQL(v interface{}) (err error) {
-	var newJSON []byte
-	if newJSON, err = encoding_json.Marshal(v); err != nil {
-		return
-	}
-	return this.UnmarshalJSON(newJSON)
-}
-
-// WriteTo implements io.WriterTo.
-// WriteTo writes this structure as protobufs
-func (this SpecialUser) WriteTo(w io.Writer) (n int64, err error) {
-	bt, err := this.MarshalBinary()
-	if err != nil {
-		return
-	}
-	nint, err := w.Write(bt)
-	n = int64(nint)
-	return
-}
-
-// ReadFrom implements io.ReaderFrom.
-// ReadFrom expects the structure as protobufs,
-// and assumes the protobuf message should consume
-// the entire reader.
-func (this SpecialUser) ReadFrom(r io.Reader) (n int64, err error) {
-	bt, err := io_ioutil.ReadAll(r)
-	n = int64(len(bt))
-	if err != nil {
-		return
-	}
-	err = this.UnmarshalBinary(bt)
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler
-func (this *SpecialUser) MarshalBinary() ([]byte, error) {
-	return this.Marshal()
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler
-func (this *SpecialUser) UnmarshalBinary(b []byte) error {
-	return this.Unmarshal(b)
-}
-
-var _ interface {
-	encoding.BinaryMarshaler
-	encoding.BinaryUnmarshaler
-	io.WriterTo
-	io.ReaderFrom
-	encoding_json.Marshaler
-	encoding_json.Unmarshaler
-	github_com_99designs_gqlgen_graphql.Unmarshaler
-	github_com_99designs_gqlgen_graphql.Marshaler
-} = new(SpecialUser)
+} = new(User)
 
 // MarshalJSON implements json.Marshaler
 func (this ItemID) MarshalJSON() (json []byte, err error) {
@@ -1101,29 +1022,29 @@ var _ interface {
 } = new(Authorization)
 
 // MarshalJSON implements json.Marshaler
-func (this SpecialUserID) MarshalJSON() (json []byte, err error) {
-	if _, ok := SpecialUserID_name[int32(this)]; !ok {
-		return nil, ErrInvalidEnum{EnumName: "SpecialUserID", Value: this}
+func (this SingletonUserType) MarshalJSON() (json []byte, err error) {
+	if _, ok := SingletonUserType_name[int32(this)]; !ok {
+		return nil, ErrInvalidEnum{EnumName: "SingletonUserType", Value: this}
 	}
 	return encoding_json.Marshal(this.String())
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (this *SpecialUserID) UnmarshalJSON(json []byte) (err error) {
+func (this *SingletonUserType) UnmarshalJSON(json []byte) (err error) {
 	var text string
 	if err = encoding_json.Unmarshal(json, &text); err != nil {
 		return
 	}
 	var ok bool
 	this32 := (*int32)(this)
-	if *this32, ok = SpecialUserID_value[text]; !ok {
-		return ErrInvalidEnum{EnumName: "SpecialUserID", Value: this}
+	if *this32, ok = SingletonUserType_value[text]; !ok {
+		return ErrInvalidEnum{EnumName: "SingletonUserType", Value: this}
 	}
 	return
 }
 
 // MarshalGQL implements graphql.Marshaler
-func (this SpecialUserID) MarshalGQL(w io.Writer) {
+func (this SingletonUserType) MarshalGQL(w io.Writer) {
 	var err error
 	b, err := this.MarshalJSON()
 	if err != nil {
@@ -1135,7 +1056,7 @@ func (this SpecialUserID) MarshalGQL(w io.Writer) {
 }
 
 // UnmarshalGQL implements graphql.Unmarshaler
-func (this *SpecialUserID) UnmarshalGQL(v interface{}) (err error) {
+func (this *SingletonUserType) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
 		return
@@ -1148,7 +1069,7 @@ var _ interface {
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Marshaler
-} = new(SpecialUserID)
+} = new(SingletonUserType)
 
 //these can be set via init() to customise the (un)marshaling
 var (

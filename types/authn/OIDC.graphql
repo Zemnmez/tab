@@ -61,9 +61,6 @@ input OIDCProviderInput {
 extend type AuthenticationMutation { OIDC: OIDCMutation }
 
 type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCMutation") {
-    # Authenticates by OIDC ID Token and returns the corresponding User, if any.
-    Authenticate(token: IDTokenInput): User
-
     # modifies, creates or deletes an OIDC provider. If id is blank, the provider will be created.
     # If provider is blank, the provider will be deleted.
     Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH]) 
@@ -72,5 +69,5 @@ type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCMutat
 
 
 extend type SelfMutation {
-    LinkOIDC(token: IDToken)
+    LinkOIDC(token: IDTokenInput): Boolean!
 }

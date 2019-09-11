@@ -33,60 +33,66 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type Authorization int32
 
 const (
-	VIEW_USERS               Authorization = 0
-	MODIFY_VALID_AUTH        Authorization = 1
-	ADD_ITEMS                Authorization = 2
-	MODIFY_OTHER_USERS       Authorization = 3
-	MODIFY_SPECIAL_USERS     Authorization = 4
-	MODIFY_SELF              Authorization = 5
-	VIEW_OTHER_USERS_HISTORY Authorization = 6
-	VIEW_OWN_HISTORY         Authorization = 7
+	AUTHORIZATION_NIL        Authorization = 0
+	VIEW_USERS               Authorization = 1
+	MODIFY_VALID_AUTH        Authorization = 2
+	ADD_ITEMS                Authorization = 3
+	MODIFY_OTHER_USERS       Authorization = 4
+	MODIFY_SINGLETON_USERS   Authorization = 5
+	MODIFY_SELF              Authorization = 6
+	VIEW_OTHER_USERS_HISTORY Authorization = 7
+	VIEW_OWN_HISTORY         Authorization = 8
 )
 
 var Authorization_name = map[int32]string{
-	0: "VIEW_USERS",
-	1: "MODIFY_VALID_AUTH",
-	2: "ADD_ITEMS",
-	3: "MODIFY_OTHER_USERS",
-	4: "MODIFY_SPECIAL_USERS",
-	5: "MODIFY_SELF",
-	6: "VIEW_OTHER_USERS_HISTORY",
-	7: "VIEW_OWN_HISTORY",
+	0: "AUTHORIZATION_NIL",
+	1: "VIEW_USERS",
+	2: "MODIFY_VALID_AUTH",
+	3: "ADD_ITEMS",
+	4: "MODIFY_OTHER_USERS",
+	5: "MODIFY_SINGLETON_USERS",
+	6: "MODIFY_SELF",
+	7: "VIEW_OTHER_USERS_HISTORY",
+	8: "VIEW_OWN_HISTORY",
 }
 
 var Authorization_value = map[string]int32{
-	"VIEW_USERS":               0,
-	"MODIFY_VALID_AUTH":        1,
-	"ADD_ITEMS":                2,
-	"MODIFY_OTHER_USERS":       3,
-	"MODIFY_SPECIAL_USERS":     4,
-	"MODIFY_SELF":              5,
-	"VIEW_OTHER_USERS_HISTORY": 6,
-	"VIEW_OWN_HISTORY":         7,
+	"AUTHORIZATION_NIL":        0,
+	"VIEW_USERS":               1,
+	"MODIFY_VALID_AUTH":        2,
+	"ADD_ITEMS":                3,
+	"MODIFY_OTHER_USERS":       4,
+	"MODIFY_SINGLETON_USERS":   5,
+	"MODIFY_SELF":              6,
+	"VIEW_OTHER_USERS_HISTORY": 7,
+	"VIEW_OWN_HISTORY":         8,
 }
 
 func (Authorization) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e927c4c8d1099e6c, []int{0}
 }
 
-type SpecialUserID int32
+type SingletonUserType int32
 
 const (
-	ROOT      SpecialUserID = 0
-	ANONYMOUS SpecialUserID = 1
+	SINGLETONUSERTYPE_NIL SingletonUserType = 0
+	ROOT                  SingletonUserType = 1
+	ANONYMOUS             SingletonUserType = 2
 )
 
-var SpecialUserID_name = map[int32]string{
-	0: "ROOT",
-	1: "ANONYMOUS",
+var SingletonUserType_name = map[int32]string{
+	0: "SINGLETONUSERTYPE_NIL",
+	1: "ROOT",
+	2: "ANONYMOUS",
 }
 
-var SpecialUserID_value = map[string]int32{
-	"ROOT":      0,
-	"ANONYMOUS": 1,
+var SingletonUserType_value = map[string]int32{
+	"SINGLETONUSERTYPE_NIL": 0,
+	"ROOT":                  1,
+	"ANONYMOUS":             2,
 }
 
-func (SpecialUserID) EnumDescriptor() ([]byte, []int) {
+func (SingletonUserType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e927c4c8d1099e6c, []int{1}
 }
 
@@ -287,21 +293,22 @@ func (m *HistoryItem) GetIPAddress() string {
 	return ""
 }
 
-type RegularUserID struct {
-	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
+type SingletonUser struct {
+	Id   *UserID           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type SingletonUserType `protobuf:"varint,2,opt,name=type,proto3,enum=types.SingletonUserType" json:"type,omitempty"`
 }
 
-func (m *RegularUserID) Reset()      { *m = RegularUserID{} }
-func (*RegularUserID) ProtoMessage() {}
-func (*RegularUserID) Descriptor() ([]byte, []int) {
+func (m *SingletonUser) Reset()      { *m = SingletonUser{} }
+func (*SingletonUser) ProtoMessage() {}
+func (*SingletonUser) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e927c4c8d1099e6c, []int{4}
 }
-func (m *RegularUserID) XXX_Unmarshal(b []byte) error {
+func (m *SingletonUser) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RegularUserID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SingletonUser) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RegularUserID.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SingletonUser.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -311,23 +318,34 @@ func (m *RegularUserID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *RegularUserID) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RegularUserID.Merge(m, src)
+func (m *SingletonUser) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SingletonUser.Merge(m, src)
 }
-func (m *RegularUserID) XXX_Size() int {
+func (m *SingletonUser) XXX_Size() int {
 	return m.Size()
 }
-func (m *RegularUserID) XXX_DiscardUnknown() {
-	xxx_messageInfo_RegularUserID.DiscardUnknown(m)
+func (m *SingletonUser) XXX_DiscardUnknown() {
+	xxx_messageInfo_SingletonUser.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RegularUserID proto.InternalMessageInfo
+var xxx_messageInfo_SingletonUser proto.InternalMessageInfo
+
+func (m *SingletonUser) GetId() *UserID {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *SingletonUser) GetType() SingletonUserType {
+	if m != nil {
+		return m.Type
+	}
+	return SINGLETONUSERTYPE_NIL
+}
 
 type UserID struct {
-	// Types that are valid to be assigned to ID:
-	//	*UserID_SpecialUserID
-	//	*UserID_RegularUserID
-	ID isUserID_ID `protobuf_oneof:"ID"`
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
 }
 
 func (m *UserID) Reset()      { *m = UserID{} }
@@ -362,71 +380,25 @@ func (m *UserID) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_UserID proto.InternalMessageInfo
 
-type isUserID_ID interface {
-	isUserID_ID()
-	Equal(interface{}) bool
-	MarshalTo([]byte) (int, error)
-	Size() int
-}
-
-type UserID_SpecialUserID struct {
-	SpecialUserID SpecialUserID `protobuf:"varint,1,opt,name=specialUserID,proto3,enum=types.SpecialUserID,oneof"`
-}
-type UserID_RegularUserID struct {
-	RegularUserID *RegularUserID `protobuf:"bytes,2,opt,name=regularUserID,proto3,oneof"`
-}
-
-func (*UserID_SpecialUserID) isUserID_ID() {}
-func (*UserID_RegularUserID) isUserID_ID() {}
-
-func (m *UserID) GetID() isUserID_ID {
-	if m != nil {
-		return m.ID
-	}
-	return nil
-}
-
-func (m *UserID) GetSpecialUserID() SpecialUserID {
-	if x, ok := m.GetID().(*UserID_SpecialUserID); ok {
-		return x.SpecialUserID
-	}
-	return ROOT
-}
-
-func (m *UserID) GetRegularUserID() *RegularUserID {
-	if x, ok := m.GetID().(*UserID_RegularUserID); ok {
-		return x.RegularUserID
-	}
-	return nil
-}
-
-// XXX_OneofWrappers is for the internal use of the proto package.
-func (*UserID) XXX_OneofWrappers() []interface{} {
-	return []interface{}{
-		(*UserID_SpecialUserID)(nil),
-		(*UserID_RegularUserID)(nil),
-	}
-}
-
-type RegularUser struct {
-	Id             *RegularUserID  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+type User struct {
+	Id             *UserID         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name           string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Authorizations []Authorization `protobuf:"varint,3,rep,packed,name=authorizations,proto3,enum=types.Authorization" json:"authorizations,omitempty"`
 	HistoryID      []*HistoryID    `protobuf:"bytes,4,rep,name=historyID,proto3" json:"historyID,omitempty"`
 	Created        *time.Time      `protobuf:"bytes,5,opt,name=created,proto3,stdtime" json:"created,omitempty"`
 }
 
-func (m *RegularUser) Reset()      { *m = RegularUser{} }
-func (*RegularUser) ProtoMessage() {}
-func (*RegularUser) Descriptor() ([]byte, []int) {
+func (m *User) Reset()      { *m = User{} }
+func (*User) ProtoMessage() {}
+func (*User) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e927c4c8d1099e6c, []int{6}
 }
-func (m *RegularUser) XXX_Unmarshal(b []byte) error {
+func (m *User) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RegularUser) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *User) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RegularUser.Marshal(b, m, deterministic)
+		return xxx_messageInfo_User.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -436,108 +408,49 @@ func (m *RegularUser) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (m *RegularUser) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RegularUser.Merge(m, src)
+func (m *User) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_User.Merge(m, src)
 }
-func (m *RegularUser) XXX_Size() int {
+func (m *User) XXX_Size() int {
 	return m.Size()
 }
-func (m *RegularUser) XXX_DiscardUnknown() {
-	xxx_messageInfo_RegularUser.DiscardUnknown(m)
+func (m *User) XXX_DiscardUnknown() {
+	xxx_messageInfo_User.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RegularUser proto.InternalMessageInfo
+var xxx_messageInfo_User proto.InternalMessageInfo
 
-func (m *RegularUser) GetId() *RegularUserID {
+func (m *User) GetId() *UserID {
 	if m != nil {
 		return m.Id
 	}
 	return nil
 }
 
-func (m *RegularUser) GetName() string {
+func (m *User) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *RegularUser) GetAuthorizations() []Authorization {
+func (m *User) GetAuthorizations() []Authorization {
 	if m != nil {
 		return m.Authorizations
 	}
 	return nil
 }
 
-func (m *RegularUser) GetHistoryID() []*HistoryID {
+func (m *User) GetHistoryID() []*HistoryID {
 	if m != nil {
 		return m.HistoryID
 	}
 	return nil
 }
 
-func (m *RegularUser) GetCreated() *time.Time {
+func (m *User) GetCreated() *time.Time {
 	if m != nil {
 		return m.Created
-	}
-	return nil
-}
-
-type SpecialUser struct {
-	Id             SpecialUserID   `protobuf:"varint,1,opt,name=id,proto3,enum=types.SpecialUserID" json:"id,omitempty"`
-	Authorizations []Authorization `protobuf:"varint,2,rep,packed,name=authorizations,proto3,enum=types.Authorization" json:"authorizations,omitempty"`
-	HistoryID      []*HistoryID    `protobuf:"bytes,3,rep,name=historyID,proto3" json:"historyID,omitempty"`
-}
-
-func (m *SpecialUser) Reset()      { *m = SpecialUser{} }
-func (*SpecialUser) ProtoMessage() {}
-func (*SpecialUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{7}
-}
-func (m *SpecialUser) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SpecialUser) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SpecialUser.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SpecialUser) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SpecialUser.Merge(m, src)
-}
-func (m *SpecialUser) XXX_Size() int {
-	return m.Size()
-}
-func (m *SpecialUser) XXX_DiscardUnknown() {
-	xxx_messageInfo_SpecialUser.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SpecialUser proto.InternalMessageInfo
-
-func (m *SpecialUser) GetId() SpecialUserID {
-	if m != nil {
-		return m.Id
-	}
-	return ROOT
-}
-
-func (m *SpecialUser) GetAuthorizations() []Authorization {
-	if m != nil {
-		return m.Authorizations
-	}
-	return nil
-}
-
-func (m *SpecialUser) GetHistoryID() []*HistoryID {
-	if m != nil {
-		return m.HistoryID
 	}
 	return nil
 }
@@ -549,7 +462,7 @@ type ItemID struct {
 func (m *ItemID) Reset()      { *m = ItemID{} }
 func (*ItemID) ProtoMessage() {}
 func (*ItemID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{8}
+	return fileDescriptor_e927c4c8d1099e6c, []int{7}
 }
 func (m *ItemID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -589,7 +502,7 @@ type Item struct {
 func (m *Item) Reset()      { *m = Item{} }
 func (*Item) ProtoMessage() {}
 func (*Item) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{9}
+	return fileDescriptor_e927c4c8d1099e6c, []int{8}
 }
 func (m *Item) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -660,7 +573,7 @@ type OIDCProviderID struct {
 func (m *OIDCProviderID) Reset()      { *m = OIDCProviderID{} }
 func (*OIDCProviderID) ProtoMessage() {}
 func (*OIDCProviderID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{10}
+	return fileDescriptor_e927c4c8d1099e6c, []int{9}
 }
 func (m *OIDCProviderID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -700,7 +613,7 @@ type OIDCProvider struct {
 func (m *OIDCProvider) Reset()      { *m = OIDCProvider{} }
 func (*OIDCProvider) ProtoMessage() {}
 func (*OIDCProvider) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{11}
+	return fileDescriptor_e927c4c8d1099e6c, []int{10}
 }
 func (m *OIDCProvider) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -779,7 +692,7 @@ type IDToken struct {
 func (m *IDToken) Reset()      { *m = IDToken{} }
 func (*IDToken) ProtoMessage() {}
 func (*IDToken) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{12}
+	return fileDescriptor_e927c4c8d1099e6c, []int{11}
 }
 func (m *IDToken) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -873,15 +786,14 @@ func (m *IDToken) GetAuthorizedParty() string {
 
 func init() {
 	proto.RegisterEnum("types.Authorization", Authorization_name, Authorization_value)
-	proto.RegisterEnum("types.SpecialUserID", SpecialUserID_name, SpecialUserID_value)
+	proto.RegisterEnum("types.SingletonUserType", SingletonUserType_name, SingletonUserType_value)
 	proto.RegisterType((*ID)(nil), "types.ID")
 	proto.RegisterType((*AuthorizationGrant)(nil), "types.AuthorizationGrant")
 	proto.RegisterType((*HistoryID)(nil), "types.HistoryID")
 	proto.RegisterType((*HistoryItem)(nil), "types.HistoryItem")
-	proto.RegisterType((*RegularUserID)(nil), "types.RegularUserID")
+	proto.RegisterType((*SingletonUser)(nil), "types.SingletonUser")
 	proto.RegisterType((*UserID)(nil), "types.UserID")
-	proto.RegisterType((*RegularUser)(nil), "types.RegularUser")
-	proto.RegisterType((*SpecialUser)(nil), "types.SpecialUser")
+	proto.RegisterType((*User)(nil), "types.User")
 	proto.RegisterType((*ItemID)(nil), "types.ItemID")
 	proto.RegisterType((*Item)(nil), "types.Item")
 	proto.RegisterType((*OIDCProviderID)(nil), "types.OIDCProviderID")
@@ -894,70 +806,68 @@ func init() {
 }
 
 var fileDescriptor_e927c4c8d1099e6c = []byte{
-	// 995 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xb1, 0x6f, 0xdb, 0xc6,
-	0x17, 0xe6, 0x51, 0xb4, 0x6c, 0x3e, 0xfd, 0xa4, 0xe8, 0x77, 0x90, 0x03, 0xc2, 0x70, 0x68, 0x55,
-	0x69, 0x00, 0x35, 0x40, 0xe4, 0xc2, 0x4d, 0x81, 0xa2, 0xc8, 0x50, 0xd9, 0x94, 0x2b, 0x02, 0xb6,
-	0x25, 0x50, 0xb2, 0x03, 0x17, 0x28, 0x04, 0x8a, 0x3c, 0x49, 0x6c, 0x24, 0x9e, 0x4a, 0x9e, 0x8a,
-	0xc8, 0x53, 0x87, 0x4e, 0x9d, 0xf2, 0x2f, 0x74, 0x6a, 0x97, 0xce, 0xed, 0xd0, 0x3f, 0x20, 0xa3,
-	0xc7, 0x4c, 0x69, 0x2d, 0x2f, 0x1d, 0xd3, 0xff, 0xa0, 0xe0, 0x91, 0x94, 0x29, 0xc7, 0x71, 0x84,
-	0x2e, 0x02, 0xdf, 0xbd, 0xef, 0x7b, 0xf7, 0x7d, 0xf7, 0xde, 0x1d, 0x04, 0xe5, 0xbe, 0xc3, 0x06,
-	0x93, 0x6e, 0xc5, 0xa2, 0xa3, 0xed, 0x33, 0x32, 0x72, 0x47, 0xe4, 0x6c, 0x9b, 0x99, 0xdd, 0x6d,
-	0x36, 0x1d, 0x13, 0x3f, 0xfc, 0xad, 0x8c, 0x3d, 0xca, 0x28, 0x5e, 0xe1, 0xc1, 0xc6, 0xa3, 0x04,
-	0xa1, 0x4f, 0xfb, 0x74, 0x9b, 0x67, 0xbb, 0x93, 0x1e, 0x8f, 0x78, 0xc0, 0xbf, 0x42, 0xd6, 0xc6,
-	0x56, 0x9f, 0xd2, 0xfe, 0x90, 0x5c, 0xa1, 0x98, 0x33, 0x22, 0x3e, 0x33, 0x47, 0xe3, 0x10, 0x50,
-	0x2a, 0x80, 0xa8, 0x6b, 0x38, 0x07, 0xa2, 0x63, 0x2b, 0xa8, 0x88, 0xca, 0xb2, 0x21, 0x3a, 0x76,
-	0xe9, 0x6b, 0xc0, 0xd5, 0x09, 0x1b, 0x50, 0xcf, 0x39, 0x33, 0x99, 0x43, 0xdd, 0x2f, 0x3d, 0xd3,
-	0x65, 0xf8, 0x03, 0x90, 0x7a, 0x1e, 0x1d, 0x71, 0x5c, 0x66, 0x27, 0x5b, 0x09, 0xe5, 0x1d, 0xfb,
-	0xc4, 0xd3, 0x35, 0x83, 0xa7, 0xf0, 0x87, 0x20, 0xd2, 0x9e, 0x22, 0x16, 0x53, 0xe5, 0xdc, 0x4e,
-	0x21, 0x02, 0x2c, 0x54, 0x32, 0x44, 0xda, 0x2b, 0x7d, 0x0c, 0x72, 0xdd, 0xf1, 0x19, 0xf5, 0xa6,
-	0xba, 0x86, 0xef, 0xcf, 0xf7, 0xce, 0xec, 0xc8, 0x11, 0x45, 0xd7, 0x76, 0xd7, 0x5e, 0xbe, 0xde,
-	0x12, 0xce, 0x5f, 0x6f, 0x21, 0x2e, 0xe8, 0x07, 0x04, 0x99, 0x98, 0xc2, 0xc8, 0x08, 0xdf, 0x85,
-	0xb4, 0x69, 0x05, 0xf5, 0x22, 0xd1, 0x51, 0x84, 0xef, 0x81, 0xd8, 0x9d, 0x2a, 0xe2, 0x4d, 0x02,
-	0xc5, 0xee, 0x14, 0x17, 0x21, 0xe3, 0x91, 0x6f, 0x27, 0xc4, 0x67, 0x9a, 0xc9, 0x4c, 0x25, 0xc5,
-	0xb9, 0xc9, 0x25, 0xbc, 0x09, 0xb2, 0xde, 0xac, 0xda, 0xb6, 0x47, 0x7c, 0x5f, 0x91, 0x78, 0x5e,
-	0x76, 0xe2, 0x85, 0xd2, 0x63, 0xc8, 0x1a, 0xa4, 0x3f, 0x19, 0x9a, 0x5e, 0x58, 0x74, 0x39, 0xf1,
-	0x3f, 0x22, 0x48, 0x47, 0xf8, 0x27, 0x90, 0xf5, 0xc7, 0xc4, 0x72, 0xcc, 0x61, 0xb8, 0xc0, 0xa9,
-	0x57, 0x47, 0xd5, 0x4a, 0xe6, 0xea, 0x82, 0xb1, 0x08, 0x0e, 0xd8, 0x5e, 0x72, 0xfb, 0xc8, 0x68,
-	0xcc, 0x5e, 0x90, 0x16, 0xb0, 0x17, 0xc0, 0xbb, 0x52, 0xd0, 0xea, 0xd2, 0x3f, 0x08, 0x32, 0x09,
-	0x60, 0xd0, 0xb1, 0xb9, 0x83, 0x1b, 0x0b, 0x05, 0x16, 0x30, 0x06, 0xc9, 0x35, 0x47, 0x84, 0x6f,
-	0x28, 0x1b, 0xfc, 0x1b, 0x3f, 0x81, 0x9c, 0x99, 0x6c, 0xad, 0xaf, 0xa4, 0x6e, 0xe9, 0xfb, 0x35,
-	0x2c, 0xae, 0x80, 0x3c, 0x88, 0x67, 0x40, 0x91, 0x8a, 0xa9, 0x72, 0x66, 0x27, 0x1f, 0x11, 0xe7,
-	0xb3, 0x61, 0x5c, 0x41, 0xf0, 0xe7, 0xb0, 0x6a, 0x79, 0xc4, 0x64, 0xc4, 0x56, 0x56, 0xb8, 0xd8,
-	0x8d, 0x4a, 0x38, 0xdb, 0x95, 0x78, 0xb6, 0x2b, 0xed, 0x78, 0xb6, 0x77, 0xa5, 0x17, 0x7f, 0x6e,
-	0x21, 0x23, 0x26, 0x94, 0x7e, 0x42, 0x90, 0x49, 0x1c, 0x6d, 0xc2, 0xf3, 0x3b, 0x8e, 0x9e, 0x7b,
-	0x7e, 0xdb, 0x9f, 0xf8, 0x5f, 0xfd, 0xa5, 0xde, 0xeb, 0xaf, 0xf4, 0x08, 0xd2, 0xc1, 0x64, 0x2f,
-	0x3b, 0x53, 0x3f, 0x23, 0x90, 0xf8, 0x4d, 0xb8, 0x97, 0x40, 0xc7, 0x13, 0x1f, 0x16, 0x7a, 0x67,
-	0xe3, 0x36, 0x60, 0x6d, 0x48, 0x2d, 0xae, 0x33, 0xba, 0x02, 0xf3, 0x18, 0x3f, 0x80, 0xf4, 0xd8,
-	0xf4, 0x88, 0xcb, 0xf8, 0xf0, 0xbf, 0x55, 0x32, 0x4a, 0xe2, 0x8f, 0x60, 0xcd, 0x1a, 0x38, 0x43,
-	0xdb, 0x23, 0xae, 0xb2, 0xc2, 0xcd, 0x5d, 0x03, 0xce, 0xd3, 0xa5, 0x4f, 0x21, 0xd7, 0xd0, 0xb5,
-	0xbd, 0xa6, 0x47, 0xbf, 0x73, 0xec, 0xe5, 0x2f, 0xcd, 0x6f, 0x08, 0xfe, 0x97, 0xe4, 0xe1, 0x07,
-	0x09, 0xd6, 0x7a, 0xc4, 0x5a, 0x2c, 0x7c, 0x9b, 0x61, 0xcb, 0x1c, 0x0e, 0xbb, 0xa6, 0xf5, 0x2c,
-	0x36, 0x1c, 0xc7, 0xf8, 0x31, 0xac, 0x2f, 0x74, 0xae, 0xe6, 0xda, 0x63, 0xea, 0x44, 0xfe, 0x65,
-	0xe3, 0xe6, 0x24, 0xaf, 0x38, 0x74, 0x88, 0xcb, 0x74, 0x8d, 0x8f, 0x63, 0x50, 0x31, 0x8a, 0x4b,
-	0xbf, 0xa6, 0x60, 0x55, 0xd7, 0xda, 0xf4, 0x19, 0x71, 0x83, 0x77, 0xca, 0xf1, 0xfd, 0x09, 0xf1,
-	0xe2, 0x77, 0x2a, 0x8c, 0xb0, 0x02, 0xab, 0xfe, 0xa4, 0xfb, 0x0d, 0xb1, 0x58, 0x24, 0x34, 0x0e,
-	0x83, 0xca, 0xe6, 0xc4, 0x76, 0x88, 0x6b, 0x91, 0x58, 0x6b, 0x1c, 0xe3, 0x2f, 0x00, 0xc8, 0xf3,
-	0xb1, 0xe3, 0x85, 0xad, 0x93, 0x96, 0xbc, 0x06, 0x09, 0x0e, 0xfe, 0x2c, 0xd2, 0xb3, 0xfc, 0x25,
-	0x8a, 0xf0, 0xb8, 0x00, 0x2b, 0x2e, 0x0d, 0x44, 0xa5, 0xb9, 0xa8, 0x30, 0xc0, 0x4d, 0xb8, 0x1f,
-	0x1c, 0x10, 0x71, 0x99, 0x13, 0x0e, 0xd0, 0x1e, 0x75, 0x19, 0x79, 0xce, 0xf6, 0x86, 0xa6, 0xef,
-	0x1b, 0xa4, 0x47, 0x3c, 0x6e, 0x64, 0xb5, 0x88, 0xca, 0x29, 0x63, 0x19, 0x28, 0xde, 0x07, 0x75,
-	0x11, 0x76, 0x48, 0xd8, 0x80, 0xda, 0x89, 0x62, 0x6b, 0xc5, 0x54, 0x59, 0x36, 0xde, 0x83, 0xc2,
-	0x65, 0xb8, 0x13, 0xb7, 0x8e, 0xd8, 0x4d, 0xd3, 0x63, 0x53, 0x45, 0xe6, 0xca, 0xaf, 0x2f, 0x3f,
-	0xfc, 0x03, 0x41, 0x76, 0xe1, 0x2e, 0xe3, 0x1c, 0xc0, 0x89, 0x5e, 0x7b, 0xda, 0x39, 0x6e, 0xd5,
-	0x8c, 0x56, 0x5e, 0xc0, 0xeb, 0xf0, 0xff, 0xc3, 0x86, 0xa6, 0xef, 0x9f, 0x76, 0x4e, 0xaa, 0x07,
-	0xba, 0xd6, 0xa9, 0x1e, 0xb7, 0xeb, 0x79, 0x84, 0xb3, 0x20, 0x57, 0x35, 0xad, 0xa3, 0xb7, 0x6b,
-	0x87, 0xad, 0xbc, 0x88, 0xef, 0x02, 0x8e, 0x50, 0x8d, 0x76, 0xbd, 0x66, 0x44, 0xec, 0x14, 0x56,
-	0xa0, 0x10, 0xad, 0xb7, 0x9a, 0xb5, 0x3d, 0xbd, 0x7a, 0x10, 0x65, 0x24, 0x7c, 0x07, 0x32, 0x71,
-	0xa6, 0x76, 0xb0, 0x9f, 0x5f, 0xc1, 0x9b, 0xa0, 0xf0, 0x8d, 0x13, 0x05, 0x3a, 0x75, 0xbd, 0xd5,
-	0x6e, 0x18, 0xa7, 0xf9, 0x34, 0x2e, 0x40, 0x3e, 0xcc, 0x3e, 0x3d, 0x9a, 0xaf, 0xae, 0x3e, 0x2c,
-	0x43, 0x76, 0xe1, 0xed, 0xc2, 0x6b, 0x20, 0x19, 0x8d, 0x46, 0x3b, 0x2f, 0x70, 0x81, 0x47, 0x8d,
-	0xa3, 0xd3, 0xc3, 0xc6, 0x71, 0x2b, 0x8f, 0x76, 0x4f, 0xce, 0x2f, 0x54, 0xe1, 0xd5, 0x85, 0x2a,
-	0xbc, 0xb9, 0x50, 0xd1, 0xf7, 0x33, 0x15, 0xfd, 0x32, 0x53, 0xd1, 0xef, 0x33, 0x15, 0xbd, 0x9c,
-	0xa9, 0xe8, 0x7c, 0xa6, 0xa2, 0xbf, 0x66, 0x2a, 0xfa, 0x7b, 0xa6, 0x0a, 0x6f, 0x66, 0x2a, 0x7a,
-	0x71, 0xa9, 0x0a, 0xe7, 0x97, 0xaa, 0xf0, 0xea, 0x52, 0x15, 0xbe, 0xda, 0xbc, 0xed, 0x6f, 0x4a,
-	0x37, 0xcd, 0x87, 0xe7, 0x93, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x27, 0xc3, 0x4f, 0x73, 0xcd,
-	0x08, 0x00, 0x00,
+	// 972 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x55, 0x4d, 0x6f, 0xe3, 0x44,
+	0x18, 0xce, 0x38, 0x6e, 0x1a, 0xbf, 0xa1, 0x59, 0xef, 0xa8, 0xad, 0x4c, 0x55, 0xdc, 0x90, 0x65,
+	0xa5, 0xb0, 0x62, 0x53, 0x14, 0x40, 0x42, 0x88, 0x03, 0x69, 0x9d, 0xb6, 0x96, 0xda, 0x38, 0x72,
+	0xdc, 0xae, 0xba, 0x02, 0x45, 0x4e, 0x3c, 0x49, 0xcc, 0x26, 0x9e, 0x60, 0x4f, 0xd0, 0xa6, 0x27,
+	0x0e, 0xfc, 0x80, 0xfd, 0x17, 0x70, 0xe1, 0x0c, 0x3f, 0x61, 0x8f, 0xbd, 0x20, 0xed, 0x69, 0xa1,
+	0xe9, 0x85, 0xe3, 0xfe, 0x04, 0xe4, 0xb1, 0x9d, 0x4d, 0xba, 0xa5, 0xe4, 0x12, 0xf9, 0x9d, 0xf7,
+	0x79, 0x9e, 0x79, 0xde, 0x0f, 0x3b, 0x50, 0xea, 0xb9, 0xac, 0x3f, 0x6e, 0x97, 0x3b, 0x74, 0xb8,
+	0x7b, 0x41, 0x86, 0xde, 0x90, 0x5c, 0xec, 0x32, 0xbb, 0xbd, 0xcb, 0x26, 0x23, 0x12, 0x44, 0xbf,
+	0xe5, 0x91, 0x4f, 0x19, 0xc5, 0x2b, 0x3c, 0xd8, 0x7a, 0x3c, 0x47, 0xe8, 0xd1, 0x1e, 0xdd, 0xe5,
+	0xd9, 0xf6, 0xb8, 0xcb, 0x23, 0x1e, 0xf0, 0xa7, 0x88, 0xb5, 0xb5, 0xd3, 0xa3, 0xb4, 0x37, 0x20,
+	0x6f, 0x51, 0xcc, 0x1d, 0x92, 0x80, 0xd9, 0xc3, 0x51, 0x04, 0x28, 0xae, 0x83, 0xa0, 0x6b, 0x38,
+	0x0f, 0x82, 0xeb, 0x28, 0xa8, 0x80, 0x4a, 0x92, 0x29, 0xb8, 0x4e, 0xf1, 0x3b, 0xc0, 0xd5, 0x31,
+	0xeb, 0x53, 0xdf, 0xbd, 0xb0, 0x99, 0x4b, 0xbd, 0x43, 0xdf, 0xf6, 0x18, 0xfe, 0x10, 0xc4, 0xae,
+	0x4f, 0x87, 0x1c, 0x97, 0xab, 0xac, 0x95, 0x23, 0x7b, 0xa7, 0x01, 0xf1, 0x75, 0xcd, 0xe4, 0x29,
+	0xfc, 0x11, 0x08, 0xb4, 0xab, 0x08, 0x85, 0x74, 0x29, 0x5f, 0x59, 0x8f, 0x01, 0x0b, 0x4a, 0xa6,
+	0x40, 0xbb, 0xc5, 0x4f, 0x41, 0x3a, 0x72, 0x03, 0x46, 0xfd, 0x89, 0xae, 0xe1, 0x07, 0xb3, 0xbb,
+	0x73, 0x15, 0x29, 0xa6, 0xe8, 0xda, 0x5e, 0xf6, 0xe5, 0xeb, 0x9d, 0xd4, 0xe5, 0xeb, 0x1d, 0xc4,
+	0x0d, 0xfd, 0x8c, 0x20, 0x97, 0x50, 0x18, 0x19, 0xe2, 0x4d, 0xc8, 0xd8, 0x9d, 0x50, 0x2f, 0x36,
+	0x1d, 0x47, 0xf8, 0x03, 0x10, 0xda, 0x13, 0x45, 0xb8, 0xcd, 0xa0, 0xd0, 0x9e, 0xe0, 0x02, 0xe4,
+	0x7c, 0xf2, 0xc3, 0x98, 0x04, 0x4c, 0xb3, 0x99, 0xad, 0xa4, 0x39, 0x77, 0xfe, 0x08, 0x6f, 0x83,
+	0xa4, 0x37, 0xaa, 0x8e, 0xe3, 0x93, 0x20, 0x50, 0x44, 0x9e, 0x97, 0xdc, 0xe4, 0xa0, 0xf8, 0x2d,
+	0xac, 0x35, 0x5d, 0xaf, 0x37, 0x20, 0x8c, 0x7a, 0xa1, 0x6c, 0x78, 0xdf, 0xcc, 0xfc, 0xcd, 0xfb,
+	0x5c, 0x07, 0x7f, 0x02, 0x62, 0x78, 0xc6, 0x0d, 0xe5, 0x2b, 0x4a, 0x0c, 0x58, 0x90, 0xb0, 0x26,
+	0x23, 0x62, 0x72, 0x54, 0xf1, 0x31, 0x64, 0x22, 0xee, 0x72, 0x3d, 0xb9, 0x46, 0x20, 0x2e, 0x63,
+	0x02, 0x83, 0xe8, 0xd9, 0xc3, 0xc8, 0x84, 0x64, 0xf2, 0x67, 0xfc, 0x35, 0xe4, 0xed, 0xf9, 0xb1,
+	0x04, 0x4a, 0xfa, 0x8e, 0x99, 0xdd, 0xc0, 0xe2, 0x32, 0x48, 0xfd, 0x64, 0x7e, 0x8a, 0x58, 0x48,
+	0x97, 0x72, 0x15, 0x39, 0x26, 0xce, 0xe6, 0x6a, 0xbe, 0x85, 0xe0, 0xaf, 0x60, 0xb5, 0xe3, 0x13,
+	0x9b, 0x11, 0x47, 0x59, 0xe1, 0x2e, 0xb7, 0xca, 0xd1, 0x5e, 0x96, 0x93, 0xbd, 0x2c, 0x5b, 0xc9,
+	0x5e, 0xee, 0x89, 0x2f, 0xfe, 0xda, 0x41, 0x66, 0x42, 0x08, 0x9b, 0x12, 0x4e, 0x7c, 0xd9, 0xa6,
+	0xfc, 0x82, 0x40, 0xe4, 0x1b, 0x72, 0x5b, 0x53, 0x22, 0xa1, 0xff, 0x6c, 0xca, 0x16, 0x64, 0x07,
+	0xb4, 0xc3, 0x6b, 0x8c, 0x57, 0x63, 0x16, 0xe3, 0x87, 0x90, 0x19, 0xd9, 0x3e, 0xf1, 0x18, 0x5f,
+	0x8a, 0x77, 0x24, 0xe3, 0x24, 0xfe, 0x18, 0xb2, 0x9d, 0xbe, 0x3b, 0x70, 0x7c, 0xe2, 0x29, 0x2b,
+	0xbc, 0x31, 0x37, 0x80, 0xb3, 0x74, 0xf1, 0x0b, 0xc8, 0x1b, 0xba, 0xb6, 0xdf, 0xf0, 0xe9, 0x8f,
+	0xae, 0xb3, 0xfc, 0xd4, 0x7f, 0x47, 0xf0, 0xde, 0x3c, 0x0f, 0x3f, 0x9c, 0x63, 0x6d, 0xc4, 0xac,
+	0x45, 0xe1, 0xbb, 0x0a, 0xee, 0xd8, 0x83, 0x41, 0xdb, 0xee, 0x3c, 0x4b, 0x0a, 0x4e, 0x62, 0xfc,
+	0x39, 0x6c, 0x2c, 0x4c, 0xbd, 0xe6, 0x39, 0x23, 0xea, 0xc6, 0xf5, 0x4b, 0xe6, 0xed, 0x49, 0xae,
+	0x38, 0x70, 0x89, 0xc7, 0x74, 0x8d, 0x8f, 0x3a, 0x54, 0x8c, 0xe3, 0xe2, 0x6f, 0x69, 0x58, 0xd5,
+	0x35, 0x8b, 0x3e, 0x23, 0x5e, 0xf8, 0xfe, 0xba, 0x41, 0x30, 0x26, 0x7e, 0xf2, 0xfe, 0x46, 0x11,
+	0x56, 0x60, 0x35, 0x18, 0xb7, 0xbf, 0x27, 0x1d, 0x16, 0x1b, 0x4d, 0xc2, 0x50, 0xd9, 0x1e, 0x3b,
+	0x2e, 0xf1, 0x3a, 0x24, 0xf1, 0x9a, 0xc4, 0xf8, 0x1b, 0x00, 0xf2, 0x7c, 0xe4, 0xfa, 0xd1, 0xe8,
+	0xc4, 0x25, 0x57, 0x6c, 0x8e, 0x83, 0xbf, 0x8c, 0xfd, 0x2c, 0xbf, 0xa0, 0x31, 0x1e, 0xaf, 0xc3,
+	0x8a, 0x47, 0x43, 0x53, 0x19, 0x6e, 0x2a, 0x0a, 0x70, 0x03, 0x1e, 0x84, 0x0d, 0x22, 0x1e, 0x73,
+	0xa3, 0x05, 0xda, 0xa7, 0x1e, 0x23, 0xcf, 0xd9, 0xfe, 0xc0, 0x0e, 0x02, 0x93, 0x74, 0x89, 0xcf,
+	0x0b, 0x59, 0x2d, 0xa0, 0x52, 0xda, 0x5c, 0x06, 0x8a, 0x0f, 0x40, 0x5d, 0x84, 0x9d, 0x10, 0xd6,
+	0xa7, 0xce, 0x9c, 0x58, 0xb6, 0x90, 0x2e, 0x49, 0xe6, 0xff, 0xa0, 0x70, 0x09, 0xee, 0x25, 0xa3,
+	0x23, 0x4e, 0xc3, 0xf6, 0xd9, 0x44, 0x91, 0xb8, 0xf3, 0x9b, 0xc7, 0x8f, 0xfe, 0x44, 0xb0, 0xb6,
+	0xf0, 0x1d, 0xc0, 0x1b, 0x70, 0xbf, 0x7a, 0x6a, 0x1d, 0x19, 0xa6, 0xfe, 0xb4, 0x6a, 0xe9, 0x46,
+	0xbd, 0x55, 0xd7, 0x8f, 0xe5, 0x14, 0xce, 0x03, 0x9c, 0xe9, 0xb5, 0x27, 0xad, 0xd3, 0x66, 0xcd,
+	0x6c, 0xca, 0x28, 0x84, 0x9d, 0x18, 0x9a, 0x7e, 0x70, 0xde, 0x3a, 0xab, 0x1e, 0xeb, 0x5a, 0x2b,
+	0xe4, 0xc8, 0x02, 0x5e, 0x03, 0xa9, 0xaa, 0x69, 0x2d, 0xdd, 0xaa, 0x9d, 0x34, 0xe5, 0x34, 0xde,
+	0x04, 0x1c, 0xa3, 0x0c, 0xeb, 0xa8, 0x66, 0xc6, 0x6c, 0x11, 0x6f, 0xc1, 0x66, 0x7c, 0xde, 0xd4,
+	0xeb, 0x87, 0xc7, 0x35, 0xcb, 0xa8, 0xc7, 0xb9, 0x15, 0x7c, 0x0f, 0x72, 0x49, 0xae, 0x76, 0x7c,
+	0x20, 0x67, 0xf0, 0x36, 0x28, 0xfc, 0xea, 0x39, 0x89, 0xd6, 0x91, 0xde, 0xb4, 0x0c, 0xf3, 0x5c,
+	0x5e, 0xc5, 0xeb, 0x20, 0x47, 0xd9, 0x27, 0xf5, 0xd9, 0x69, 0xf6, 0xd1, 0x21, 0xdc, 0x7f, 0xe7,
+	0x0b, 0x8c, 0xdf, 0x87, 0x8d, 0xd9, 0x75, 0xa1, 0x8c, 0x75, 0xde, 0xa8, 0xc5, 0xe5, 0x65, 0x41,
+	0x34, 0x0d, 0xc3, 0x92, 0x11, 0xaf, 0xa0, 0x6e, 0xd4, 0xcf, 0x4f, 0x8c, 0xd3, 0xa6, 0x2c, 0xec,
+	0x9d, 0x5d, 0x5e, 0xa9, 0xa9, 0x57, 0x57, 0x6a, 0xea, 0xcd, 0x95, 0x8a, 0x7e, 0x9a, 0xaa, 0xe8,
+	0xd7, 0xa9, 0x8a, 0xfe, 0x98, 0xaa, 0xe8, 0xe5, 0x54, 0x45, 0x97, 0x53, 0x15, 0xfd, 0x3d, 0x55,
+	0xd1, 0x3f, 0x53, 0x35, 0xf5, 0x66, 0xaa, 0xa2, 0x17, 0xd7, 0x6a, 0xea, 0xf2, 0x5a, 0x4d, 0xbd,
+	0xba, 0x56, 0x53, 0x4f, 0xb7, 0xef, 0xfa, 0xdb, 0x6f, 0x67, 0xf8, 0xd2, 0x7d, 0xf6, 0x6f, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x2a, 0xbe, 0x60, 0x2d, 0x1d, 0x08, 0x00, 0x00,
 }
 
 func (x Authorization) String() string {
@@ -967,8 +877,8 @@ func (x Authorization) String() string {
 	}
 	return strconv.Itoa(int(x))
 }
-func (x SpecialUserID) String() string {
-	s, ok := SpecialUserID_name[int32(x)]
+func (x SingletonUserType) String() string {
+	s, ok := SingletonUserType_name[int32(x)]
 	if ok {
 		return s
 	}
@@ -1087,14 +997,14 @@ func (this *HistoryItem) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *RegularUserID) Equal(that interface{}) bool {
+func (this *SingletonUser) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*RegularUserID)
+	that1, ok := that.(*SingletonUser)
 	if !ok {
-		that2, ok := that.(RegularUserID)
+		that2, ok := that.(SingletonUser)
 		if ok {
 			that1 = &that2
 		} else {
@@ -1106,7 +1016,10 @@ func (this *RegularUserID) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !this.ID.Equal(&that1.ID) {
+	if !this.Id.Equal(that1.Id) {
+		return false
+	}
+	if this.Type != that1.Type {
 		return false
 	}
 	return true
@@ -1130,73 +1043,19 @@ func (this *UserID) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if that1.ID == nil {
-		if this.ID != nil {
-			return false
-		}
-	} else if this.ID == nil {
-		return false
-	} else if !this.ID.Equal(that1.ID) {
+	if !this.ID.Equal(&that1.ID) {
 		return false
 	}
 	return true
 }
-func (this *UserID_SpecialUserID) Equal(that interface{}) bool {
+func (this *User) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*UserID_SpecialUserID)
+	that1, ok := that.(*User)
 	if !ok {
-		that2, ok := that.(UserID_SpecialUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.SpecialUserID != that1.SpecialUserID {
-		return false
-	}
-	return true
-}
-func (this *UserID_RegularUserID) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*UserID_RegularUserID)
-	if !ok {
-		that2, ok := that.(UserID_RegularUserID)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !this.RegularUserID.Equal(that1.RegularUserID) {
-		return false
-	}
-	return true
-}
-func (this *RegularUser) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*RegularUser)
-	if !ok {
-		that2, ok := that.(RegularUser)
+		that2, ok := that.(User)
 		if ok {
 			that1 = &that2
 		} else {
@@ -1236,46 +1095,6 @@ func (this *RegularUser) Equal(that interface{}) bool {
 		}
 	} else if !this.Created.Equal(*that1.Created) {
 		return false
-	}
-	return true
-}
-func (this *SpecialUser) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*SpecialUser)
-	if !ok {
-		that2, ok := that.(SpecialUser)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Id != that1.Id {
-		return false
-	}
-	if len(this.Authorizations) != len(that1.Authorizations) {
-		return false
-	}
-	for i := range this.Authorizations {
-		if this.Authorizations[i] != that1.Authorizations[i] {
-			return false
-		}
-	}
-	if len(this.HistoryID) != len(that1.HistoryID) {
-		return false
-	}
-	for i := range this.HistoryID {
-		if !this.HistoryID[i].Equal(that1.HistoryID[i]) {
-			return false
-		}
 	}
 	return true
 }
@@ -1513,13 +1332,16 @@ func (this *HistoryItem) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *RegularUserID) GoString() string {
+func (this *SingletonUser) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
-	s = append(s, "&types.RegularUserID{")
-	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
+	s := make([]string, 0, 6)
+	s = append(s, "&types.SingletonUser{")
+	if this.Id != nil {
+		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	}
+	s = append(s, "Type: "+fmt.Sprintf("%#v", this.Type)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1527,36 +1349,18 @@ func (this *UserID) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 5)
 	s = append(s, "&types.UserID{")
-	if this.ID != nil {
-		s = append(s, "ID: "+fmt.Sprintf("%#v", this.ID)+",\n")
-	}
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *UserID_SpecialUserID) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&types.UserID_SpecialUserID{` +
-		`SpecialUserID:` + fmt.Sprintf("%#v", this.SpecialUserID) + `}`}, ", ")
-	return s
-}
-func (this *UserID_RegularUserID) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&types.UserID_RegularUserID{` +
-		`RegularUserID:` + fmt.Sprintf("%#v", this.RegularUserID) + `}`}, ", ")
-	return s
-}
-func (this *RegularUser) GoString() string {
+func (this *User) GoString() string {
 	if this == nil {
 		return "nil"
 	}
 	s := make([]string, 0, 9)
-	s = append(s, "&types.RegularUser{")
+	s = append(s, "&types.User{")
 	if this.Id != nil {
 		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	}
@@ -1566,20 +1370,6 @@ func (this *RegularUser) GoString() string {
 		s = append(s, "HistoryID: "+fmt.Sprintf("%#v", this.HistoryID)+",\n")
 	}
 	s = append(s, "Created: "+fmt.Sprintf("%#v", this.Created)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *SpecialUser) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 7)
-	s = append(s, "&types.SpecialUser{")
-	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
-	s = append(s, "Authorizations: "+fmt.Sprintf("%#v", this.Authorizations)+",\n")
-	if this.HistoryID != nil {
-		s = append(s, "HistoryID: "+fmt.Sprintf("%#v", this.HistoryID)+",\n")
-	}
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1837,7 +1627,7 @@ func (m *HistoryItem) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *RegularUserID) Marshal() (dAtA []byte, err error) {
+func (m *SingletonUser) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1847,26 +1637,33 @@ func (m *RegularUserID) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RegularUserID) MarshalTo(dAtA []byte) (int, error) {
+func (m *SingletonUser) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *RegularUserID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SingletonUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintTypes(dAtA, i, uint64(size))
+	if m.Type != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x10
 	}
-	i--
-	dAtA[i] = 0xa
+	if m.Id != nil {
+		{
+			size, err := m.Id.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1890,50 +1687,20 @@ func (m *UserID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.ID != nil {
-		{
-			size := m.ID.Size()
-			i -= size
-			if _, err := m.ID.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *UserID_SpecialUserID) MarshalTo(dAtA []byte) (int, error) {
-	return m.MarshalToSizedBuffer(dAtA[:m.Size()])
-}
-
-func (m *UserID_SpecialUserID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	i = encodeVarintTypes(dAtA, i, uint64(m.SpecialUserID))
 	i--
-	dAtA[i] = 0x8
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
-}
-func (m *UserID_RegularUserID) MarshalTo(dAtA []byte) (int, error) {
-	return m.MarshalToSizedBuffer(dAtA[:m.Size()])
 }
 
-func (m *UserID_RegularUserID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.RegularUserID != nil {
-		{
-			size, err := m.RegularUserID.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	return len(dAtA) - i, nil
-}
-func (m *RegularUser) Marshal() (dAtA []byte, err error) {
+func (m *User) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1943,12 +1710,12 @@ func (m *RegularUser) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RegularUser) MarshalTo(dAtA []byte) (int, error) {
+func (m *User) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *RegularUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *User) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2013,66 +1780,6 @@ func (m *RegularUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SpecialUser) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SpecialUser) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SpecialUser) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.HistoryID) > 0 {
-		for iNdEx := len(m.HistoryID) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.HistoryID[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintTypes(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x1a
-		}
-	}
-	if len(m.Authorizations) > 0 {
-		dAtA13 := make([]byte, len(m.Authorizations)*10)
-		var j12 int
-		for _, num := range m.Authorizations {
-			for num >= 1<<7 {
-				dAtA13[j12] = uint8(uint64(num)&0x7f | 0x80)
-				num >>= 7
-				j12++
-			}
-			dAtA13[j12] = uint8(num)
-			j12++
-		}
-		i -= j12
-		copy(dAtA[i:], dAtA13[:j12])
-		i = encodeVarintTypes(dAtA, i, uint64(j12))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Id != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -2330,22 +2037,22 @@ func (m *IDToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x32
 	}
 	if m.Issued != nil {
-		n19, err19 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Issued, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Issued):])
-		if err19 != nil {
-			return 0, err19
+		n17, err17 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Issued, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Issued):])
+		if err17 != nil {
+			return 0, err17
 		}
-		i -= n19
-		i = encodeVarintTypes(dAtA, i, uint64(n19))
+		i -= n17
+		i = encodeVarintTypes(dAtA, i, uint64(n17))
 		i--
 		dAtA[i] = 0x2a
 	}
 	if m.Expiration != nil {
-		n20, err20 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Expiration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Expiration):])
-		if err20 != nil {
-			return 0, err20
+		n18, err18 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Expiration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Expiration):])
+		if err18 != nil {
+			return 0, err18
 		}
-		i -= n20
-		i = encodeVarintTypes(dAtA, i, uint64(n20))
+		i -= n18
+		i = encodeVarintTypes(dAtA, i, uint64(n18))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -2453,7 +2160,23 @@ func (m *HistoryItem) Size() (n int) {
 	return n
 }
 
-func (m *RegularUserID) Size() (n int) {
+func (m *SingletonUser) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != nil {
+		l = m.Id.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Type != 0 {
+		n += 1 + sovTypes(uint64(m.Type))
+	}
+	return n
+}
+
+func (m *UserID) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2464,40 +2187,7 @@ func (m *RegularUserID) Size() (n int) {
 	return n
 }
 
-func (m *UserID) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ID != nil {
-		n += m.ID.Size()
-	}
-	return n
-}
-
-func (m *UserID_SpecialUserID) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	n += 1 + sovTypes(uint64(m.SpecialUserID))
-	return n
-}
-func (m *UserID_RegularUserID) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.RegularUserID != nil {
-		l = m.RegularUserID.Size()
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	return n
-}
-func (m *RegularUser) Size() (n int) {
+func (m *User) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2527,31 +2217,6 @@ func (m *RegularUser) Size() (n int) {
 	if m.Created != nil {
 		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.Created)
 		n += 1 + l + sovTypes(uint64(l))
-	}
-	return n
-}
-
-func (m *SpecialUser) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Id != 0 {
-		n += 1 + sovTypes(uint64(m.Id))
-	}
-	if len(m.Authorizations) > 0 {
-		l = 0
-		for _, e := range m.Authorizations {
-			l += sovTypes(uint64(e))
-		}
-		n += 1 + sovTypes(uint64(l)) + l
-	}
-	if len(m.HistoryID) > 0 {
-		for _, e := range m.HistoryID {
-			l = e.Size()
-			n += 1 + l + sovTypes(uint64(l))
-		}
 	}
 	return n
 }
@@ -2734,12 +2399,13 @@ func (this *HistoryItem) String() string {
 	}, "")
 	return s
 }
-func (this *RegularUserID) String() string {
+func (this *SingletonUser) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&RegularUserID{`,
-		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
+	s := strings.Join([]string{`&SingletonUser{`,
+		`Id:` + strings.Replace(this.Id.String(), "UserID", "UserID", 1) + `,`,
+		`Type:` + fmt.Sprintf("%v", this.Type) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2749,32 +2415,12 @@ func (this *UserID) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&UserID{`,
-		`ID:` + fmt.Sprintf("%v", this.ID) + `,`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-func (this *UserID_SpecialUserID) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&UserID_SpecialUserID{`,
-		`SpecialUserID:` + fmt.Sprintf("%v", this.SpecialUserID) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *UserID_RegularUserID) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&UserID_RegularUserID{`,
-		`RegularUserID:` + strings.Replace(fmt.Sprintf("%v", this.RegularUserID), "RegularUserID", "RegularUserID", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *RegularUser) String() string {
+func (this *User) String() string {
 	if this == nil {
 		return "nil"
 	}
@@ -2783,29 +2429,12 @@ func (this *RegularUser) String() string {
 		repeatedStringForHistoryID += strings.Replace(f.String(), "HistoryID", "HistoryID", 1) + ","
 	}
 	repeatedStringForHistoryID += "}"
-	s := strings.Join([]string{`&RegularUser{`,
-		`Id:` + strings.Replace(this.Id.String(), "RegularUserID", "RegularUserID", 1) + `,`,
+	s := strings.Join([]string{`&User{`,
+		`Id:` + strings.Replace(this.Id.String(), "UserID", "UserID", 1) + `,`,
 		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
 		`Authorizations:` + fmt.Sprintf("%v", this.Authorizations) + `,`,
 		`HistoryID:` + repeatedStringForHistoryID + `,`,
 		`Created:` + strings.Replace(fmt.Sprintf("%v", this.Created), "Timestamp", "types.Timestamp", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *SpecialUser) String() string {
-	if this == nil {
-		return "nil"
-	}
-	repeatedStringForHistoryID := "[]*HistoryID{"
-	for _, f := range this.HistoryID {
-		repeatedStringForHistoryID += strings.Replace(f.String(), "HistoryID", "HistoryID", 1) + ","
-	}
-	repeatedStringForHistoryID += "}"
-	s := strings.Join([]string{`&SpecialUser{`,
-		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
-		`Authorizations:` + fmt.Sprintf("%v", this.Authorizations) + `,`,
-		`HistoryID:` + repeatedStringForHistoryID + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3403,7 +3032,7 @@ func (m *HistoryItem) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *RegularUserID) Unmarshal(dAtA []byte) error {
+func (m *SingletonUser) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3426,10 +3055,118 @@ func (m *RegularUserID) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: RegularUserID: wiretype end group for non-group")
+			return fmt.Errorf("proto: SingletonUser: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RegularUserID: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SingletonUser: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Id == nil {
+				m.Id = &UserID{}
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= SingletonUserType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UserID) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UserID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UserID: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3489,7 +3226,7 @@ func (m *RegularUserID) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *UserID) Unmarshal(dAtA []byte) error {
+func (m *User) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3512,118 +3249,10 @@ func (m *UserID) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: UserID: wiretype end group for non-group")
+			return fmt.Errorf("proto: User: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: UserID: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SpecialUserID", wireType)
-			}
-			var v SpecialUserID
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= SpecialUserID(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.ID = &UserID_SpecialUserID{v}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RegularUserID", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &RegularUserID{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.ID = &UserID_RegularUserID{v}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *RegularUser) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: RegularUser: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RegularUser: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: User: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3656,7 +3285,7 @@ func (m *RegularUser) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Id == nil {
-				m.Id = &RegularUserID{}
+				m.Id = &UserID{}
 			}
 			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3830,181 +3459,6 @@ func (m *RegularUser) Unmarshal(dAtA []byte) error {
 				m.Created = new(time.Time)
 			}
 			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.Created, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SpecialUser) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SpecialUser: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SpecialUser: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= SpecialUserID(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType == 0 {
-				var v Authorization
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowTypes
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					v |= Authorization(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				m.Authorizations = append(m.Authorizations, v)
-			} else if wireType == 2 {
-				var packedLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowTypes
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					packedLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if packedLen < 0 {
-					return ErrInvalidLengthTypes
-				}
-				postIndex := iNdEx + packedLen
-				if postIndex < 0 {
-					return ErrInvalidLengthTypes
-				}
-				if postIndex > l {
-					return io.ErrUnexpectedEOF
-				}
-				var elementCount int
-				if elementCount != 0 && len(m.Authorizations) == 0 {
-					m.Authorizations = make([]Authorization, 0, elementCount)
-				}
-				for iNdEx < postIndex {
-					var v Authorization
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowTypes
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						v |= Authorization(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					m.Authorizations = append(m.Authorizations, v)
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Authorizations", wireType)
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HistoryID", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.HistoryID = append(m.HistoryID, &HistoryID{})
-			if err := m.HistoryID[len(m.HistoryID)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

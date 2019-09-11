@@ -28,7 +28,7 @@ message AuthorizationGrant {
 }
 
 enum Authorization {
-    NIL = 0;
+    AUTHORIZATION_NIL = 0;
     VIEW_USERS = 1;
     MODIFY_VALID_AUTH = 2;
     ADD_ITEMS = 3;
@@ -53,7 +53,7 @@ message HistoryItem {
 // USERS
 
 enum SingletonUserType {
-    NIL = 0;
+    SINGLETONUSERTYPE_NIL = 0;
     ROOT = 1;
     ANONYMOUS = 2;
 }

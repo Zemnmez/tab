@@ -1,11 +1,9 @@
-scalar Time
-
 interface Timestamped {
     Created: Time!
     Modified: Time!
 }
 
-extend type User implements Timestamped{
+extend interface User {
     Created: Time!
     Modified: Time!
 }
@@ -15,27 +13,22 @@ extend type RegularUser implements Timestamped {
     Modified: Time!
 }
 
+extend type Self implements Timestamped {
+    Created: Time!
+    Modified: Time!
+}
+
 extend type RootUser implements Timestamped {
     Created: Time!
     Modified: Time!
 }
 
-extend type Anonymoususer implements Timestamped {
+extend type AnonymousUser implements Timestamped {
     Created: Time!
     Modified: Time!
 }
 
 extend type AuthorizationGrant implements Timestamped {
-    Created: Time!
-    Modified: Time!
-}
-
-extend type AuthToken implements Timestamped {
-    Created: Time!
-    Modified: Time!
-}
-
-extend type Session implements Timestamped {
     Created: Time!
     Modified: Time!
 }
