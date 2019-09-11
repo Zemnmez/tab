@@ -1,0 +1,52 @@
+
+"An AuthToken is a cryptographic digest of an AuthorizationTokenID. That is to say, an AuthorizationToken maps to an AuthorizationTokenID but not vice-versa."
+scalar AuthorizationToken
+scalar AuthorizationTokenID
+
+"""
+An OAuth2Token is a concept within OAuth 2.0 which is a short-lived
+bearer token encapsulating some permissions. The short lived nature
+of the token reduces its exposure.
+
+An OAuth2Token can be retreieved by going through an OAuth grant flow 
+or using a refresh token.
+"""
+type AuthorizationTokenInfo {
+    ID: AuthorizationTokenID!
+    Token: AuthorizationToken!
+    AuthorizationGrant: AuthorizationGrant!
+    Expires: Time!
+}
+
+type AuthzQuery {
+    TokenInfo(tok: AuthorizationToken!): AuthorizationTokenInfo!
+    TokenInfoByID(id: AuthorizationTokenID!): AuthorizatonTokenInfo!
+}
+
+
+"A cryptographic digest of a RefreshTokenID. That is to say, a RefreshToken maps to a RefreshTokenID but not vice-versa."
+scalar AuthorizationRefreshToken
+scalar AuthorizationRefreshTokenID
+
+"""
+An OAuth2RefreshToken within the OAuth2.0 concept is a long-lived
+bearer token that can be exchanged for an OAuth 2.0 token.
+
+Its purpose is to be long lived but infrequently transmitted,
+lessening its chance of exposure.
+"""
+type AuthorizationRefreshTokenInfo {
+    ID: AuthorizationRefreshTokenID!
+    Token: RefreshToken!
+    AuthorizationGrant: AuthorizationGrant!
+    Expires: Time
+}
+
+extend type AuthQuery {
+    RefreshToken(tok: AuthorizationRefreshToken!): AuthorizationRefreshTokenInfo!
+    RefreshTokenByID(id: RefreshTokenID); AuthorizationRefreshTokenInfo!
+}
+
+extend type Query {
+    Authz: AuthQuery!
+}

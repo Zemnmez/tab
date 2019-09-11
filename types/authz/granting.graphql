@@ -1,0 +1,76 @@
+interface AuthorizationGranter {
+    "The abilities granted by this entity."
+    GrantsGiven: [AuthorizationGrant!]!
+}
+
+interface AuthorizationGrantee {
+    "The abilities recieved by this entity."
+    GrantsReceived: [AuthorizationGrant!]!
+}
+
+scalar AuthorizationGrantID
+type AuthorizationGrant @goModel(model: "github.com/zemnmez/tab/gql/resolver.AuthorizationGrant") {
+    ID: AuthorizationGrantID!
+
+    From: AuthorizationGranter!
+
+    To: AuthorizationGrantee!
+
+    """
+    Of is a list of Authorizations representing
+    permissions granted to the target.
+    """
+    Permissions: [Authorization!]!
+
+    """
+    Valid returns if this grant is still valid.
+    if the granter of this authorization does not
+    have the appropriate permissions anymore,
+    the grant is no longer valid.
+    """
+    Valid: Boolean!
+}
+
+extend type SelfMutation {
+    "Grant a user some ability the current user has"
+    Grant(who: RegularUserID, abilities: [Authorization!]!): User
+
+    "Remove a pre-existing grant"
+    UnGrant(id: UserAuthzGrantID!)
+
+    "Grant a special user some ability the current user has"
+    GrantSpecial(who: SpecialUserID, abilities: [Authorization!]!): SpecialUser @authorized(to: [MODIFY_SPECIAL_USERS])
+}
+
+extend type Self implements AuthorizationGranter & AuthorizationGrantee {
+    "The abilities granted by this entity."
+    GrantsGiven: [AuthorizationGrant!]!
+
+    "The abilities granted to this entity."
+    GrantsReceived: [AuthorizationGrant!]
+}
+
+# (the root user cannot be a Grantee because it already has every permission)
+
+extend type RootUser implements AuthorizationGranter {
+    Grants: [AuthorizationGrant!]!
+    Authorizations: [Authorization!]!
+
+    "The abilities granted by this entity."
+    GrantsGiven: [AuthorizationGrant!]
+}
+
+# (the anonymous user cannot be a granter because that would be annoying)
+
+extend type AnonymousUser implements AuthorizationGrantee {
+    "The abilities granted to this entity."
+    GrantsReceived: [AuthorizationGrant!]
+}
+
+extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee {
+    "The abilities granted to this entity."
+    GrantsGiven: [AuthorizationGrant!]!
+
+    "The abilities granted by this entity."
+    GrantsReceived: [AuthorizationGrant!]
+}

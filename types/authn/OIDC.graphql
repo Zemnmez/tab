@@ -66,5 +66,11 @@ type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCMutat
 
     # modifies, creates or deletes an OIDC provider. If id is blank, the provider will be created.
     # If provider is blank, the provider will be deleted.
-    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH]) }
+    Provider(id: OIDCProviderID, provider: OIDCProviderInput): OIDCProvider @authorized(to: [MODIFY_VALID_AUTH]) 
+}
 
+
+
+extend type SelfMutation {
+    LinkOIDC(token: IDToken)
+}

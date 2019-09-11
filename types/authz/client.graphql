@@ -1,0 +1,51 @@
+
+extend enum Authorizations {
+    VIEW_AUTH_CLIENTS
+    CREATE_AUTH_CLIENT
+}
+
+"A unique identifier for a client"
+scalar AuthClientID
+
+interface AuthClient {
+    ID: AuthClientID!
+
+    "The user that owns the authorization to modify this client"
+    Owner: UserID!
+
+    "The OAuth 2.0 redirect_uri of this client"
+    RedirectURI: OAuth2RedirectURI!
+
+    "AuthorizationFor returns the authorizations specific to a particular user."
+    AuthorizationFor(userid: UserID!): [AuthorizationGrant!]!
+}
+
+"The FirstParty client represents the website itself. It naturally has all authorizations at all times."
+type FirstParty implements AuthClient & AuthorizationGrantee {
+    ID: AuthClientID!
+    
+    "The FirstParty OAuth client is owned by the ROOT user."
+    Owner: UserID!
+
+    RedirectURI: RedirectURI!
+
+    AuthorizationFor(userid: UserID!) [Authorization!]!
+
+    "Abilities granted to this client by some entity."
+    GrantsReceived: [AuthorizationGrant!]!
+}
+
+type ThirdParty implements AuthClient & AuthorizationGrantee {
+    ID: AuthClientID!
+
+    "The creator of this AuthClient."
+    Owner: UserID!
+
+    RedirectURI: RedirectURI!
+
+    AuthorizationFor(userid: UserID!): [Authorization!]!
+
+    "Abilities granted to this client by some entity."
+    GrantsReceived: [AuthorizationGrant!]!
+}
+

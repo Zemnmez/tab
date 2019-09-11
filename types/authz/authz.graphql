@@ -1,0 +1,15 @@
+directive @authorized(to: [Authorization!]!) on FIELD_DEFINITION
+
+"""
+Authorization is a list of all the possible permissions
+a User can have.
+"""
+enum Authorization {
+    " a blank authorization that does nothing "
+    NIL
+    VIEW_USERS
+}
+
+extend type UserQuery {
+    WhoCan(do: [Authorization!]!): [User!]! @authorized(to: [VIEW_USERS])
+}

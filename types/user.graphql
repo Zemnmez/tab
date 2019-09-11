@@ -15,14 +15,12 @@ type RegularUser implements User @goModel(model: "github.com/zemnmez/tab/gql/res
 
     Name: String!
 
-    Created: Time!
 }
 
 # UserInput is the values a User can be created with
 input UserInput {
     Name: String!
 }
-
 
 extend type Query {
     User: UserQuery

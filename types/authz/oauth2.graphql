@@ -1,0 +1,8 @@
+
+"The OAuth 2.0 redirect_URI of an OAuth 2.0 client"
+scalar OAuth2RedirectURI
+
+extend type OIDCMutation {
+    Authenticate(token: IDToken, client: AuthClientID): AuthenticationToken
+}
+
