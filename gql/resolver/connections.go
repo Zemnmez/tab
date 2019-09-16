@@ -8,7 +8,6 @@ type LinkID struct{ types.LinkID }
 
 type Link struct{ types.Link }
 
-
 func (s SelfMutation) Unlink(ctx context.Context, issuer string) (ok bool, err error) {
 	return ConnectionsMutation{}.Unlink(
 		From: UserQuery{}.Self(ctx).ID,

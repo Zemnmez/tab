@@ -40,19 +40,12 @@ func ValidateFlags(toValidate int) (err error) {
 	return
 }
 
-// Table is a special type of Txn that appends a table prefix to
-// keys. It also provides iteration support
-type Table struct {
-	prefix []byte
-	ITxn
+type IIterator interface {
+	Record() IRecord
+	Scan() bool
+	Err() error
+	io.Closer
 }
-
-func (t Table) KeyPrefix() (prefix []byte)            { return t.prefix }
-func (t Table) DerivedKey(key []byte) (newKey []byte) { return append(t.KeyPrefix(), key...) }
-func (t Table) Open(key []byte, flag int) (IRecord, error) {
-	return t.ITxn.Open(t.DerivedKey(key), flag)
-}
-func (t Table) Remove(key []byte) (err error) { return t.ITxn.Remove(t.DerivedKey(key)) }
 
 type ITxn interface {
 	Open(key []byte, flag int) (IRecord, error)

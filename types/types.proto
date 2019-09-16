@@ -125,13 +125,35 @@ message Link {
     string targetSubject = 3;
 }
 
+// table
+
+message Key {
+    TableID table = 1;
+    ID id = 2;
+}
+
 enum TableID {
     TABLE_NIL = 0;
 
-    DEFAULT_TABLE = 1;
-    LINKS_TABLE = 2;
-}
+    // lists of history items
+    HISTORY_ITEM_TABLE = 1;
 
-message TableName {
-    TableID id = 1;
+    // mappings of unique user types and their
+    // stored user ids
+    SINGLETON_USER_TABLE = 2;
+    
+    // users
+    USER_TABLE = 3;
+
+    // items
+    ITEM_TABLE = 4;
+
+    // oidc providers
+    OIDC_PROVIDER_TABLE = 5;
+
+    // auth tokens
+    AUTHZ_TOKEN_TABLE = 6;
+
+    // links
+    LINK_TABLE = 7;
 }
