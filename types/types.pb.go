@@ -7,8 +7,8 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	_ "github.com/gogo/protobuf/types"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
+	types "github.com/gogo/protobuf/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -96,6 +96,30 @@ func (SingletonUserType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e927c4c8d1099e6c, []int{1}
 }
 
+type TableID int32
+
+const (
+	TABLE_NIL     TableID = 0
+	DEFAULT_TABLE TableID = 1
+	LINKS_TABLE   TableID = 2
+)
+
+var TableID_name = map[int32]string{
+	0: "TABLE_NIL",
+	1: "DEFAULT_TABLE",
+	2: "LINKS_TABLE",
+}
+
+var TableID_value = map[string]int32{
+	"TABLE_NIL":     0,
+	"DEFAULT_TABLE": 1,
+	"LINKS_TABLE":   2,
+}
+
+func (TableID) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{2}
+}
+
 type ID struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
@@ -139,15 +163,53 @@ func (m *ID) GetId() string {
 	return ""
 }
 
+type AuthorizationGrantID struct {
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
+}
+
+func (m *AuthorizationGrantID) Reset()      { *m = AuthorizationGrantID{} }
+func (*AuthorizationGrantID) ProtoMessage() {}
+func (*AuthorizationGrantID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{1}
+}
+func (m *AuthorizationGrantID) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AuthorizationGrantID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AuthorizationGrantID.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AuthorizationGrantID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthorizationGrantID.Merge(m, src)
+}
+func (m *AuthorizationGrantID) XXX_Size() int {
+	return m.Size()
+}
+func (m *AuthorizationGrantID) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthorizationGrantID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AuthorizationGrantID proto.InternalMessageInfo
+
 type AuthorizationGrant struct {
-	From *UserID         `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	Of   []Authorization `protobuf:"varint,2,rep,packed,name=of,proto3,enum=types.Authorization" json:"of,omitempty"`
+	Id          *AuthorizationGrantID `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	From        *UserID               `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To          *UserID               `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Permissions []Authorization       `protobuf:"varint,4,rep,packed,name=permissions,proto3,enum=types.Authorization" json:"permissions,omitempty"`
 }
 
 func (m *AuthorizationGrant) Reset()      { *m = AuthorizationGrant{} }
 func (*AuthorizationGrant) ProtoMessage() {}
 func (*AuthorizationGrant) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{1}
+	return fileDescriptor_e927c4c8d1099e6c, []int{2}
 }
 func (m *AuthorizationGrant) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -176,6 +238,13 @@ func (m *AuthorizationGrant) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AuthorizationGrant proto.InternalMessageInfo
 
+func (m *AuthorizationGrant) GetId() *AuthorizationGrantID {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
 func (m *AuthorizationGrant) GetFrom() *UserID {
 	if m != nil {
 		return m.From
@@ -183,9 +252,16 @@ func (m *AuthorizationGrant) GetFrom() *UserID {
 	return nil
 }
 
-func (m *AuthorizationGrant) GetOf() []Authorization {
+func (m *AuthorizationGrant) GetTo() *UserID {
 	if m != nil {
-		return m.Of
+		return m.To
+	}
+	return nil
+}
+
+func (m *AuthorizationGrant) GetPermissions() []Authorization {
+	if m != nil {
+		return m.Permissions
 	}
 	return nil
 }
@@ -197,7 +273,7 @@ type HistoryID struct {
 func (m *HistoryID) Reset()      { *m = HistoryID{} }
 func (*HistoryID) ProtoMessage() {}
 func (*HistoryID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{2}
+	return fileDescriptor_e927c4c8d1099e6c, []int{3}
 }
 func (m *HistoryID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -236,7 +312,7 @@ type HistoryItem struct {
 func (m *HistoryItem) Reset()      { *m = HistoryItem{} }
 func (*HistoryItem) ProtoMessage() {}
 func (*HistoryItem) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{3}
+	return fileDescriptor_e927c4c8d1099e6c, []int{4}
 }
 func (m *HistoryItem) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -301,7 +377,7 @@ type SingletonUser struct {
 func (m *SingletonUser) Reset()      { *m = SingletonUser{} }
 func (*SingletonUser) ProtoMessage() {}
 func (*SingletonUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{4}
+	return fileDescriptor_e927c4c8d1099e6c, []int{5}
 }
 func (m *SingletonUser) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -351,7 +427,7 @@ type UserID struct {
 func (m *UserID) Reset()      { *m = UserID{} }
 func (*UserID) ProtoMessage() {}
 func (*UserID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{5}
+	return fileDescriptor_e927c4c8d1099e6c, []int{6}
 }
 func (m *UserID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -391,7 +467,7 @@ type User struct {
 func (m *User) Reset()      { *m = User{} }
 func (*User) ProtoMessage() {}
 func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{6}
+	return fileDescriptor_e927c4c8d1099e6c, []int{7}
 }
 func (m *User) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -462,7 +538,7 @@ type ItemID struct {
 func (m *ItemID) Reset()      { *m = ItemID{} }
 func (*ItemID) ProtoMessage() {}
 func (*ItemID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{7}
+	return fileDescriptor_e927c4c8d1099e6c, []int{8}
 }
 func (m *ItemID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -502,7 +578,7 @@ type Item struct {
 func (m *Item) Reset()      { *m = Item{} }
 func (*Item) ProtoMessage() {}
 func (*Item) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{8}
+	return fileDescriptor_e927c4c8d1099e6c, []int{9}
 }
 func (m *Item) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -573,7 +649,7 @@ type OIDCProviderID struct {
 func (m *OIDCProviderID) Reset()      { *m = OIDCProviderID{} }
 func (*OIDCProviderID) ProtoMessage() {}
 func (*OIDCProviderID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{9}
+	return fileDescriptor_e927c4c8d1099e6c, []int{10}
 }
 func (m *OIDCProviderID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -613,7 +689,7 @@ type OIDCProvider struct {
 func (m *OIDCProvider) Reset()      { *m = OIDCProvider{} }
 func (*OIDCProvider) ProtoMessage() {}
 func (*OIDCProvider) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{10}
+	return fileDescriptor_e927c4c8d1099e6c, []int{11}
 }
 func (m *OIDCProvider) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -677,29 +753,21 @@ func (m *OIDCProvider) GetClientID() string {
 	return ""
 }
 
-type IDToken struct {
-	Issuer                              string     `protobuf:"bytes,1,opt,name=issuer,proto3" json:"issuer,omitempty"`
-	Subject                             string     `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
-	Audience                            string     `protobuf:"bytes,3,opt,name=audience,proto3" json:"audience,omitempty"`
-	Expiration                          *time.Time `protobuf:"bytes,4,opt,name=expiration,proto3,stdtime" json:"expiration,omitempty"`
-	Issued                              *time.Time `protobuf:"bytes,5,opt,name=issued,proto3,stdtime" json:"issued,omitempty"`
-	Nonce                               string     `protobuf:"bytes,6,opt,name=nonce,proto3" json:"nonce,omitempty"`
-	AuthenticationContextClassReference int64      `protobuf:"varint,7,opt,name=authenticationContextClassReference,proto3" json:"authenticationContextClassReference,omitempty"`
-	AuthenticationMethodsReference      []string   `protobuf:"bytes,8,rep,name=authenticationMethodsReference,proto3" json:"authenticationMethodsReference,omitempty"`
-	AuthorizedParty                     string     `protobuf:"bytes,9,opt,name=authorizedParty,proto3" json:"authorizedParty,omitempty"`
+type AuthorizationTokenID struct {
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
 }
 
-func (m *IDToken) Reset()      { *m = IDToken{} }
-func (*IDToken) ProtoMessage() {}
-func (*IDToken) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e927c4c8d1099e6c, []int{11}
+func (m *AuthorizationTokenID) Reset()      { *m = AuthorizationTokenID{} }
+func (*AuthorizationTokenID) ProtoMessage() {}
+func (*AuthorizationTokenID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{12}
 }
-func (m *IDToken) XXX_Unmarshal(b []byte) error {
+func (m *AuthorizationTokenID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *IDToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AuthorizationTokenID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_IDToken.Marshal(b, m, deterministic)
+		return xxx_messageInfo_AuthorizationTokenID.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -709,85 +777,229 @@ func (m *IDToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *IDToken) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_IDToken.Merge(m, src)
+func (m *AuthorizationTokenID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthorizationTokenID.Merge(m, src)
 }
-func (m *IDToken) XXX_Size() int {
+func (m *AuthorizationTokenID) XXX_Size() int {
 	return m.Size()
 }
-func (m *IDToken) XXX_DiscardUnknown() {
-	xxx_messageInfo_IDToken.DiscardUnknown(m)
+func (m *AuthorizationTokenID) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthorizationTokenID.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_IDToken proto.InternalMessageInfo
+var xxx_messageInfo_AuthorizationTokenID proto.InternalMessageInfo
 
-func (m *IDToken) GetIssuer() string {
-	if m != nil {
-		return m.Issuer
+type AuthorizationTokenInfo struct {
+	Id      *AuthorizationTokenID `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Grant   *AuthorizationGrantID `protobuf:"bytes,2,opt,name=grant,proto3" json:"grant,omitempty"`
+	Expires *types.Timestamp      `protobuf:"bytes,3,opt,name=expires,proto3" json:"expires,omitempty"`
+	Created *types.Timestamp      `protobuf:"bytes,4,opt,name=created,proto3" json:"created,omitempty"`
+}
+
+func (m *AuthorizationTokenInfo) Reset()      { *m = AuthorizationTokenInfo{} }
+func (*AuthorizationTokenInfo) ProtoMessage() {}
+func (*AuthorizationTokenInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{13}
+}
+func (m *AuthorizationTokenInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AuthorizationTokenInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AuthorizationTokenInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return ""
+}
+func (m *AuthorizationTokenInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthorizationTokenInfo.Merge(m, src)
+}
+func (m *AuthorizationTokenInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *AuthorizationTokenInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthorizationTokenInfo.DiscardUnknown(m)
 }
 
-func (m *IDToken) GetSubject() string {
-	if m != nil {
-		return m.Subject
-	}
-	return ""
-}
+var xxx_messageInfo_AuthorizationTokenInfo proto.InternalMessageInfo
 
-func (m *IDToken) GetAudience() string {
+func (m *AuthorizationTokenInfo) GetId() *AuthorizationTokenID {
 	if m != nil {
-		return m.Audience
-	}
-	return ""
-}
-
-func (m *IDToken) GetExpiration() *time.Time {
-	if m != nil {
-		return m.Expiration
-	}
-	return nil
-}
-
-func (m *IDToken) GetIssued() *time.Time {
-	if m != nil {
-		return m.Issued
-	}
-	return nil
-}
-
-func (m *IDToken) GetNonce() string {
-	if m != nil {
-		return m.Nonce
-	}
-	return ""
-}
-
-func (m *IDToken) GetAuthenticationContextClassReference() int64 {
-	if m != nil {
-		return m.AuthenticationContextClassReference
-	}
-	return 0
-}
-
-func (m *IDToken) GetAuthenticationMethodsReference() []string {
-	if m != nil {
-		return m.AuthenticationMethodsReference
+		return m.Id
 	}
 	return nil
 }
 
-func (m *IDToken) GetAuthorizedParty() string {
+func (m *AuthorizationTokenInfo) GetGrant() *AuthorizationGrantID {
 	if m != nil {
-		return m.AuthorizedParty
+		return m.Grant
+	}
+	return nil
+}
+
+func (m *AuthorizationTokenInfo) GetExpires() *types.Timestamp {
+	if m != nil {
+		return m.Expires
+	}
+	return nil
+}
+
+func (m *AuthorizationTokenInfo) GetCreated() *types.Timestamp {
+	if m != nil {
+		return m.Created
+	}
+	return nil
+}
+
+type LinkID struct {
+	ID `protobuf:"bytes,1,opt,name=id,proto3,embedded=id" json:"id"`
+}
+
+func (m *LinkID) Reset()      { *m = LinkID{} }
+func (*LinkID) ProtoMessage() {}
+func (*LinkID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{14}
+}
+func (m *LinkID) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LinkID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LinkID.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LinkID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LinkID.Merge(m, src)
+}
+func (m *LinkID) XXX_Size() int {
+	return m.Size()
+}
+func (m *LinkID) XXX_DiscardUnknown() {
+	xxx_messageInfo_LinkID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LinkID proto.InternalMessageInfo
+
+type Link struct {
+	Id            *LinkID `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	TargetIssuer  string  `protobuf:"bytes,2,opt,name=targetIssuer,proto3" json:"targetIssuer,omitempty"`
+	TargetSubject string  `protobuf:"bytes,3,opt,name=targetSubject,proto3" json:"targetSubject,omitempty"`
+}
+
+func (m *Link) Reset()      { *m = Link{} }
+func (*Link) ProtoMessage() {}
+func (*Link) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{15}
+}
+func (m *Link) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Link) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Link.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Link) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Link.Merge(m, src)
+}
+func (m *Link) XXX_Size() int {
+	return m.Size()
+}
+func (m *Link) XXX_DiscardUnknown() {
+	xxx_messageInfo_Link.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Link proto.InternalMessageInfo
+
+func (m *Link) GetId() *LinkID {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *Link) GetTargetIssuer() string {
+	if m != nil {
+		return m.TargetIssuer
 	}
 	return ""
+}
+
+func (m *Link) GetTargetSubject() string {
+	if m != nil {
+		return m.TargetSubject
+	}
+	return ""
+}
+
+type TableName struct {
+	Id TableID `protobuf:"varint,1,opt,name=id,proto3,enum=types.TableID" json:"id,omitempty"`
+}
+
+func (m *TableName) Reset()      { *m = TableName{} }
+func (*TableName) ProtoMessage() {}
+func (*TableName) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e927c4c8d1099e6c, []int{16}
+}
+func (m *TableName) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TableName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TableName.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TableName) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TableName.Merge(m, src)
+}
+func (m *TableName) XXX_Size() int {
+	return m.Size()
+}
+func (m *TableName) XXX_DiscardUnknown() {
+	xxx_messageInfo_TableName.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TableName proto.InternalMessageInfo
+
+func (m *TableName) GetId() TableID {
+	if m != nil {
+		return m.Id
+	}
+	return TABLE_NIL
 }
 
 func init() {
 	proto.RegisterEnum("types.Authorization", Authorization_name, Authorization_value)
 	proto.RegisterEnum("types.SingletonUserType", SingletonUserType_name, SingletonUserType_value)
+	proto.RegisterEnum("types.TableID", TableID_name, TableID_value)
 	proto.RegisterType((*ID)(nil), "types.ID")
+	proto.RegisterType((*AuthorizationGrantID)(nil), "types.AuthorizationGrantID")
 	proto.RegisterType((*AuthorizationGrant)(nil), "types.AuthorizationGrant")
 	proto.RegisterType((*HistoryID)(nil), "types.HistoryID")
 	proto.RegisterType((*HistoryItem)(nil), "types.HistoryItem")
@@ -798,7 +1010,11 @@ func init() {
 	proto.RegisterType((*Item)(nil), "types.Item")
 	proto.RegisterType((*OIDCProviderID)(nil), "types.OIDCProviderID")
 	proto.RegisterType((*OIDCProvider)(nil), "types.OIDCProvider")
-	proto.RegisterType((*IDToken)(nil), "types.IDToken")
+	proto.RegisterType((*AuthorizationTokenID)(nil), "types.AuthorizationTokenID")
+	proto.RegisterType((*AuthorizationTokenInfo)(nil), "types.AuthorizationTokenInfo")
+	proto.RegisterType((*LinkID)(nil), "types.LinkID")
+	proto.RegisterType((*Link)(nil), "types.Link")
+	proto.RegisterType((*TableName)(nil), "types.TableName")
 }
 
 func init() {
@@ -806,68 +1022,71 @@ func init() {
 }
 
 var fileDescriptor_e927c4c8d1099e6c = []byte{
-	// 972 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x55, 0x4d, 0x6f, 0xe3, 0x44,
-	0x18, 0xce, 0x38, 0x6e, 0x1a, 0xbf, 0xa1, 0x59, 0xef, 0xa8, 0xad, 0x4c, 0x55, 0xdc, 0x90, 0x65,
-	0xa5, 0xb0, 0x62, 0x53, 0x14, 0x40, 0x42, 0x88, 0x03, 0x69, 0x9d, 0xb6, 0x96, 0xda, 0x38, 0x72,
-	0xdc, 0xae, 0xba, 0x02, 0x45, 0x4e, 0x3c, 0x49, 0xcc, 0x26, 0x9e, 0x60, 0x4f, 0xd0, 0xa6, 0x27,
-	0x0e, 0xfc, 0x80, 0xfd, 0x17, 0x70, 0xe1, 0x0c, 0x3f, 0x61, 0x8f, 0xbd, 0x20, 0xed, 0x69, 0xa1,
-	0xe9, 0x85, 0xe3, 0xfe, 0x04, 0xe4, 0xb1, 0x9d, 0x4d, 0xba, 0xa5, 0xe4, 0x12, 0xf9, 0x9d, 0xf7,
-	0x79, 0x9e, 0x79, 0xde, 0x0f, 0x3b, 0x50, 0xea, 0xb9, 0xac, 0x3f, 0x6e, 0x97, 0x3b, 0x74, 0xb8,
-	0x7b, 0x41, 0x86, 0xde, 0x90, 0x5c, 0xec, 0x32, 0xbb, 0xbd, 0xcb, 0x26, 0x23, 0x12, 0x44, 0xbf,
-	0xe5, 0x91, 0x4f, 0x19, 0xc5, 0x2b, 0x3c, 0xd8, 0x7a, 0x3c, 0x47, 0xe8, 0xd1, 0x1e, 0xdd, 0xe5,
-	0xd9, 0xf6, 0xb8, 0xcb, 0x23, 0x1e, 0xf0, 0xa7, 0x88, 0xb5, 0xb5, 0xd3, 0xa3, 0xb4, 0x37, 0x20,
-	0x6f, 0x51, 0xcc, 0x1d, 0x92, 0x80, 0xd9, 0xc3, 0x51, 0x04, 0x28, 0xae, 0x83, 0xa0, 0x6b, 0x38,
-	0x0f, 0x82, 0xeb, 0x28, 0xa8, 0x80, 0x4a, 0x92, 0x29, 0xb8, 0x4e, 0xf1, 0x3b, 0xc0, 0xd5, 0x31,
-	0xeb, 0x53, 0xdf, 0xbd, 0xb0, 0x99, 0x4b, 0xbd, 0x43, 0xdf, 0xf6, 0x18, 0xfe, 0x10, 0xc4, 0xae,
-	0x4f, 0x87, 0x1c, 0x97, 0xab, 0xac, 0x95, 0x23, 0x7b, 0xa7, 0x01, 0xf1, 0x75, 0xcd, 0xe4, 0x29,
-	0xfc, 0x11, 0x08, 0xb4, 0xab, 0x08, 0x85, 0x74, 0x29, 0x5f, 0x59, 0x8f, 0x01, 0x0b, 0x4a, 0xa6,
-	0x40, 0xbb, 0xc5, 0x4f, 0x41, 0x3a, 0x72, 0x03, 0x46, 0xfd, 0x89, 0xae, 0xe1, 0x07, 0xb3, 0xbb,
-	0x73, 0x15, 0x29, 0xa6, 0xe8, 0xda, 0x5e, 0xf6, 0xe5, 0xeb, 0x9d, 0xd4, 0xe5, 0xeb, 0x1d, 0xc4,
-	0x0d, 0xfd, 0x8c, 0x20, 0x97, 0x50, 0x18, 0x19, 0xe2, 0x4d, 0xc8, 0xd8, 0x9d, 0x50, 0x2f, 0x36,
-	0x1d, 0x47, 0xf8, 0x03, 0x10, 0xda, 0x13, 0x45, 0xb8, 0xcd, 0xa0, 0xd0, 0x9e, 0xe0, 0x02, 0xe4,
-	0x7c, 0xf2, 0xc3, 0x98, 0x04, 0x4c, 0xb3, 0x99, 0xad, 0xa4, 0x39, 0x77, 0xfe, 0x08, 0x6f, 0x83,
-	0xa4, 0x37, 0xaa, 0x8e, 0xe3, 0x93, 0x20, 0x50, 0x44, 0x9e, 0x97, 0xdc, 0xe4, 0xa0, 0xf8, 0x2d,
-	0xac, 0x35, 0x5d, 0xaf, 0x37, 0x20, 0x8c, 0x7a, 0xa1, 0x6c, 0x78, 0xdf, 0xcc, 0xfc, 0xcd, 0xfb,
-	0x5c, 0x07, 0x7f, 0x02, 0x62, 0x78, 0xc6, 0x0d, 0xe5, 0x2b, 0x4a, 0x0c, 0x58, 0x90, 0xb0, 0x26,
-	0x23, 0x62, 0x72, 0x54, 0xf1, 0x31, 0x64, 0x22, 0xee, 0x72, 0x3d, 0xb9, 0x46, 0x20, 0x2e, 0x63,
-	0x02, 0x83, 0xe8, 0xd9, 0xc3, 0xc8, 0x84, 0x64, 0xf2, 0x67, 0xfc, 0x35, 0xe4, 0xed, 0xf9, 0xb1,
-	0x04, 0x4a, 0xfa, 0x8e, 0x99, 0xdd, 0xc0, 0xe2, 0x32, 0x48, 0xfd, 0x64, 0x7e, 0x8a, 0x58, 0x48,
-	0x97, 0x72, 0x15, 0x39, 0x26, 0xce, 0xe6, 0x6a, 0xbe, 0x85, 0xe0, 0xaf, 0x60, 0xb5, 0xe3, 0x13,
-	0x9b, 0x11, 0x47, 0x59, 0xe1, 0x2e, 0xb7, 0xca, 0xd1, 0x5e, 0x96, 0x93, 0xbd, 0x2c, 0x5b, 0xc9,
-	0x5e, 0xee, 0x89, 0x2f, 0xfe, 0xda, 0x41, 0x66, 0x42, 0x08, 0x9b, 0x12, 0x4e, 0x7c, 0xd9, 0xa6,
-	0xfc, 0x82, 0x40, 0xe4, 0x1b, 0x72, 0x5b, 0x53, 0x22, 0xa1, 0xff, 0x6c, 0xca, 0x16, 0x64, 0x07,
-	0xb4, 0xc3, 0x6b, 0x8c, 0x57, 0x63, 0x16, 0xe3, 0x87, 0x90, 0x19, 0xd9, 0x3e, 0xf1, 0x18, 0x5f,
-	0x8a, 0x77, 0x24, 0xe3, 0x24, 0xfe, 0x18, 0xb2, 0x9d, 0xbe, 0x3b, 0x70, 0x7c, 0xe2, 0x29, 0x2b,
-	0xbc, 0x31, 0x37, 0x80, 0xb3, 0x74, 0xf1, 0x0b, 0xc8, 0x1b, 0xba, 0xb6, 0xdf, 0xf0, 0xe9, 0x8f,
-	0xae, 0xb3, 0xfc, 0xd4, 0x7f, 0x47, 0xf0, 0xde, 0x3c, 0x0f, 0x3f, 0x9c, 0x63, 0x6d, 0xc4, 0xac,
-	0x45, 0xe1, 0xbb, 0x0a, 0xee, 0xd8, 0x83, 0x41, 0xdb, 0xee, 0x3c, 0x4b, 0x0a, 0x4e, 0x62, 0xfc,
-	0x39, 0x6c, 0x2c, 0x4c, 0xbd, 0xe6, 0x39, 0x23, 0xea, 0xc6, 0xf5, 0x4b, 0xe6, 0xed, 0x49, 0xae,
-	0x38, 0x70, 0x89, 0xc7, 0x74, 0x8d, 0x8f, 0x3a, 0x54, 0x8c, 0xe3, 0xe2, 0x6f, 0x69, 0x58, 0xd5,
-	0x35, 0x8b, 0x3e, 0x23, 0x5e, 0xf8, 0xfe, 0xba, 0x41, 0x30, 0x26, 0x7e, 0xf2, 0xfe, 0x46, 0x11,
-	0x56, 0x60, 0x35, 0x18, 0xb7, 0xbf, 0x27, 0x1d, 0x16, 0x1b, 0x4d, 0xc2, 0x50, 0xd9, 0x1e, 0x3b,
-	0x2e, 0xf1, 0x3a, 0x24, 0xf1, 0x9a, 0xc4, 0xf8, 0x1b, 0x00, 0xf2, 0x7c, 0xe4, 0xfa, 0xd1, 0xe8,
-	0xc4, 0x25, 0x57, 0x6c, 0x8e, 0x83, 0xbf, 0x8c, 0xfd, 0x2c, 0xbf, 0xa0, 0x31, 0x1e, 0xaf, 0xc3,
-	0x8a, 0x47, 0x43, 0x53, 0x19, 0x6e, 0x2a, 0x0a, 0x70, 0x03, 0x1e, 0x84, 0x0d, 0x22, 0x1e, 0x73,
-	0xa3, 0x05, 0xda, 0xa7, 0x1e, 0x23, 0xcf, 0xd9, 0xfe, 0xc0, 0x0e, 0x02, 0x93, 0x74, 0x89, 0xcf,
-	0x0b, 0x59, 0x2d, 0xa0, 0x52, 0xda, 0x5c, 0x06, 0x8a, 0x0f, 0x40, 0x5d, 0x84, 0x9d, 0x10, 0xd6,
-	0xa7, 0xce, 0x9c, 0x58, 0xb6, 0x90, 0x2e, 0x49, 0xe6, 0xff, 0xa0, 0x70, 0x09, 0xee, 0x25, 0xa3,
-	0x23, 0x4e, 0xc3, 0xf6, 0xd9, 0x44, 0x91, 0xb8, 0xf3, 0x9b, 0xc7, 0x8f, 0xfe, 0x44, 0xb0, 0xb6,
-	0xf0, 0x1d, 0xc0, 0x1b, 0x70, 0xbf, 0x7a, 0x6a, 0x1d, 0x19, 0xa6, 0xfe, 0xb4, 0x6a, 0xe9, 0x46,
-	0xbd, 0x55, 0xd7, 0x8f, 0xe5, 0x14, 0xce, 0x03, 0x9c, 0xe9, 0xb5, 0x27, 0xad, 0xd3, 0x66, 0xcd,
-	0x6c, 0xca, 0x28, 0x84, 0x9d, 0x18, 0x9a, 0x7e, 0x70, 0xde, 0x3a, 0xab, 0x1e, 0xeb, 0x5a, 0x2b,
-	0xe4, 0xc8, 0x02, 0x5e, 0x03, 0xa9, 0xaa, 0x69, 0x2d, 0xdd, 0xaa, 0x9d, 0x34, 0xe5, 0x34, 0xde,
-	0x04, 0x1c, 0xa3, 0x0c, 0xeb, 0xa8, 0x66, 0xc6, 0x6c, 0x11, 0x6f, 0xc1, 0x66, 0x7c, 0xde, 0xd4,
-	0xeb, 0x87, 0xc7, 0x35, 0xcb, 0xa8, 0xc7, 0xb9, 0x15, 0x7c, 0x0f, 0x72, 0x49, 0xae, 0x76, 0x7c,
-	0x20, 0x67, 0xf0, 0x36, 0x28, 0xfc, 0xea, 0x39, 0x89, 0xd6, 0x91, 0xde, 0xb4, 0x0c, 0xf3, 0x5c,
-	0x5e, 0xc5, 0xeb, 0x20, 0x47, 0xd9, 0x27, 0xf5, 0xd9, 0x69, 0xf6, 0xd1, 0x21, 0xdc, 0x7f, 0xe7,
-	0x0b, 0x8c, 0xdf, 0x87, 0x8d, 0xd9, 0x75, 0xa1, 0x8c, 0x75, 0xde, 0xa8, 0xc5, 0xe5, 0x65, 0x41,
-	0x34, 0x0d, 0xc3, 0x92, 0x11, 0xaf, 0xa0, 0x6e, 0xd4, 0xcf, 0x4f, 0x8c, 0xd3, 0xa6, 0x2c, 0xec,
-	0x9d, 0x5d, 0x5e, 0xa9, 0xa9, 0x57, 0x57, 0x6a, 0xea, 0xcd, 0x95, 0x8a, 0x7e, 0x9a, 0xaa, 0xe8,
-	0xd7, 0xa9, 0x8a, 0xfe, 0x98, 0xaa, 0xe8, 0xe5, 0x54, 0x45, 0x97, 0x53, 0x15, 0xfd, 0x3d, 0x55,
-	0xd1, 0x3f, 0x53, 0x35, 0xf5, 0x66, 0xaa, 0xa2, 0x17, 0xd7, 0x6a, 0xea, 0xf2, 0x5a, 0x4d, 0xbd,
-	0xba, 0x56, 0x53, 0x4f, 0xb7, 0xef, 0xfa, 0xdb, 0x6f, 0x67, 0xf8, 0xd2, 0x7d, 0xf6, 0x6f, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x2a, 0xbe, 0x60, 0x2d, 0x1d, 0x08, 0x00, 0x00,
+	// 1017 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x56, 0x4f, 0x6f, 0xe3, 0x44,
+	0x14, 0xcf, 0xb8, 0xee, 0x1f, 0xbf, 0x6c, 0x82, 0x3b, 0x6a, 0xab, 0x50, 0x8a, 0x5b, 0x02, 0x2b,
+	0x95, 0x2e, 0x9b, 0x42, 0x59, 0x38, 0xc0, 0x5e, 0x52, 0x9c, 0xb6, 0x16, 0x69, 0x5c, 0x39, 0x6e,
+	0x57, 0x5d, 0x21, 0x45, 0x4e, 0x32, 0x4d, 0x4d, 0x13, 0x4f, 0xb0, 0x27, 0x88, 0xf6, 0xc4, 0x81,
+	0x0f, 0xb0, 0xdf, 0x02, 0xbe, 0x01, 0x48, 0x7c, 0x81, 0x3d, 0xf6, 0x82, 0xb4, 0xa7, 0x85, 0xa6,
+	0x1c, 0x38, 0xee, 0x47, 0x40, 0x33, 0x1e, 0x67, 0x93, 0x36, 0xdb, 0xcd, 0x25, 0xf2, 0x7b, 0xef,
+	0xf7, 0x7b, 0xff, 0xe7, 0x29, 0xb0, 0xde, 0xf2, 0xd9, 0x69, 0xaf, 0x5e, 0x68, 0xd0, 0xce, 0xe6,
+	0x05, 0xe9, 0x04, 0x1d, 0x72, 0xb1, 0xc9, 0xbc, 0xfa, 0x26, 0x3b, 0xef, 0x92, 0x28, 0xfe, 0x2d,
+	0x74, 0x43, 0xca, 0x28, 0x9e, 0x16, 0xc2, 0xf2, 0xc3, 0x21, 0x42, 0x8b, 0xb6, 0xe8, 0xa6, 0xb0,
+	0xd6, 0x7b, 0x27, 0x42, 0x12, 0x82, 0xf8, 0x8a, 0x59, 0xcb, 0xab, 0x2d, 0x4a, 0x5b, 0x6d, 0xf2,
+	0x1a, 0xc5, 0xfc, 0x0e, 0x89, 0x98, 0xd7, 0xe9, 0xc6, 0x80, 0xfc, 0x02, 0x28, 0x96, 0x89, 0xb3,
+	0xa0, 0xf8, 0xcd, 0x1c, 0x5a, 0x43, 0xeb, 0x9a, 0xa3, 0xf8, 0xcd, 0xfc, 0xd7, 0xb0, 0x50, 0xec,
+	0xb1, 0x53, 0x1a, 0xfa, 0x17, 0x1e, 0xf3, 0x69, 0xb0, 0x1b, 0x7a, 0x01, 0xb3, 0x4c, 0xfc, 0xe1,
+	0x00, 0x97, 0xde, 0xd2, 0x0a, 0x71, 0x7a, 0x96, 0xb9, 0x3d, 0xf7, 0xfc, 0xe5, 0x6a, 0xea, 0xf2,
+	0xe5, 0x2a, 0x12, 0xe4, 0x3f, 0x11, 0xe0, 0xdb, 0x6c, 0xfc, 0x60, 0x88, 0xfb, 0x9e, 0xe4, 0x8e,
+	0x0b, 0xc2, 0x7d, 0xe0, 0x0f, 0x40, 0x3d, 0x09, 0x69, 0x27, 0xa7, 0x08, 0x78, 0x46, 0xc2, 0x0f,
+	0x23, 0x12, 0x5a, 0xa6, 0x23, 0x4c, 0xf8, 0x7d, 0x50, 0x18, 0xcd, 0x4d, 0x8d, 0x03, 0x28, 0x8c,
+	0xe2, 0x2f, 0x21, 0xdd, 0x25, 0x61, 0xc7, 0x8f, 0x22, 0x9f, 0x06, 0x51, 0x4e, 0x5d, 0x9b, 0x5a,
+	0xcf, 0x6e, 0x2d, 0x8c, 0x8b, 0xeb, 0x0c, 0x03, 0xf3, 0x9f, 0x82, 0xb6, 0xe7, 0x47, 0x8c, 0x86,
+	0xe7, 0x93, 0xd6, 0xfb, 0x0b, 0x82, 0x74, 0x42, 0x61, 0xa4, 0x83, 0x97, 0x60, 0xc6, 0x6b, 0x70,
+	0xc7, 0xb2, 0xa1, 0x52, 0xe2, 0x09, 0xd7, 0xcf, 0xc7, 0x57, 0xa4, 0xd4, 0xcf, 0xf1, 0x1a, 0xa4,
+	0x43, 0xf2, 0x43, 0x8f, 0x44, 0xcc, 0xf4, 0x98, 0x27, 0x0a, 0xd3, 0x9c, 0x61, 0x15, 0x5e, 0x01,
+	0xcd, 0x3a, 0x28, 0x36, 0x9b, 0x21, 0x89, 0x78, 0x41, 0xdc, 0xae, 0xf9, 0x89, 0x22, 0xff, 0x1d,
+	0x64, 0xaa, 0x7e, 0xd0, 0x6a, 0x13, 0x46, 0x03, 0xee, 0x96, 0xc7, 0x1b, 0x24, 0x7f, 0x33, 0x9e,
+	0xdf, 0xc4, 0x9f, 0x80, 0xca, 0x75, 0x22, 0xa1, 0xec, 0x56, 0x4e, 0x02, 0x46, 0x5c, 0xb8, 0xe7,
+	0x5d, 0xe2, 0x08, 0x54, 0xfe, 0x21, 0xcc, 0xc4, 0xdc, 0xc9, 0x7a, 0x72, 0x8d, 0x40, 0x9d, 0x24,
+	0x09, 0x0c, 0x6a, 0xe0, 0x75, 0xe2, 0x24, 0x34, 0x47, 0x7c, 0xe3, 0xc7, 0x90, 0xf5, 0x86, 0xe7,
+	0x13, 0xe5, 0xa6, 0xee, 0x18, 0xde, 0x0d, 0x2c, 0x2e, 0x80, 0x76, 0x9a, 0xcc, 0x4f, 0x4c, 0x3d,
+	0xbd, 0xa5, 0x4b, 0xe2, 0x60, 0xae, 0xce, 0x6b, 0x08, 0xfe, 0x0a, 0x66, 0x1b, 0x21, 0xf1, 0x18,
+	0x69, 0xe6, 0xa6, 0x45, 0x96, 0xcb, 0x85, 0xf8, 0xcd, 0x14, 0x92, 0x37, 0x53, 0x70, 0x93, 0x37,
+	0xb3, 0xad, 0x3e, 0xfb, 0x7b, 0x15, 0x39, 0x09, 0x81, 0x37, 0x85, 0x4f, 0x7c, 0xd2, 0xa6, 0xfc,
+	0x8a, 0x40, 0x15, 0x1b, 0x32, 0xae, 0x29, 0xb1, 0xa3, 0x37, 0x36, 0x65, 0x19, 0xe6, 0xda, 0xb4,
+	0x21, 0x6a, 0x94, 0xab, 0x31, 0x90, 0xf1, 0x7d, 0x98, 0xe9, 0x7a, 0x21, 0x09, 0x98, 0x58, 0x8a,
+	0x5b, 0x2e, 0xa5, 0x11, 0x7f, 0x0c, 0x73, 0x8d, 0x53, 0xbf, 0xdd, 0x0c, 0x49, 0x90, 0x9b, 0x16,
+	0x8d, 0xb9, 0x01, 0x1c, 0x98, 0xf3, 0x5f, 0x40, 0xd6, 0xb6, 0xcc, 0x6f, 0x0e, 0x42, 0xfa, 0xa3,
+	0xdf, 0x9c, 0x7c, 0xea, 0xbf, 0x23, 0xb8, 0x37, 0xcc, 0xc3, 0xf7, 0x87, 0x58, 0x8b, 0x92, 0x35,
+	0xea, 0xf8, 0xae, 0x82, 0x1b, 0x5e, 0xbb, 0x5d, 0xf7, 0x1a, 0x67, 0x49, 0xc1, 0x89, 0x8c, 0x1f,
+	0xc1, 0xe2, 0xc8, 0xd4, 0x4b, 0x41, 0xb3, 0x4b, 0x7d, 0x59, 0xbf, 0xe6, 0x8c, 0x37, 0x0a, 0x8f,
+	0x6d, 0x9f, 0xf0, 0x1b, 0x23, 0x46, 0xcd, 0x3d, 0x4a, 0xf9, 0xd6, 0xc1, 0x73, 0xe9, 0x19, 0x09,
+	0x26, 0x2d, 0xfb, 0x5f, 0x04, 0x4b, 0x63, 0xd8, 0xc1, 0x09, 0x7d, 0xfb, 0xd1, 0x93, 0x81, 0x44,
+	0x1b, 0x3e, 0x83, 0xe9, 0x16, 0xbf, 0x81, 0xf2, 0x46, 0xdc, 0x79, 0x24, 0x63, 0x24, 0x7e, 0x04,
+	0xb3, 0xe4, 0xa7, 0xae, 0x1f, 0x92, 0x48, 0x5e, 0xc2, 0x3b, 0xb6, 0xd7, 0x49, 0xa0, 0x9c, 0x95,
+	0xec, 0xbc, 0xfa, 0x76, 0xd6, 0xd0, 0xb6, 0x97, 0xfd, 0xe0, 0x6c, 0xd2, 0xae, 0x50, 0x50, 0x39,
+	0x7c, 0xec, 0xb2, 0xc7, 0x7e, 0x44, 0xd1, 0x79, 0xb8, 0xc7, 0xbc, 0xb0, 0x45, 0x98, 0x15, 0x45,
+	0x3d, 0x12, 0xca, 0x1d, 0x18, 0xd1, 0xe1, 0x8f, 0x20, 0x13, 0xcb, 0xd5, 0x5e, 0xfd, 0x7b, 0xd2,
+	0x60, 0x72, 0x21, 0x46, 0x95, 0xf9, 0x07, 0xa0, 0xb9, 0x5e, 0xbd, 0x4d, 0x2a, 0x7c, 0x7d, 0x8c,
+	0x41, 0xd4, 0xec, 0x56, 0x56, 0x46, 0x15, 0xd6, 0x38, 0xec, 0xc6, 0x5f, 0x08, 0x32, 0x23, 0x8d,
+	0xc5, 0x8b, 0x30, 0x5f, 0x3c, 0x74, 0xf7, 0x6c, 0xc7, 0x7a, 0x5a, 0x74, 0x2d, 0xbb, 0x52, 0xab,
+	0x58, 0x65, 0x3d, 0x85, 0xb3, 0x00, 0x47, 0x56, 0xe9, 0x49, 0xed, 0xb0, 0x5a, 0x72, 0xaa, 0x3a,
+	0xe2, 0xb0, 0x7d, 0xdb, 0xb4, 0x76, 0x8e, 0x6b, 0x47, 0xc5, 0xb2, 0x65, 0xd6, 0x38, 0x47, 0x57,
+	0x70, 0x06, 0xb4, 0xa2, 0x69, 0xd6, 0x2c, 0xb7, 0xb4, 0x5f, 0xd5, 0xa7, 0xf0, 0x12, 0x60, 0x89,
+	0xb2, 0xdd, 0xbd, 0x92, 0x23, 0xd9, 0x2a, 0x5e, 0x86, 0x25, 0xa9, 0xaf, 0x5a, 0x95, 0xdd, 0x72,
+	0xc9, 0xb5, 0x2b, 0xd2, 0x36, 0x8d, 0xdf, 0x81, 0x74, 0x62, 0x2b, 0x95, 0x77, 0xf4, 0x19, 0xbc,
+	0x02, 0x39, 0x11, 0x7a, 0xc8, 0x45, 0x6d, 0xcf, 0xaa, 0xba, 0xb6, 0x73, 0xac, 0xcf, 0xe2, 0x05,
+	0xd0, 0x63, 0xeb, 0x93, 0xca, 0x40, 0x3b, 0xb7, 0xb1, 0x0b, 0xf3, 0xb7, 0x4e, 0x38, 0x7e, 0x17,
+	0x16, 0x07, 0xe1, 0xb8, 0x1b, 0xf7, 0xf8, 0xa0, 0x24, 0xcb, 0x9b, 0x03, 0xd5, 0xb1, 0x6d, 0x57,
+	0x47, 0xa2, 0x82, 0x8a, 0x5d, 0x39, 0xde, 0xb7, 0x0f, 0xab, 0xba, 0xb2, 0xf1, 0x18, 0x66, 0x65,
+	0xbf, 0xb8, 0xc5, 0x2d, 0x6e, 0x97, 0x13, 0xca, 0x3c, 0x64, 0xcc, 0xd2, 0x4e, 0xf1, 0xb0, 0xec,
+	0xd6, 0x84, 0x5a, 0x47, 0x3c, 0xf5, 0xb2, 0x55, 0xf9, 0xb6, 0x2a, 0x15, 0xca, 0xf6, 0xd1, 0xe5,
+	0x95, 0x91, 0x7a, 0x71, 0x65, 0xa4, 0x5e, 0x5d, 0x19, 0xe8, 0xe7, 0xbe, 0x81, 0x7e, 0xeb, 0x1b,
+	0xe8, 0x8f, 0xbe, 0x81, 0x9e, 0xf7, 0x0d, 0x74, 0xd9, 0x37, 0xd0, 0x3f, 0x7d, 0x03, 0xfd, 0xd7,
+	0x37, 0x52, 0xaf, 0xfa, 0x06, 0x7a, 0x76, 0x6d, 0xa4, 0x2e, 0xaf, 0x8d, 0xd4, 0x8b, 0x6b, 0x23,
+	0xf5, 0x74, 0xe5, 0xae, 0x7f, 0x44, 0xf5, 0x19, 0xb1, 0xa0, 0x9f, 0xff, 0x1f, 0x00, 0x00, 0xff,
+	0xff, 0xb8, 0x2b, 0x7d, 0xcd, 0x38, 0x09, 0x00, 0x00,
 }
 
 func (x Authorization) String() string {
@@ -879,6 +1098,13 @@ func (x Authorization) String() string {
 }
 func (x SingletonUserType) String() string {
 	s, ok := SingletonUserType_name[int32(x)]
+	if ok {
+		return s
+	}
+	return strconv.Itoa(int(x))
+}
+func (x TableID) String() string {
+	s, ok := TableID_name[int32(x)]
 	if ok {
 		return s
 	}
@@ -908,6 +1134,30 @@ func (this *ID) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *AuthorizationGrantID) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AuthorizationGrantID)
+	if !ok {
+		that2, ok := that.(AuthorizationGrantID)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.ID.Equal(&that1.ID) {
+		return false
+	}
+	return true
+}
 func (this *AuthorizationGrant) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -927,14 +1177,20 @@ func (this *AuthorizationGrant) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if !this.Id.Equal(that1.Id) {
+		return false
+	}
 	if !this.From.Equal(that1.From) {
 		return false
 	}
-	if len(this.Of) != len(that1.Of) {
+	if !this.To.Equal(that1.To) {
 		return false
 	}
-	for i := range this.Of {
-		if this.Of[i] != that1.Of[i] {
+	if len(this.Permissions) != len(that1.Permissions) {
+		return false
+	}
+	for i := range this.Permissions {
+		if this.Permissions[i] != that1.Permissions[i] {
 			return false
 		}
 	}
@@ -1223,14 +1479,14 @@ func (this *OIDCProvider) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *IDToken) Equal(that interface{}) bool {
+func (this *AuthorizationTokenID) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*IDToken)
+	that1, ok := that.(*AuthorizationTokenID)
 	if !ok {
-		that2, ok := that.(IDToken)
+		that2, ok := that.(AuthorizationTokenID)
 		if ok {
 			that1 = &that2
 		} else {
@@ -1242,44 +1498,118 @@ func (this *IDToken) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Issuer != that1.Issuer {
+	if !this.ID.Equal(&that1.ID) {
 		return false
 	}
-	if this.Subject != that1.Subject {
-		return false
+	return true
+}
+func (this *AuthorizationTokenInfo) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
 	}
-	if this.Audience != that1.Audience {
-		return false
-	}
-	if that1.Expiration == nil {
-		if this.Expiration != nil {
-			return false
-		}
-	} else if !this.Expiration.Equal(*that1.Expiration) {
-		return false
-	}
-	if that1.Issued == nil {
-		if this.Issued != nil {
-			return false
-		}
-	} else if !this.Issued.Equal(*that1.Issued) {
-		return false
-	}
-	if this.Nonce != that1.Nonce {
-		return false
-	}
-	if this.AuthenticationContextClassReference != that1.AuthenticationContextClassReference {
-		return false
-	}
-	if len(this.AuthenticationMethodsReference) != len(that1.AuthenticationMethodsReference) {
-		return false
-	}
-	for i := range this.AuthenticationMethodsReference {
-		if this.AuthenticationMethodsReference[i] != that1.AuthenticationMethodsReference[i] {
+
+	that1, ok := that.(*AuthorizationTokenInfo)
+	if !ok {
+		that2, ok := that.(AuthorizationTokenInfo)
+		if ok {
+			that1 = &that2
+		} else {
 			return false
 		}
 	}
-	if this.AuthorizedParty != that1.AuthorizedParty {
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Id.Equal(that1.Id) {
+		return false
+	}
+	if !this.Grant.Equal(that1.Grant) {
+		return false
+	}
+	if !this.Expires.Equal(that1.Expires) {
+		return false
+	}
+	if !this.Created.Equal(that1.Created) {
+		return false
+	}
+	return true
+}
+func (this *LinkID) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*LinkID)
+	if !ok {
+		that2, ok := that.(LinkID)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.ID.Equal(&that1.ID) {
+		return false
+	}
+	return true
+}
+func (this *Link) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Link)
+	if !ok {
+		that2, ok := that.(Link)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Id.Equal(that1.Id) {
+		return false
+	}
+	if this.TargetIssuer != that1.TargetIssuer {
+		return false
+	}
+	if this.TargetSubject != that1.TargetSubject {
+		return false
+	}
+	return true
+}
+func (this *TableName) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*TableName)
+	if !ok {
+		that2, ok := that.(TableName)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
 		return false
 	}
 	return true
@@ -1294,16 +1624,32 @@ func (this *ID) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
+func (this *AuthorizationGrantID) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&types.AuthorizationGrantID{")
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *AuthorizationGrant) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 8)
 	s = append(s, "&types.AuthorizationGrant{")
+	if this.Id != nil {
+		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	}
 	if this.From != nil {
 		s = append(s, "From: "+fmt.Sprintf("%#v", this.From)+",\n")
 	}
-	s = append(s, "Of: "+fmt.Sprintf("%#v", this.Of)+",\n")
+	if this.To != nil {
+		s = append(s, "To: "+fmt.Sprintf("%#v", this.To)+",\n")
+	}
+	s = append(s, "Permissions: "+fmt.Sprintf("%#v", this.Permissions)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1429,21 +1775,68 @@ func (this *OIDCProvider) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *IDToken) GoString() string {
+func (this *AuthorizationTokenID) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 13)
-	s = append(s, "&types.IDToken{")
-	s = append(s, "Issuer: "+fmt.Sprintf("%#v", this.Issuer)+",\n")
-	s = append(s, "Subject: "+fmt.Sprintf("%#v", this.Subject)+",\n")
-	s = append(s, "Audience: "+fmt.Sprintf("%#v", this.Audience)+",\n")
-	s = append(s, "Expiration: "+fmt.Sprintf("%#v", this.Expiration)+",\n")
-	s = append(s, "Issued: "+fmt.Sprintf("%#v", this.Issued)+",\n")
-	s = append(s, "Nonce: "+fmt.Sprintf("%#v", this.Nonce)+",\n")
-	s = append(s, "AuthenticationContextClassReference: "+fmt.Sprintf("%#v", this.AuthenticationContextClassReference)+",\n")
-	s = append(s, "AuthenticationMethodsReference: "+fmt.Sprintf("%#v", this.AuthenticationMethodsReference)+",\n")
-	s = append(s, "AuthorizedParty: "+fmt.Sprintf("%#v", this.AuthorizedParty)+",\n")
+	s := make([]string, 0, 5)
+	s = append(s, "&types.AuthorizationTokenID{")
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *AuthorizationTokenInfo) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&types.AuthorizationTokenInfo{")
+	if this.Id != nil {
+		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	}
+	if this.Grant != nil {
+		s = append(s, "Grant: "+fmt.Sprintf("%#v", this.Grant)+",\n")
+	}
+	if this.Expires != nil {
+		s = append(s, "Expires: "+fmt.Sprintf("%#v", this.Expires)+",\n")
+	}
+	if this.Created != nil {
+		s = append(s, "Created: "+fmt.Sprintf("%#v", this.Created)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *LinkID) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&types.LinkID{")
+	s = append(s, "ID: "+strings.Replace(this.ID.GoString(), `&`, ``, 1)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Link) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&types.Link{")
+	if this.Id != nil {
+		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	}
+	s = append(s, "TargetIssuer: "+fmt.Sprintf("%#v", this.TargetIssuer)+",\n")
+	s = append(s, "TargetSubject: "+fmt.Sprintf("%#v", this.TargetSubject)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *TableName) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&types.TableName{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1485,6 +1878,39 @@ func (m *ID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *AuthorizationGrantID) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AuthorizationGrantID) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AuthorizationGrantID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func (m *AuthorizationGrant) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1505,27 +1931,51 @@ func (m *AuthorizationGrant) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Of) > 0 {
-		dAtA2 := make([]byte, len(m.Of)*10)
-		var j1 int
-		for _, num := range m.Of {
+	if len(m.Permissions) > 0 {
+		dAtA3 := make([]byte, len(m.Permissions)*10)
+		var j2 int
+		for _, num := range m.Permissions {
 			for num >= 1<<7 {
-				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j1++
+				j2++
 			}
-			dAtA2[j1] = uint8(num)
-			j1++
+			dAtA3[j2] = uint8(num)
+			j2++
 		}
-		i -= j1
-		copy(dAtA[i:], dAtA2[:j1])
-		i = encodeVarintTypes(dAtA, i, uint64(j1))
+		i -= j2
+		copy(dAtA[i:], dAtA3[:j2])
+		i = encodeVarintTypes(dAtA, i, uint64(j2))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x22
+	}
+	if m.To != nil {
+		{
+			size, err := m.To.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
 	}
 	if m.From != nil {
 		{
 			size, err := m.From.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != nil {
+		{
+			size, err := m.Id.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1721,12 +2171,12 @@ func (m *User) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if m.Created != nil {
-		n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Created, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Created):])
-		if err8 != nil {
-			return 0, err8
+		n11, err11 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Created, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Created):])
+		if err11 != nil {
+			return 0, err11
 		}
-		i -= n8
-		i = encodeVarintTypes(dAtA, i, uint64(n8))
+		i -= n11
+		i = encodeVarintTypes(dAtA, i, uint64(n11))
 		i--
 		dAtA[i] = 0x2a
 	}
@@ -1745,20 +2195,20 @@ func (m *User) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 	}
 	if len(m.Authorizations) > 0 {
-		dAtA10 := make([]byte, len(m.Authorizations)*10)
-		var j9 int
+		dAtA13 := make([]byte, len(m.Authorizations)*10)
+		var j12 int
 		for _, num := range m.Authorizations {
 			for num >= 1<<7 {
-				dAtA10[j9] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA13[j12] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j9++
+				j12++
 			}
-			dAtA10[j9] = uint8(num)
-			j9++
+			dAtA13[j12] = uint8(num)
+			j12++
 		}
-		i -= j9
-		copy(dAtA[i:], dAtA10[:j9])
-		i = encodeVarintTypes(dAtA, i, uint64(j9))
+		i -= j12
+		copy(dAtA[i:], dAtA13[:j12])
+		i = encodeVarintTypes(dAtA, i, uint64(j12))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1988,7 +2438,7 @@ func (m *OIDCProvider) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *IDToken) Marshal() (dAtA []byte, err error) {
+func (m *AuthorizationTokenID) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1998,84 +2448,206 @@ func (m *IDToken) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *IDToken) MarshalTo(dAtA []byte) (int, error) {
+func (m *AuthorizationTokenID) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *IDToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AuthorizationTokenID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.AuthorizedParty) > 0 {
-		i -= len(m.AuthorizedParty)
-		copy(dAtA[i:], m.AuthorizedParty)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.AuthorizedParty)))
-		i--
-		dAtA[i] = 0x4a
-	}
-	if len(m.AuthenticationMethodsReference) > 0 {
-		for iNdEx := len(m.AuthenticationMethodsReference) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.AuthenticationMethodsReference[iNdEx])
-			copy(dAtA[i:], m.AuthenticationMethodsReference[iNdEx])
-			i = encodeVarintTypes(dAtA, i, uint64(len(m.AuthenticationMethodsReference[iNdEx])))
-			i--
-			dAtA[i] = 0x42
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
-	if m.AuthenticationContextClassReference != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.AuthenticationContextClassReference))
-		i--
-		dAtA[i] = 0x38
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *AuthorizationTokenInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
 	}
-	if len(m.Nonce) > 0 {
-		i -= len(m.Nonce)
-		copy(dAtA[i:], m.Nonce)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.Nonce)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.Issued != nil {
-		n17, err17 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Issued, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Issued):])
-		if err17 != nil {
-			return 0, err17
+	return dAtA[:n], nil
+}
+
+func (m *AuthorizationTokenInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AuthorizationTokenInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Created != nil {
+		{
+			size, err := m.Created.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
 		}
-		i -= n17
-		i = encodeVarintTypes(dAtA, i, uint64(n17))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if m.Expiration != nil {
-		n18, err18 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.Expiration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.Expiration):])
-		if err18 != nil {
-			return 0, err18
-		}
-		i -= n18
-		i = encodeVarintTypes(dAtA, i, uint64(n18))
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.Audience) > 0 {
-		i -= len(m.Audience)
-		copy(dAtA[i:], m.Audience)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.Audience)))
+	if m.Expires != nil {
+		{
+			size, err := m.Expires.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Subject) > 0 {
-		i -= len(m.Subject)
-		copy(dAtA[i:], m.Subject)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.Subject)))
+	if m.Grant != nil {
+		{
+			size, err := m.Grant.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Issuer) > 0 {
-		i -= len(m.Issuer)
-		copy(dAtA[i:], m.Issuer)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.Issuer)))
+	if m.Id != nil {
+		{
+			size, err := m.Id.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LinkID) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LinkID) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LinkID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.ID.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *Link) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Link) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Link) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.TargetSubject) > 0 {
+		i -= len(m.TargetSubject)
+		copy(dAtA[i:], m.TargetSubject)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.TargetSubject)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.TargetIssuer) > 0 {
+		i -= len(m.TargetIssuer)
+		copy(dAtA[i:], m.TargetIssuer)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.TargetIssuer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != nil {
+		{
+			size, err := m.Id.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TableName) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TableName) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TableName) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -2104,19 +2676,38 @@ func (m *ID) Size() (n int) {
 	return n
 }
 
+func (m *AuthorizationGrantID) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
 func (m *AuthorizationGrant) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.Id != nil {
+		l = m.Id.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
 	if m.From != nil {
 		l = m.From.Size()
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	if len(m.Of) > 0 {
+	if m.To != nil {
+		l = m.To.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if len(m.Permissions) > 0 {
 		l = 0
-		for _, e := range m.Of {
+		for _, e := range m.Permissions {
 			l += sovTypes(uint64(e))
 		}
 		n += 1 + sovTypes(uint64(l)) + l
@@ -2303,48 +2894,82 @@ func (m *OIDCProvider) Size() (n int) {
 	return n
 }
 
-func (m *IDToken) Size() (n int) {
+func (m *AuthorizationTokenID) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Issuer)
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *AuthorizationTokenInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != nil {
+		l = m.Id.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Grant != nil {
+		l = m.Grant.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Expires != nil {
+		l = m.Expires.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Created != nil {
+		l = m.Created.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	return n
+}
+
+func (m *LinkID) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ID.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *Link) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != nil {
+		l = m.Id.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.TargetIssuer)
 	if l > 0 {
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	l = len(m.Subject)
+	l = len(m.TargetSubject)
 	if l > 0 {
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	l = len(m.Audience)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *TableName) Size() (n int) {
+	if m == nil {
+		return 0
 	}
-	if m.Expiration != nil {
-		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.Expiration)
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	if m.Issued != nil {
-		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.Issued)
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	l = len(m.Nonce)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	if m.AuthenticationContextClassReference != 0 {
-		n += 1 + sovTypes(uint64(m.AuthenticationContextClassReference))
-	}
-	if len(m.AuthenticationMethodsReference) > 0 {
-		for _, s := range m.AuthenticationMethodsReference {
-			l = len(s)
-			n += 1 + l + sovTypes(uint64(l))
-		}
-	}
-	l = len(m.AuthorizedParty)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovTypes(uint64(m.Id))
 	}
 	return n
 }
@@ -2365,13 +2990,25 @@ func (this *ID) String() string {
 	}, "")
 	return s
 }
+func (this *AuthorizationGrantID) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AuthorizationGrantID{`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *AuthorizationGrant) String() string {
 	if this == nil {
 		return "nil"
 	}
 	s := strings.Join([]string{`&AuthorizationGrant{`,
+		`Id:` + strings.Replace(this.Id.String(), "AuthorizationGrantID", "AuthorizationGrantID", 1) + `,`,
 		`From:` + strings.Replace(this.From.String(), "UserID", "UserID", 1) + `,`,
-		`Of:` + fmt.Sprintf("%v", this.Of) + `,`,
+		`To:` + strings.Replace(this.To.String(), "UserID", "UserID", 1) + `,`,
+		`Permissions:` + fmt.Sprintf("%v", this.Permissions) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2492,20 +3129,57 @@ func (this *OIDCProvider) String() string {
 	}, "")
 	return s
 }
-func (this *IDToken) String() string {
+func (this *AuthorizationTokenID) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&IDToken{`,
-		`Issuer:` + fmt.Sprintf("%v", this.Issuer) + `,`,
-		`Subject:` + fmt.Sprintf("%v", this.Subject) + `,`,
-		`Audience:` + fmt.Sprintf("%v", this.Audience) + `,`,
-		`Expiration:` + strings.Replace(fmt.Sprintf("%v", this.Expiration), "Timestamp", "types.Timestamp", 1) + `,`,
-		`Issued:` + strings.Replace(fmt.Sprintf("%v", this.Issued), "Timestamp", "types.Timestamp", 1) + `,`,
-		`Nonce:` + fmt.Sprintf("%v", this.Nonce) + `,`,
-		`AuthenticationContextClassReference:` + fmt.Sprintf("%v", this.AuthenticationContextClassReference) + `,`,
-		`AuthenticationMethodsReference:` + fmt.Sprintf("%v", this.AuthenticationMethodsReference) + `,`,
-		`AuthorizedParty:` + fmt.Sprintf("%v", this.AuthorizedParty) + `,`,
+	s := strings.Join([]string{`&AuthorizationTokenID{`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AuthorizationTokenInfo) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AuthorizationTokenInfo{`,
+		`Id:` + strings.Replace(this.Id.String(), "AuthorizationTokenID", "AuthorizationTokenID", 1) + `,`,
+		`Grant:` + strings.Replace(this.Grant.String(), "AuthorizationGrantID", "AuthorizationGrantID", 1) + `,`,
+		`Expires:` + strings.Replace(fmt.Sprintf("%v", this.Expires), "Timestamp", "types.Timestamp", 1) + `,`,
+		`Created:` + strings.Replace(fmt.Sprintf("%v", this.Created), "Timestamp", "types.Timestamp", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *LinkID) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&LinkID{`,
+		`ID:` + strings.Replace(strings.Replace(this.ID.String(), "ID", "ID", 1), `&`, ``, 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Link) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Link{`,
+		`Id:` + strings.Replace(this.Id.String(), "LinkID", "LinkID", 1) + `,`,
+		`TargetIssuer:` + fmt.Sprintf("%v", this.TargetIssuer) + `,`,
+		`TargetSubject:` + fmt.Sprintf("%v", this.TargetSubject) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *TableName) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&TableName{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2603,6 +3277,92 @@ func (m *ID) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *AuthorizationGrantID) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AuthorizationGrantID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AuthorizationGrantID: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *AuthorizationGrant) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2633,6 +3393,42 @@ func (m *AuthorizationGrant) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Id == nil {
+				m.Id = &AuthorizationGrantID{}
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
 			}
@@ -2668,7 +3464,43 @@ func (m *AuthorizationGrant) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.To == nil {
+				m.To = &UserID{}
+			}
+			if err := m.To.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
 			if wireType == 0 {
 				var v Authorization
 				for shift := uint(0); ; shift += 7 {
@@ -2685,7 +3517,7 @@ func (m *AuthorizationGrant) Unmarshal(dAtA []byte) error {
 						break
 					}
 				}
-				m.Of = append(m.Of, v)
+				m.Permissions = append(m.Permissions, v)
 			} else if wireType == 2 {
 				var packedLen int
 				for shift := uint(0); ; shift += 7 {
@@ -2713,8 +3545,8 @@ func (m *AuthorizationGrant) Unmarshal(dAtA []byte) error {
 					return io.ErrUnexpectedEOF
 				}
 				var elementCount int
-				if elementCount != 0 && len(m.Of) == 0 {
-					m.Of = make([]Authorization, 0, elementCount)
+				if elementCount != 0 && len(m.Permissions) == 0 {
+					m.Permissions = make([]Authorization, 0, elementCount)
 				}
 				for iNdEx < postIndex {
 					var v Authorization
@@ -2732,10 +3564,10 @@ func (m *AuthorizationGrant) Unmarshal(dAtA []byte) error {
 							break
 						}
 					}
-					m.Of = append(m.Of, v)
+					m.Permissions = append(m.Permissions, v)
 				}
 			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Of", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
 			}
 		default:
 			iNdEx = preIndex
@@ -4098,7 +4930,7 @@ func (m *OIDCProvider) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *IDToken) Unmarshal(dAtA []byte) error {
+func (m *AuthorizationTokenID) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4121,17 +4953,17 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: IDToken: wiretype end group for non-group")
+			return fmt.Errorf("proto: AuthorizationTokenID: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: IDToken: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AuthorizationTokenID: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -4141,29 +4973,119 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Issuer = string(dAtA[iNdEx:postIndex])
+			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AuthorizationTokenInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AuthorizationTokenInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AuthorizationTokenInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Id == nil {
+				m.Id = &AuthorizationTokenID{}
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Grant", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -4173,29 +5095,33 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Subject = string(dAtA[iNdEx:postIndex])
+			if m.Grant == nil {
+				m.Grant = &AuthorizationGrantID{}
+			}
+			if err := m.Grant.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Audience", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Expires", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -4205,27 +5131,31 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Audience = string(dAtA[iNdEx:postIndex])
+			if m.Expires == nil {
+				m.Expires = &types.Timestamp{}
+			}
+			if err := m.Expires.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Expiration", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Created", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -4252,16 +5182,69 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Expiration == nil {
-				m.Expiration = new(time.Time)
+			if m.Created == nil {
+				m.Created = &types.Timestamp{}
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.Expiration, dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Created.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LinkID) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LinkID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LinkID: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Issued", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -4288,16 +5271,102 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Issued == nil {
-				m.Issued = new(time.Time)
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.Issued, dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.ID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Link) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Link: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Link: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Nonce", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Id == nil {
+				m.Id = &LinkID{}
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetIssuer", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4325,13 +5394,98 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Nonce = string(dAtA[iNdEx:postIndex])
+			m.TargetIssuer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 7:
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetSubject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetSubject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TableName) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TableName: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TableName: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticationContextClassReference", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			m.AuthenticationContextClassReference = 0
+			m.Id = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -4341,75 +5495,11 @@ func (m *IDToken) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.AuthenticationContextClassReference |= int64(b&0x7F) << shift
+				m.Id |= TableID(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticationMethodsReference", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AuthenticationMethodsReference = append(m.AuthenticationMethodsReference, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AuthorizedParty", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AuthorizedParty = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])

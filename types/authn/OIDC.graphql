@@ -5,29 +5,35 @@ extend enum Authorization {
 scalar Time
 scalar OIDCProviderID @goModel(model: "github.com/zemnmez/tab/types.OIDCProviderID")
 
-type IDToken @goModel(model: "github.com/zemnmez/tab/types.IDToken") {
+type IDTokenInfo @goModel(model: "github.com/zemnmez/tab/gql/resolver.IDTokenInfo") {
+    "The issuer of this id token e.g. https://google.com"
     Issuer: String!
-    Subject: String!
+
+    """
+    The subject of this token i.e. who the user is
+    authorizing as.
+    """
+    Subject: UserID!
+
+    """
+    The OAuth client that this token is intended for.
+    """
     Audience: String!
+
     Expiration: Time!
     Issued: Time!
     Nonce: String!
+
     AuthenticationContextClassReference: Int
+
     AuthenticationMethodsReference: [String!]!
+
     AuthorizedParty: String
 }
 
-input IDTokenInput {
-    Issuer: String!
-    Subject: String!
-    Audience: String!
-    Expiration: Time!
-    Issued: Time!
-    Nonce: String!
-    AuthenticationContextClassReference: Int
-    AuthenticationMethodsReference: [String!]!
-    AuthorizedParty: String
-}
+
+"A JWT string with 3 base64url encoded period separated parts"
+scalar IDToken
 
 type OIDCProvider @goModel(model: "github.com/zemnmez/tab/types.OIDCProvider") {
     ID: OIDCProviderID
@@ -45,7 +51,7 @@ extend type AuthenticationQuery { OIDC: OIDCQuery }
 
 type OIDCQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCQuery") {
     Provider: OIDCProviderQuery
-    IsValid(token: IDTokenInput): Boolean
+    IsValid(token: IDToken): Boolean
 }
 
 type OIDCProviderQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCProviderQuery") {
@@ -67,7 +73,6 @@ type OIDCMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.OIDCMutat
 }
 
 
-
 extend type SelfMutation {
-    LinkOIDC(token: IDTokenInput): Boolean!
+    LinkOIDC(token: IDToken): Boolean!
 }

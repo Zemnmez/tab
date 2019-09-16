@@ -47,11 +47,12 @@ type AuthorizationRefreshTokenInfo {
     Created: Time!
 }
 
-type AuthQuery {
+type AuthzQuery {
     RefreshToken(tok: AuthorizationRefreshToken!): AuthorizationRefreshTokenInfo!
     RefreshTokenByID(id: AuthorizationRefreshTokenID): AuthorizationRefreshTokenInfo!
+    Token(tok: AuthorizationToken!): AuthorizationTokenInfo!
 }
 
 extend type Query {
-    Authz: AuthQuery!
+    Authz: AuthzQuery!
 }

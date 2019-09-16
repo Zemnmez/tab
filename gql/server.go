@@ -2,8 +2,10 @@ package gql
 
 import (
 	"net/http"
+
 	"github.com/zemnmez/tab/gql/resolver"
-	"github.com/zemnmez/tab/gql/storage"
+	"github.com/zemnmez/tab/storage"
+	"github.com/zemnmez/tab/types"
 
 	"github.com/99designs/gqlgen/handler"
 )
@@ -12,16 +14,22 @@ type Server struct {
 	// stupid bullshit goes here 😎
 	Playground bool
 	mux        *http.ServeMux
-	resolver.ExecutionContext
+	resolver.Context
 }
 
 func (s Server) ServeHTTP(rw http.ResponseWriter, rq *http.Request) {
-	rq = s.ExecutionContext.WithContext(rq)
+	rq = s.Context.WithContext(rq)
 	s.mux.ServeHTTP(rw, rq)
 }
 
 func NewServer(storage storage.IStorage) (s Server) {
-	s.ExecutionContext.Storage = storage.Storage { storage }
+	s.Context.Storage = storage.Storage{
+		IStorage: storage,
+		Tables: storage.NewTables(
+			types.TableName{id: types.TABLE_DEFAULT},
+			types.TableName{id: types.TABLE_LINKS},
+		),
+	}
 
 	s.mux = http.NewServeMux()
 

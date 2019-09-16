@@ -1,6 +1,6 @@
 
 
 extend type OIDCMutation {
-    Authenticate(token: IDTokenInput, scopes: [Authorization!]!, client: AuthClientID): AuthorizationToken
+    Authenticate(token: IDToken, client: AuthClientID, scopes: [Authorization!]!): AuthorizationToken
 }
 

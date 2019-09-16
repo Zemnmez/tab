@@ -2,25 +2,30 @@ package resolver
 
 import (
 	"context"
+	"io"
 
 	"github.com/zemnmez/tab/types"
 )
 
+type SelfMutation struct{}
+
+type AnonymousUser struct{}
+
+type Self struct {
+	AuthenticationTokenInfo
+}
+
 type UserQuery struct{}
 type UserMutation struct{}
 
-func (UserQuery) Self(ctx context.Context) Self                             {
-	auth := ExecutionContext.Get(nil, ctx).Authentication
-	if auth == "" {
-
-	}
-
+func (UserQuery) Self(ctx context.Context) Self {
+	auth := Context.Get(nil, ctx).Authentication
+	return Self { AuthenticationQuery{}.Token(Auth) }
 }
-func (UserQuery) Special(id types.SpecialUserID) SpecialUser          { panic("todo") }
-func (UserQuery) Regular(id types.RegularUserID) RegularUser          { panic("todo") }
+
 func (UserQuery) WhoCan(do []types.Authorization) (users []User, err error) { panic("todo") }
 
-func (UserMutation) Self() UserMutator { panic("todo") }
+func (UserMutation) Self() UserMutator    { panic("todo") }
 func (UserMutation) Special() UserMutator { panic("todo") }
 func (UserMutation) Regular() UserMutator { panic("todo") }
 
@@ -40,7 +45,6 @@ type User interface {
 	Authentication() *UserAuthentication
 	Grants() []AuthorizationGrant
 	Grant(u User)
-	GrantSpecial(s SpecialUser)
 	History() []HistoryItem
 }
 
@@ -49,22 +53,10 @@ type Self struct {
 	User
 }
 
-type SpecialUser struct { types.SpecialUser }
+type RegularUser struct{ types.RegularUser }
 
-var AnonymousUserDefault = SpecialUser {
-	types.User {
-		Id: types.ANONYMOUS,
-		Authorizations: []Authorization { },
-	}
-}
-
-func (s SpecialUser) Authentication() UserAuthentication { return UserAuthentication{} }
-func (s SpecialUser) Grants() []AuthorizationGrant { panic("todo") }
-func (s SpecialUser) History() []HistoryItem { panic("todo") }
-func (s SpecialUser) GetName() string { return s.Name() }
-func (s SpecialUser) Name() string { return s.Id.String() }
-
-type RegularUser struct { types.RegularUser }
 func (r RegularUser) Authentication() UserAuthentication { panic("todo") }
-func (s RegularUser) History() []HistoryItem { panic("todo") }
-func (r RegularUser) Grants() []AuthorizationGrant { panic("todo") }
+func (s RegularUser) History() []HistoryItem             { panic("todo") }
+func (r RegularUser) Grants() []AuthorizationGrant       { panic("todo") }
+
+type RootUser struct{ types.User }

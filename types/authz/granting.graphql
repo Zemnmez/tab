@@ -1,3 +1,7 @@
+interface Authorized {
+    Authorizations: [Authorization!]!
+}
+
 interface AuthorizationGranter {
     "The abilities granted by this entity."
     GrantsGiven: [AuthorizationGrant!]!
@@ -39,29 +43,31 @@ extend type SelfMutation {
     UnGrant(id: AuthorizationGrantID!): Boolean!
 }
 
-extend type Self implements AuthorizationGranter & AuthorizationGrantee {
+extend type Self implements AuthorizationGranter & AuthorizationGrantee & Authorized {
     "The abilities granted by this entity."
     GrantsGiven: [AuthorizationGrant!]!
 
     "The abilities granted to this entity."
     GrantsReceived: [AuthorizationGrant!]!
+
+    Authorizations: [Authorization!]!
 }
 
 # (the root user cannot be a Grantee because it already has every permission)
 
-extend type RootUser implements AuthorizationGranter {
+extend type RootUser implements AuthorizationGranter & Authorized {
     "The abilities granted by this entity."
     GrantsGiven: [AuthorizationGrant!]!
 }
 
 # (the anonymous user cannot be a granter because that would be annoying)
 
-extend type AnonymousUser implements AuthorizationGrantee {
+extend type AnonymousUser implements AuthorizationGrantee & Authorized {
     "The abilities granted to this entity."
     GrantsReceived: [AuthorizationGrant!]!
 }
 
-extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee {
+extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee & Authorized {
     "The abilities granted to this entity."
     GrantsGiven: [AuthorizationGrant!]!
 

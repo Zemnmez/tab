@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 )
@@ -39,6 +40,20 @@ func ValidateFlags(toValidate int) (err error) {
 	return
 }
 
+// Table is a special type of Txn that appends a table prefix to
+// keys. It also provides iteration support
+type Table struct {
+	prefix []byte
+	ITxn
+}
+
+func (t Table) KeyPrefix() (prefix []byte)            { return t.prefix }
+func (t Table) DerivedKey(key []byte) (newKey []byte) { return append(t.KeyPrefix(), key...) }
+func (t Table) Open(key []byte, flag int) (IRecord, error) {
+	return t.ITxn.Open(t.DerivedKey(key), flag)
+}
+func (t Table) Remove(key []byte) (err error) { return t.ITxn.Remove(t.DerivedKey(key)) }
+
 type ITxn interface {
 	Open(key []byte, flag int) (IRecord, error)
 	Remove(key []byte) (err error)
@@ -63,12 +78,60 @@ type IRecord interface {
 	Flush() (err error)
 }
 
-type Txn struct{ ITxn }
-type Storage struct{ IStorage }
+type Txn struct {
+	Parent Storage
+	ITxn
+}
+
+type tables [][]byte
+
+func (t tables) Contains(tableName []byte) bool {
+	for _, realTableName := range ([][]byte)(t) {
+		if bytes.Equal(tableName, realTableName) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// NewTables returns a set of tables. It panics if the table
+// names are not unique.
+func NewTables(names ...io.WriterTo) (valid tables) {
+	valid = make(tables, len(names))
+	var uniques = make(map[string]bool, len(names))
+
+	for i, name := range names {
+		var buf bytes.Buffer
+		if _, err := io.Copy(&buf, name); err != nil {
+			return
+		}
+
+		bt := buf.Bytes()
+
+		if len(bt) == 0 {
+			panic("empty table name")
+		}
+
+		if _, ok := uniques[string(bt)]; ok {
+			panic(fmt.Sprintf("table %s already exists", bt))
+		}
+
+		([][]byte)(valid)[i] = bt
+	}
+
+	return
+}
+
+type Storage struct {
+	IStorage
+	Tables tables
+}
 
 // Returns a new transaction (Txn)
 func (s Storage) Txn() (New Txn, err error) {
 	New.ITxn, err = s.IStorage.Txn()
+	New.Parent = s
 	return
 }
 
@@ -184,4 +247,21 @@ func (t Txn) Delete(key io.WriterTo) (err error) {
 	}
 
 	return t.ITxn.Remove(buf.Bytes())
+}
+
+func (t Txn) WithTable(name io.WriterTo) (handle Table, err error) {
+	var buf bytes.Buffer
+	if _, err = io.Copy(&buf, CopiableWriterTo{name}); err != nil {
+		return
+	}
+
+	handle.prefix = buf.Bytes()
+
+	if !t.Parent.Tables.Contains(handle.prefix) {
+		err = fmt.Errorf("%+q is not a registered table name", handle.prefix)
+		return
+	}
+
+	handle.ITxn = t
+	return
 }

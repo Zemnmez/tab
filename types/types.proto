@@ -22,9 +22,14 @@ message ID { string id = 1; }
 
 // Authz
 
+
+message AuthorizationGrantID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+
 message AuthorizationGrant {
-    types.UserID from = 1;
-    repeated Authorization of = 2;
+    AuthorizationGrantID id = 1;
+    UserID from = 2;
+    UserID to = 3;
+    repeated Authorization permissions = 4;
 }
 
 enum Authorization {
@@ -41,7 +46,7 @@ enum Authorization {
 
 // HISTORY
 
-message HistoryID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+message HistoryID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
 
 message HistoryItem {
     string action = 1;
@@ -63,19 +68,19 @@ message SingletonUser {
     SingletonUserType type = 2;
 }
 
-message UserID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+message UserID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
 
 message User {
     UserID id = 1;
     string name = 2;
-    repeated types.Authorization authorizations = 3;
-    repeated types.HistoryID historyID = 4;
+    repeated Authorization authorizations = 3;
+    repeated HistoryID historyID = 4;
     google.protobuf.Timestamp created = 5 [(gogoproto.stdtime) = true];
 }
 
 // item
 
-message ItemID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+message ItemID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
 
 message Item {
     ItemID id = 1;
@@ -87,7 +92,7 @@ message Item {
 
 // oidc
 
-message OIDCProviderID { types.ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+message OIDCProviderID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
 
 message OIDCProvider {
     OIDCProviderID id = 1;
@@ -97,14 +102,36 @@ message OIDCProvider {
     string clientID = 5;
 }
 
-message IDToken {
-    string issuer = 1;
-    string subject = 2;
-    string audience = 3;
-    google.protobuf.Timestamp expiration = 4 [(gogoproto.stdtime) = true];
-    google.protobuf.Timestamp issued = 5 [(gogoproto.stdtime) = true];
-    string nonce = 6;
-    int64 authenticationContextClassReference = 7;
-    repeated string authenticationMethodsReference = 8;
-    string authorizedParty = 9;
+
+// token
+
+message AuthorizationTokenID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+
+message AuthorizationTokenInfo {
+    AuthorizationTokenID id = 1;
+    AuthorizationGrantID grant = 2;
+    google.protobuf.Timestamp expires = 3;
+    google.protobuf.Timestamp created = 4;
+
+}
+
+// link
+
+message LinkID { ID id = 1 [(gogoproto.embed) = true, (gogoproto.nullable) = false]; }
+
+message Link {
+    LinkID id = 1;
+    string targetIssuer = 2;
+    string targetSubject = 3;
+}
+
+enum TableID {
+    TABLE_NIL = 0;
+
+    DEFAULT_TABLE = 1;
+    LINKS_TABLE = 2;
+}
+
+message TableName {
+    TableID id = 1;
 }

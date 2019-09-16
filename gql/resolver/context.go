@@ -1,19 +1,29 @@
 package resolver
 
+import (
+	"context"
+	"net/http"
+
+	"github.com/zemnmez/tab/storage"
+)
+
 type resolverContextKey struct{}
+
 var (
-	contextKey = &contextKey{}
+	contextKey = &resolverContextKey{}
 )
 
 type Context struct {
 	storage.Storage
-	Authentication string
+	Authorization AuthorizationToken
 }
 
-func (e *ExecutionContext) Get(ctx context.Context) ExecutionContext { return ctx.Value(contextKey).(ExecutionContext) }
+func (e *Context) Get(ctx context.Context) Context {
+	return ctx.Value(contextKey).(Context)
+}
 
-func (e ExecutionContext) WithContext(rq *http.Request) *http.Request {
-	e.Authentication = rq.Header.Get("Authentication")
+func (e Context) WithContext(rq *http.Request) *http.Request {
+	e.Authorization = AuthorizationToken(rq.Header.Get("Authorization"))
 
 	ctx := rq.Context()
 
