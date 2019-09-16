@@ -1,14 +1,78 @@
 // Package table implements a table-like abstraction on a Storage KV store.
+//
+// A table, strictly speaking can be thought of as a kind of composite key.
+// Instead of the key being strictly composed of entropy, the key is composed
+// of some prefix plus entropy, where the prefix identifies the table itself.
+//
+// table.Storage can be used to wrap any storage.IStorage. When this happens,
+// all keys are asserted to be `table.Key`s.
 package table
 
-type Storage struct { storage.Storage }
-
-func (s Storage) Get(key Key, val io.ReaderFrom, flags ...int) { panic("todo ") }
-func (s Storage) Put(key Key, val io.WriterTo, flags ...int) { panic("todo") }
-func (s Storage) Post(key Key, val io.WriterTo, flags ...int) { panic("todo") }
-
 type Key interface {
-	GetTable() io.WriterTo
-	GetID() io.WriterTo
-	io.WriterTo
+	Table() io.Writer
+	ID() io.Writer
+}
+
+type Storage struct {
+	storage.IStorage
+	Tables map[string]bool
+}
+
+var (
+	ErrInvalidKey = errors.New("using table storage, but key is not table.Key")
+)
+
+type ErrInvalidKey struct {
+	Got reflect.Type
+}
+
+func (e ErrInvalidKey) Error() string { return fmt.Sprintf("using table but key %s is not table.Key", e.Got)}
+
+type ErrInvalidTable struct {
+	Name string
+}
+
+func (e ErrInvalidTable) Error() string { return fmt.Sprintf("using table but attempting to work with table %s, which has not been defined", e.Name) }
+
+type Txn struct { storage.ITxn; Storage Storage }
+
+func (s Storage) Txn() (ITxn, error) { return Txn { ITxn: s.IStorage.ITxn(); storage: s } }
+
+func (t Txn) Open(key io.Reader, flag int) (rec IRecord, err error) {
+	newKey, err := makeKey(key)
+	if err != nil { return }
+	return t.ITxn.Open(&newKey, flag)
+}
+
+func (t Txn) Remove(key io.Reader) (err error) {
+	newKey, err := makeKey(key)
+	if err != nil { return }
+	return t.ITxn.Remove(&newKey, flag)
+}
+
+func makeKey(from io.Reader) (key bytes.Buffer, err error) {
+	var ok bool
+	var k Key
+	if k, ok = from.(Key); !ok {
+		err = ErrInvalidKey { reflect.TypeOf(key) }
+		return
+	}
+
+	tableN, err := io.Copy(&key, k.Table())
+	if err != nil { return }
+
+	tableBytes := key.Bytes()[:tableN]
+
+	if _, ok := t.Storage.Tables[string(tableBytes)]; !ok {
+		err = ErrInvalidTable { string(tableBytes) }
+		return
+	}
+	_, err := io.Copy(&key, k.ID())
+	if err != nil { return }
+
+	return
+}
+
+func (t Txn) Remove (key io.Reader) (err error) {
+
 }

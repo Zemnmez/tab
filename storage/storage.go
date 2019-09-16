@@ -48,8 +48,8 @@ type IIterator interface {
 }
 
 type ITxn interface {
-	Open(key []byte, flag int) (IRecord, error)
-	Remove(key []byte) (err error)
+	Open(key io.Reader, flag int) (IRecord, error)
+	Remove(key io.Reader) (err error)
 
 	Flush() (err error)
 	io.Closer
@@ -88,37 +88,8 @@ func (t tables) Contains(tableName []byte) bool {
 	return false
 }
 
-// NewTables returns a set of tables. It panics if the table
-// names are not unique.
-func NewTables(names ...io.WriterTo) (valid tables) {
-	valid = make(tables, len(names))
-	var uniques = make(map[string]bool, len(names))
-
-	for i, name := range names {
-		var buf bytes.Buffer
-		if _, err := io.Copy(&buf, name); err != nil {
-			return
-		}
-
-		bt := buf.Bytes()
-
-		if len(bt) == 0 {
-			panic("empty table name")
-		}
-
-		if _, ok := uniques[string(bt)]; ok {
-			panic(fmt.Sprintf("table %s already exists", bt))
-		}
-
-		([][]byte)(valid)[i] = bt
-	}
-
-	return
-}
-
 type Storage struct {
 	IStorage
-	Tables tables
 }
 
 // Returns a new transaction (Txn)
@@ -135,22 +106,8 @@ func or(ints ...int) (together int) {
 	return
 }
 
-type CopiableWriterTo struct {
-	io.WriterTo
-}
-
-func (c CopiableWriterTo) Read(b []byte) (n int, err error) { panic("only WriteTo is allowed") }
-
-type CopiableReaderFrom struct {
-	io.ReaderFrom
-}
-
-func (c CopiableReaderFrom) Write(b []byte) (n int, err error) {
-	panic("only ReadFrom is allowed")
-}
-
 // Get retrieves the value by the given key
-func (t Txn) Get(key io.WriterTo, val io.ReaderFrom, flags ...int) (err error) {
+func (t Txn) Get(key io.Reader, val io.Writer, flags ...int) (err error) {
 	var buf bytes.Buffer
 	if _, err = key.WriteTo(&buf); err != nil {
 		return
@@ -175,7 +132,7 @@ func (t Txn) Get(key io.WriterTo, val io.ReaderFrom, flags ...int) (err error) {
 }
 
 // Put stores the value with the given key
-func (t Txn) Put(key, val io.WriterTo, flags ...int) (err error) {
+func (t Txn) Put(key, val io.Reader, flags ...int) (err error) {
 	var buf bytes.Buffer
 	if _, err = key.WriteTo(&buf); err != nil {
 		return
@@ -201,10 +158,7 @@ func (t Txn) Put(key, val io.WriterTo, flags ...int) (err error) {
 
 // Post stores the value, generating a key as it is added.
 // The key is passed rand.Reader to read entropy from for a uuid.
-func (t Txn) Post(key interface {
-	io.WriterTo
-	io.ReaderFrom
-}, val io.WriterTo, flags ...int) (err error) {
+func (t Txn) Post(key io.ReadWriter, val io.Reader, flags ...int) (err error) {
 	if _, err = key.ReadFrom(rand.Reader); err != nil {
 		return
 	}
@@ -233,28 +187,11 @@ func (t Txn) Post(key interface {
 }
 
 // Delete deletes the value at the given key
-func (t Txn) Delete(key io.WriterTo) (err error) {
+func (t Txn) Delete(key io.Reader) (err error) {
 	var buf bytes.Buffer
 	if _, err = key.WriteTo(&buf); err != nil {
 		return
 	}
 
 	return t.ITxn.Remove(buf.Bytes())
-}
-
-func (t Txn) WithTable(name io.WriterTo) (handle Table, err error) {
-	var buf bytes.Buffer
-	if _, err = io.Copy(&buf, CopiableWriterTo{name}); err != nil {
-		return
-	}
-
-	handle.prefix = buf.Bytes()
-
-	if !t.Parent.Tables.Contains(handle.prefix) {
-		err = fmt.Errorf("%+q is not a registered table name", handle.prefix)
-		return
-	}
-
-	handle.ITxn = t
-	return
 }
