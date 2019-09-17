@@ -28,6 +28,7 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 	ioPkg := p.NewImport("io")
 	graphqlPkg := p.NewImport("github.com/99designs/gqlgen/graphql")
 	encodingPkg := p.NewImport("encoding")
+	fmtPkg := p.NewImport("fmt")
 	ioutilPkg := p.NewImport("io/ioutil")
 	jsonPkg := p.NewImport("encoding/json")
 
@@ -133,6 +134,15 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 			p.P(`n = int64(nint);return`)
 			p.P(`}`)
 
+			p.P("// Read implements io.Reader. It only exists")
+			p.P("// as a dummy for io.Copy. It will error if called.")
+			p.P("// use .WriteTo instead.")
+			p.P(`func(`, ccTypeName, `)Read(b []byte)(n int, err error){`)
+			p.In()
+			p.P("return 0, ErrUnreadable {`", ccTypeName, "`}")
+			p.Out()
+			p.P("}")
+
 			p.P(`// ReadFrom implements io.ReaderFrom.`)
 			p.P(`// ReadFrom expects the structure as protobufs,`)
 			p.P(`// and assumes the protobuf message should consume`)
@@ -186,6 +196,9 @@ func (p *useful) Generate(file *generator.FileDescriptor) {
 	p.Out()
 	p.P(`)`)
 
+	p.P("type ErrUnreadable struct { Name string }")
+	p.P("func(e ErrUnreadable) Error() string {")
+	p.P(`return `, fmtPkg.Use(), `.Sprintf("%s can only be read via .WriteTo", e.Name)}`)
 	p.P(`type ErrInvalidEnum struct { EnumName string; Value interface{} }`)
 	p.P(`func (i ErrInvalidEnum) Error() string { return fmt.Sprintf("invalid %s(%s)", i.EnumName, i.Value) }`)
 }
