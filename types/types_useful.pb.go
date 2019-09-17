@@ -1486,6 +1486,92 @@ var _ interface {
 } = new(Key)
 
 // MarshalJSON implements json.Marshaler
+func (this TableIDValue) MarshalJSON() (json []byte, err error) {
+	var b bytes.Buffer
+	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
+		return
+	}
+	json = b.Bytes()
+	return
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (this *TableIDValue) UnmarshalJSON(json []byte) (err error) {
+	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
+}
+
+// MarshalGQL implements graphql.Marshaler
+func (this TableIDValue) MarshalGQL(w io.Writer) {
+	var err error
+	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
+		panic(err)
+	}
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler
+func (this *TableIDValue) UnmarshalGQL(v interface{}) (err error) {
+	var newJSON []byte
+	if newJSON, err = encoding_json.Marshal(v); err != nil {
+		return
+	}
+	return this.UnmarshalJSON(newJSON)
+}
+
+// WriteTo implements io.WriterTo.
+// WriteTo writes this structure as protobufs
+func (this TableIDValue) WriteTo(w io.Writer) (n int64, err error) {
+	bt, err := this.MarshalBinary()
+	if err != nil {
+		return
+	}
+	nint, err := w.Write(bt)
+	n = int64(nint)
+	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (TableIDValue) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`TableIDValue`}
+}
+
+// ReadFrom implements io.ReaderFrom.
+// ReadFrom expects the structure as protobufs,
+// and assumes the protobuf message should consume
+// the entire reader.
+func (this TableIDValue) ReadFrom(r io.Reader) (n int64, err error) {
+	bt, err := io_ioutil.ReadAll(r)
+	n = int64(len(bt))
+	if err != nil {
+		return
+	}
+	err = this.UnmarshalBinary(bt)
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler
+func (this *TableIDValue) MarshalBinary() ([]byte, error) {
+	return this.Marshal()
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler
+func (this *TableIDValue) UnmarshalBinary(b []byte) error {
+	return this.Unmarshal(b)
+}
+
+var _ interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	io.WriterTo
+	io.ReaderFrom
+	encoding_json.Marshaler
+	encoding_json.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Unmarshaler
+	github_com_99designs_gqlgen_graphql.Marshaler
+} = new(TableIDValue)
+
+// MarshalJSON implements json.Marshaler
 func (this Authorization) MarshalJSON() (json []byte, err error) {
 	if _, ok := Authorization_name[int32(this)]; !ok {
 		return nil, ErrInvalidEnum{EnumName: "Authorization", Value: this}

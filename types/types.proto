@@ -128,8 +128,12 @@ message Link {
 // table
 
 message Key {
-    TableID table = 1;
+    TableIDValue tableID = 1;
     ID id = 2;
+}
+
+message TableIDValue {
+    TableID tableID = 1;
 }
 
 enum TableID {

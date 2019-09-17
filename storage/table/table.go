@@ -9,18 +9,18 @@
 package table
 
 type Key interface {
+	// a key should be able to unmarshal itself
+	// from bytes
+	io.ReadWriter
+	
+	// and be able to uniquely identify this table
 	Table() io.Writer
-	ID() io.Writer
 }
 
 type Storage struct {
 	storage.IStorage
 	Tables map[string]bool
 }
-
-var (
-	ErrInvalidKey = errors.New("using table storage, but key is not table.Key")
-)
 
 type ErrInvalidKey struct {
 	Got reflect.Type

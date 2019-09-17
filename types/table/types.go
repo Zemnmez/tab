@@ -3,32 +3,27 @@ package table
 
 import (
 	"github.com/zemnmez/tab/types"
+	"github.com/zemnmez/tab/storage/table"
 )
 
-type HistoryItem { types.HistoryItem }
-func (HistoryItem) Table() io.Writer { return types.TABLE_HISTORY_ITEM }
-func (h HistoryItem) ID() io.Writer { return h.HistoryItem.Id }
 
-type SingletonUser { types.SingletonUser }
-func (SingletonUser) Table() io.Writer { return types.TABLE_SINGLETON_USER }
-func (s SingletonUser) ID() io.Writer { return s.SingletonUser.Id }
+type HistoryItem struct { types.HistoryItem }
+func (h HistoryItem) Key() table.Key { return types.Key { tableID: types.TABLE_HISTORY_ITEM, Id: h.Id.Id } }
 
-type User { types.User }
-func (User) Table() io.Writer { return types.TABLE_USER }
-func (u User) ID() io.Writer { return u.User.Id }
+type SingletonUser struct { types.SingletonUser }
+func (s SingletonUser) Key() table.Key { return types.Key { tableID: types.TABLE_SINGLETON_USER, Id: h.Id.Id } }
 
-type Item { types.Item }
-func (Item) Table() io.Writer { return types.TABLE_ITEM }
-func (i Item) ID() io.Writer { return i.Item.Id }
+type User struct { types.User }
+func (u User) Key() table.Key { return types.Key { tableID: types.TABLE_USER, Id: u.Id.Id } }
 
-type Provider { types.Provider }
-func (Provider) Table() io.Writer { return types.TABLE_OIDC_PROVIDER }
-func (p Provider) ID() io.Writer { return p.Provider.Id }
+type Item struct { types.Item }
+func (i Item) Key() table.Key { return types.Key { tableID: types.TABLE_ITEM, Id: i.Id.Id } }
 
-type AuthzToken { types.AuthzToken }
-func (AuthzToken) Table() io.Writer { return types.TABLE_AUTHZ_TOKEN }
-func (a AuthzToken) ID() io.Writer { return p.AuthzToken.Id }
+type Provider struct { types.Provider }
+func (p Provider) Key() table.Key { return types.Key { tableID: types.TABLE_PROVIDER, Id: p.Id.Id } }
 
-type Link { types.Link }
-func (Link) Table() io.Writer { return types.TABLE_LINK }
-func (l Link) ID() io.Writer { return p.Link.Id }
+type AuthzToken struct { types.AuthzToken }
+func (a AuthzToken) Key() table.Key { return types.Key { tableID: types.TABLE_AUTHZ_TOKEN, Id: a.Id.Id } }
+
+type Link struct { types.Link }
+func (l Link) Table() io.Writer { return types.Key { types.TABLE_LINK } }
