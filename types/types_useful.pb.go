@@ -67,6 +67,13 @@ func (this ID) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (ID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`ID`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -144,6 +151,13 @@ func (this AuthorizationGrantID) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (AuthorizationGrantID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`AuthorizationGrantID`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -225,6 +239,13 @@ func (this AuthorizationGrant) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (AuthorizationGrant) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`AuthorizationGrant`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -302,6 +323,13 @@ func (this HistoryID) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (HistoryID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`HistoryID`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -383,6 +411,13 @@ func (this HistoryItem) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (HistoryItem) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`HistoryItem`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -460,6 +495,13 @@ func (this SingletonUser) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (SingletonUser) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`SingletonUser`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -541,6 +583,13 @@ func (this UserID) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (UserID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`UserID`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -618,6 +667,13 @@ func (this User) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (User) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`User`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -699,6 +755,13 @@ func (this ItemID) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (ItemID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`ItemID`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -776,6 +839,13 @@ func (this Item) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (Item) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`Item`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -857,6 +927,13 @@ func (this OIDCProviderID) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (OIDCProviderID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`OIDCProviderID`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -934,6 +1011,13 @@ func (this OIDCProvider) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (OIDCProvider) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`OIDCProvider`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -1015,6 +1099,13 @@ func (this AuthorizationTokenID) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (AuthorizationTokenID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`AuthorizationTokenID`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -1092,6 +1183,13 @@ func (this AuthorizationTokenInfo) WriteTo(w io.Writer) (n int64, err error) {
 	nint, err := w.Write(bt)
 	n = int64(nint)
 	return
+}
+
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (AuthorizationTokenInfo) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`AuthorizationTokenInfo`}
 }
 
 // ReadFrom implements io.ReaderFrom.
@@ -1173,6 +1271,13 @@ func (this LinkID) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (LinkID) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`LinkID`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -1252,6 +1357,13 @@ func (this Link) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (Link) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`Link`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
@@ -1288,7 +1400,7 @@ var _ interface {
 } = new(Link)
 
 // MarshalJSON implements json.Marshaler
-func (this TableName) MarshalJSON() (json []byte, err error) {
+func (this Key) MarshalJSON() (json []byte, err error) {
 	var b bytes.Buffer
 	if err = _jsonMarshaler.Marshal(&b, &this); err != nil {
 		return
@@ -1298,12 +1410,12 @@ func (this TableName) MarshalJSON() (json []byte, err error) {
 }
 
 // UnmarshalJSON implements json.Unmarshaler
-func (this *TableName) UnmarshalJSON(json []byte) (err error) {
+func (this *Key) UnmarshalJSON(json []byte) (err error) {
 	return _jsonUnmarshaler.Unmarshal(bytes.NewReader(json), this)
 }
 
 // MarshalGQL implements graphql.Marshaler
-func (this TableName) MarshalGQL(w io.Writer) {
+func (this Key) MarshalGQL(w io.Writer) {
 	var err error
 	if err = _jsonMarshaler.Marshal(w, &this); err != nil {
 		panic(err)
@@ -1311,7 +1423,7 @@ func (this TableName) MarshalGQL(w io.Writer) {
 }
 
 // UnmarshalGQL implements graphql.Unmarshaler
-func (this *TableName) UnmarshalGQL(v interface{}) (err error) {
+func (this *Key) UnmarshalGQL(v interface{}) (err error) {
 	var newJSON []byte
 	if newJSON, err = encoding_json.Marshal(v); err != nil {
 		return
@@ -1321,7 +1433,7 @@ func (this *TableName) UnmarshalGQL(v interface{}) (err error) {
 
 // WriteTo implements io.WriterTo.
 // WriteTo writes this structure as protobufs
-func (this TableName) WriteTo(w io.Writer) (n int64, err error) {
+func (this Key) WriteTo(w io.Writer) (n int64, err error) {
 	bt, err := this.MarshalBinary()
 	if err != nil {
 		return
@@ -1331,11 +1443,18 @@ func (this TableName) WriteTo(w io.Writer) (n int64, err error) {
 	return
 }
 
+// Read implements io.Reader. It only exists
+// as a dummy for io.Copy. It will error if called.
+// use .WriteTo instead.
+func (Key) Read(b []byte) (n int, err error) {
+	return 0, ErrUnreadable{`Key`}
+}
+
 // ReadFrom implements io.ReaderFrom.
 // ReadFrom expects the structure as protobufs,
 // and assumes the protobuf message should consume
 // the entire reader.
-func (this TableName) ReadFrom(r io.Reader) (n int64, err error) {
+func (this Key) ReadFrom(r io.Reader) (n int64, err error) {
 	bt, err := io_ioutil.ReadAll(r)
 	n = int64(len(bt))
 	if err != nil {
@@ -1346,12 +1465,12 @@ func (this TableName) ReadFrom(r io.Reader) (n int64, err error) {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler
-func (this *TableName) MarshalBinary() ([]byte, error) {
+func (this *Key) MarshalBinary() ([]byte, error) {
 	return this.Marshal()
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler
-func (this *TableName) UnmarshalBinary(b []byte) error {
+func (this *Key) UnmarshalBinary(b []byte) error {
 	return this.Unmarshal(b)
 }
 
@@ -1364,7 +1483,7 @@ var _ interface {
 	encoding_json.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Unmarshaler
 	github_com_99designs_gqlgen_graphql.Marshaler
-} = new(TableName)
+} = new(Key)
 
 // MarshalJSON implements json.Marshaler
 func (this Authorization) MarshalJSON() (json []byte, err error) {
@@ -1521,6 +1640,12 @@ var (
 	_jsonMarshaler   github_com_gogo_protobuf_jsonpb.Marshaler
 	_jsonUnmarshaler github_com_gogo_protobuf_jsonpb.Unmarshaler
 )
+
+type ErrUnreadable struct{ Name string }
+
+func (e ErrUnreadable) Error() string {
+	return fmt.Sprintf("%s can only be read via .WriteTo", e.Name)
+}
 
 type ErrInvalidEnum struct {
 	EnumName string

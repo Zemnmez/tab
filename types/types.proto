@@ -136,24 +136,24 @@ enum TableID {
     TABLE_NIL = 0;
 
     // lists of history items
-    HISTORY_ITEM_TABLE = 1;
+    TABLE_HISTORY_ITEM = 1;
 
     // mappings of unique user types and their
     // stored user ids
-    SINGLETON_USER_TABLE = 2;
+    TABLE_SINGLETON_USER = 2;
     
     // users
-    USER_TABLE = 3;
+    TABLE_USERS = 3;
 
     // items
-    ITEM_TABLE = 4;
+    TABLE_ITEMS = 4;
 
     // oidc providers
-    OIDC_PROVIDER_TABLE = 5;
+    TABLE_OIDC_PROVIDER = 5;
 
     // auth tokens
-    AUTHZ_TOKEN_TABLE = 6;
+    TABLE_AUTHZ_TOKEN = 6;
 
     // links
-    LINK_TABLE = 7;
+    TABLE_LINK = 7;
 }

@@ -918,15 +918,15 @@ func TestLinkMarshalTo(t *testing.T) {
 	}
 }
 
-func TestTableNameProto(t *testing.T) {
+func TestKeyProto(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := math_rand.New(math_rand.NewSource(seed))
-	p := NewPopulatedTableName(popr, false)
+	p := NewPopulatedKey(popr, false)
 	dAtA, err := github_com_gogo_protobuf_proto.Marshal(p)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &TableName{}
+	msg := &Key{}
 	if err := github_com_gogo_protobuf_proto.Unmarshal(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -949,10 +949,10 @@ func TestTableNameProto(t *testing.T) {
 	}
 }
 
-func TestTableNameMarshalTo(t *testing.T) {
+func TestKeyMarshalTo(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := math_rand.New(math_rand.NewSource(seed))
-	p := NewPopulatedTableName(popr, false)
+	p := NewPopulatedKey(popr, false)
 	size := p.Size()
 	dAtA := make([]byte, size)
 	for i := range dAtA {
@@ -962,7 +962,7 @@ func TestTableNameMarshalTo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &TableName{}
+	msg := &Key{}
 	if err := github_com_gogo_protobuf_proto.Unmarshal(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -1262,16 +1262,16 @@ func TestLinkJSON(t *testing.T) {
 		t.Fatalf("seed = %d, %#v !Json Equal %#v", seed, msg, p)
 	}
 }
-func TestTableNameJSON(t *testing.T) {
+func TestKeyJSON(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := math_rand.New(math_rand.NewSource(seed))
-	p := NewPopulatedTableName(popr, true)
+	p := NewPopulatedKey(popr, true)
 	marshaler := github_com_gogo_protobuf_jsonpb.Marshaler{}
 	jsondata, err := marshaler.MarshalToString(p)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &TableName{}
+	msg := &Key{}
 	err = github_com_gogo_protobuf_jsonpb.UnmarshalString(jsondata, msg)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
@@ -1728,12 +1728,12 @@ func TestLinkProtoCompactText(t *testing.T) {
 	}
 }
 
-func TestTableNameProtoText(t *testing.T) {
+func TestKeyProtoText(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := math_rand.New(math_rand.NewSource(seed))
-	p := NewPopulatedTableName(popr, true)
+	p := NewPopulatedKey(popr, true)
 	dAtA := github_com_gogo_protobuf_proto.MarshalTextString(p)
-	msg := &TableName{}
+	msg := &Key{}
 	if err := github_com_gogo_protobuf_proto.UnmarshalText(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -1742,12 +1742,12 @@ func TestTableNameProtoText(t *testing.T) {
 	}
 }
 
-func TestTableNameProtoCompactText(t *testing.T) {
+func TestKeyProtoCompactText(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := math_rand.New(math_rand.NewSource(seed))
-	p := NewPopulatedTableName(popr, true)
+	p := NewPopulatedKey(popr, true)
 	dAtA := github_com_gogo_protobuf_proto.CompactTextString(p)
-	msg := &TableName{}
+	msg := &Key{}
 	if err := github_com_gogo_protobuf_proto.UnmarshalText(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -1964,9 +1964,9 @@ func TestLinkGoString(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-func TestTableNameGoString(t *testing.T) {
+func TestKeyGoString(t *testing.T) {
 	popr := math_rand.New(math_rand.NewSource(time.Now().UnixNano()))
-	p := NewPopulatedTableName(popr, false)
+	p := NewPopulatedKey(popr, false)
 	s1 := p.GoString()
 	s2 := fmt.Sprintf("%#v", p)
 	if s1 != s2 {
@@ -2329,10 +2329,10 @@ func TestLinkSize(t *testing.T) {
 	}
 }
 
-func TestTableNameSize(t *testing.T) {
+func TestKeySize(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := math_rand.New(math_rand.NewSource(seed))
-	p := NewPopulatedTableName(popr, true)
+	p := NewPopulatedKey(popr, true)
 	size2 := github_com_gogo_protobuf_proto.Size(p)
 	dAtA, err := github_com_gogo_protobuf_proto.Marshal(p)
 	if err != nil {
@@ -2495,9 +2495,9 @@ func TestLinkStringer(t *testing.T) {
 		t.Fatalf("String want %v got %v", s1, s2)
 	}
 }
-func TestTableNameStringer(t *testing.T) {
+func TestKeyStringer(t *testing.T) {
 	popr := math_rand.New(math_rand.NewSource(time.Now().UnixNano()))
-	p := NewPopulatedTableName(popr, false)
+	p := NewPopulatedKey(popr, false)
 	s1 := p.String()
 	s2 := fmt.Sprintf("%v", p)
 	if s1 != s2 {
