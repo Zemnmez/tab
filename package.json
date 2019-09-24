@@ -8,6 +8,7 @@
     "react-scripts": "3.1.2"
   },
   "scripts": {
+    "godoc": "./internal/scripts/godoc.sh",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
