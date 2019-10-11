@@ -9,7 +9,7 @@ exec:
   filename: ../gql/graphql_gen.go
 model:
   filename: ../gql/resolver/models_gen.go
-autobind: []
+autobind: [ github.com/zemnmez/tab/gql/resolver ]
 models:
   Authorization:
     model: github.com/zemnmez/tab/types.Authorization
