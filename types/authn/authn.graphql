@@ -3,6 +3,10 @@ type UserAuthentication @goModel(model: "github.com/zemnmez/tab/gql/resolver.Use
     etc: etc
 }
 
+interface Authentication {
+    who: ID!
+}
+
 extend interface User {
     Authentication: UserAuthentication
 }
@@ -25,5 +29,5 @@ extend type Mutation {
 }
 
 type AuthenticationMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.AuthenticationMutation") {
-    etc: etc
+    Authenticate(token: IDToken): Authentication!
 }

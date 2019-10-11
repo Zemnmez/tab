@@ -43,8 +43,13 @@ type OIDCProvider @goModel(model: "github.com/zemnmez/tab/types.OIDCProvider") {
     ClientID: String!
 }
 
+type UserOIDCQuery {
+    "Providers returns a list of auth providers supported by this user"
+    Providers: [OIDCProvider!]!
+}
+
 extend type UserAuthentication {
-    OIDC: [IDToken!]!
+    OIDC: UserOIDCQuery
 }
 
 extend type AuthenticationQuery { OIDC: OIDCQuery } 

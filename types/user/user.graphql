@@ -31,6 +31,7 @@ type UserQuery @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserQuery") 
     Self: Self!
 
     ByID(id: UserID): User @authorized(to: [VIEW_USERS])
+    ByName(name: String!): User @authorized(to: [VIEW_USERS])
 }
 
 type UserMutation @goModel(model: "github.com/zemnmez/tab/gql/resolver.UserMutation") {

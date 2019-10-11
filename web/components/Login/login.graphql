@@ -1,0 +1,20 @@
+"""
+GetLoginInfo returns the authentication methods that
+can be performed for a user.
+"""
+query GetLoginInfo($username: String!) {
+    User {
+        ByName($username) {
+            Authentication {
+                OIDC {
+                    Providers {
+                        name
+                        callback
+                        authorizationEndpoint
+                        clientID
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+"""
+Authenticate provides an OAuth implicit grant token
+for an authentication credential
+"""
+mutation Authenticate($idtoken: IDToken, $client: AuthClientID, $scopes: [Authorization!]!) {
+    OIDC {
+        Authenticate(token: $token) {
+            AuthorizationToken(client: $client, scopes: $scopes)
+        }
+    }
+}
