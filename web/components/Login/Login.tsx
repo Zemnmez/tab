@@ -4,7 +4,7 @@ import style from './Login.module.css';
 import { Editor, EditorState } from 'draft-js';
 import { useQuery } from '@apollo/react-hooks';
 import raw from 'raw.macro';
-const LOGIN_QUERY = gql(raw("./login.graphql"))
+const LOGIN_QUERY = gql(raw("./login.graphql"));
 
 // TODO: apollo codegen
 
