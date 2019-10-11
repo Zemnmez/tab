@@ -58,6 +58,7 @@ extend type Self implements AuthorizationGranter & AuthorizationGrantee & Author
 extend type RootUser implements AuthorizationGranter & Authorized {
     "The abilities granted by this entity."
     GrantsGiven: [AuthorizationGrant!]!
+    Authorizations: [Authorization!]!
 }
 
 # (the anonymous user cannot be a granter because that would be annoying)
@@ -65,6 +66,7 @@ extend type RootUser implements AuthorizationGranter & Authorized {
 extend type AnonymousUser implements AuthorizationGrantee & Authorized {
     "The abilities granted to this entity."
     GrantsReceived: [AuthorizationGrant!]!
+    Authorizations: [Authorization!]!
 }
 
 extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee & Authorized {
@@ -73,4 +75,6 @@ extend type RegularUser implements AuthorizationGranter & AuthorizationGrantee &
 
     "The abilities granted by this entity."
     GrantsReceived: [AuthorizationGrant!]!
+
+    Authorizations: [Authorization!]!
 }

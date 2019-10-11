@@ -1,4 +1,4 @@
 
-extend type Authentication {
-    AuthorizationToken(client: AuthClientID, scopes: [Authorization!]!)
+extend interface Authentication {
+    AuthorizationToken(client: AuthClientID, scopes: [Authorization!]!): AuthorizationToken!
 }

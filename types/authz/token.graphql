@@ -21,11 +21,6 @@ type AuthorizationTokenInfo {
     Created: Time!
 }
 
-type AuthzQuery {
-    TokenInfo(tok: AuthorizationToken!): AuthorizationTokenInfo!
-    TokenInfoByID(id: AuthorizationTokenID!): AuthorizationTokenInfo!
-}
-
 
 "A cryptographic digest of a RefreshTokenID. That is to say, a RefreshToken maps to a RefreshTokenID but not vice-versa."
 scalar AuthorizationRefreshToken
@@ -48,6 +43,8 @@ type AuthorizationRefreshTokenInfo {
 }
 
 type AuthzQuery {
+    TokenInfo(tok: AuthorizationToken!): AuthorizationTokenInfo!
+    TokenInfoByID(id: AuthorizationTokenID!): AuthorizationTokenInfo!
     RefreshToken(tok: AuthorizationRefreshToken!): AuthorizationRefreshTokenInfo!
     RefreshTokenByID(id: AuthorizationRefreshTokenID): AuthorizationRefreshTokenInfo!
     Token(tok: AuthorizationToken!): AuthorizationTokenInfo!

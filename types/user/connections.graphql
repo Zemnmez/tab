@@ -5,7 +5,7 @@ extend type SelfMutation {
 	Removes authentication for this user
 	by a particular ID Token issuer.
 	"""
-	Unlink(issuer: string): Boolean @authorized(to: [MODIFY_OWN_LINKS])
+	Unlink(issuer: String): Boolean @authorized(to: [MODIFY_OWN_LINKS])
 
 	"""
 	Allows authentication of this user
@@ -20,13 +20,13 @@ type Link @goModel(model: "github.com/zemnmez/tab/gql/resolver.Link") {
 	ID: LinkID
 
 	"the authentication issuer e.g. https://google.com"
-	TargetIssuer: string
+	TargetIssuer: String
 
 	"the authentication subject e.g. myUser123"
-	TargetSubject: string
+	TargetSubject: String
 }
 
-extend type SelfQuery {
+extend type Self {
 	Links: [Link!]!
 }
 
@@ -45,5 +45,5 @@ type ConnectionsQuery {
 
 type ConnectionsMutation {
 	Link(from: UserID, to: IDToken): Link @authorized(to: [MODIFY_USERS_LINKS])
-	Unlink(from: UserID, to: issuer): Link @authorized(to: [MODIFY_USERS_LINKS])
+	Unlink(from: UserID, to: String!): Link @authorized(to: [MODIFY_USERS_LINKS])
 }

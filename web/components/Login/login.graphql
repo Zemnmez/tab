@@ -8,10 +8,9 @@ query GetLoginInfo($username: String!) {
             Authentication {
                 OIDC {
                     Providers {
-                        name
-                        callback
-                        authorizationEndpoint
-                        clientID
+                        Name
+                        Callback
+                        AuthorizationEndpoint
                     }
                 }
             }
