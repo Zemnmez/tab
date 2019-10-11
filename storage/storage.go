@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/rand"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 )
@@ -108,19 +107,14 @@ func or(ints ...int) (together int) {
 
 // Get retrieves the value by the given key
 func (t Txn) Get(key io.Reader, val io.Writer, flags ...int) (err error) {
-	var buf bytes.Buffer
-	if _, err = key.WriteTo(&buf); err != nil {
-		return
-	}
-
 	var r IRecord
-	if r, err = t.ITxn.Open(buf.Bytes(), or(flags...)|O_RDONLY); err != nil {
+	if r, err = t.ITxn.Open(key, or(flags...)|O_RDONLY); err != nil {
 		return
 	}
 
 	defer r.Close()
 
-	if _, err = io.Copy(CopiableReaderFrom{val}, r); err != nil {
+	if _, err = io.Copy(val, r); err != nil {
 		return
 	}
 
@@ -133,19 +127,15 @@ func (t Txn) Get(key io.Reader, val io.Writer, flags ...int) (err error) {
 
 // Put stores the value with the given key
 func (t Txn) Put(key, val io.Reader, flags ...int) (err error) {
-	var buf bytes.Buffer
-	if _, err = key.WriteTo(&buf); err != nil {
-		return
-	}
 
 	var r IRecord
-	if r, err = t.ITxn.Open(buf.Bytes(), or(flags...)|O_WRONLY); err != nil {
+	if r, err = t.ITxn.Open(key, or(flags...)|O_WRONLY); err != nil {
 		return
 	}
 
 	defer r.Close()
 
-	if _, err = io.Copy(r, CopiableWriterTo{val}); err != nil {
+	if _, err = io.Copy(r, val); err != nil {
 		return
 	}
 
@@ -159,23 +149,18 @@ func (t Txn) Put(key, val io.Reader, flags ...int) (err error) {
 // Post stores the value, generating a key as it is added.
 // The key is passed rand.Reader to read entropy from for a uuid.
 func (t Txn) Post(key io.ReadWriter, val io.Reader, flags ...int) (err error) {
-	if _, err = key.ReadFrom(rand.Reader); err != nil {
-		return
-	}
-
-	var buf bytes.Buffer
-	if _, err = key.WriteTo(&buf); err != nil {
+	if _, err = io.Copy(key, rand.Reader); err != nil {
 		return
 	}
 
 	var r IRecord
-	if r, err = t.ITxn.Open(buf.Bytes(), or(flags...)|O_WRONLY); err != nil {
+	if r, err = t.ITxn.Open(key, or(flags...)|O_WRONLY); err != nil {
 		return
 	}
 
 	defer r.Close()
 
-	if _, err = io.Copy(r, CopiableWriterTo{val}); err != nil {
+	if _, err = io.Copy(r, val); err != nil {
 		return
 	}
 
@@ -188,10 +173,5 @@ func (t Txn) Post(key io.ReadWriter, val io.Reader, flags ...int) (err error) {
 
 // Delete deletes the value at the given key
 func (t Txn) Delete(key io.Reader) (err error) {
-	var buf bytes.Buffer
-	if _, err = key.WriteTo(&buf); err != nil {
-		return
-	}
-
-	return t.ITxn.Remove(buf.Bytes())
+	return t.ITxn.Remove(key)
 }
