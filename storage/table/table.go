@@ -8,6 +8,11 @@
 // all keys are asserted to be `table.Key`s.
 package table
 
+import (
+	"io"
+	"github.com/zemnmez/tab/storage"
+)
+
 type Key interface {
 	// a key should be able to unmarshal itself
 	// from bytes
